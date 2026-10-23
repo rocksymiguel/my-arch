@@ -1,0 +1,4 @@
+bibata-cursor-theme-bin
+paru
+waypaper
+zen-browser-bin
