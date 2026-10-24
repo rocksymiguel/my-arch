@@ -125,14 +125,10 @@ window#waybar {
     min-width: 0;
 }
 
-/* cava: barritas pegadas a la derecha de la isla de música */
+/* cava: barritas en su propia isla junto a la de música (sin esquinas que cambian) */
 #custom-cava {
     background: @bar_bg;
     color: @accent;
-    border-radius: 0 10px 10px 0;
-    padding: 0 10px 0 2px;
-    margin-left: -6px;
-}
-#mpris.playing {
-    border-radius: 10px 0 0 10px;
+    border-radius: 10px;
+    padding: 0 10px;
 }
