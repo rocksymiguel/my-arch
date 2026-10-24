@@ -1,0 +1,12 @@
+-- Deslizar: ventanas y escritorios se desplazan, como en el móvil
+hl.config({ animations = { enabled = true } })
+hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
+hl.curve("smooth",       { type = "bezier", points = { {0.25, 0.9}, {0.3, 1} } })
+hl.animation({ leaf = "global",     enabled = true, speed = 8,   bezier = "default" })
+hl.animation({ leaf = "border",     enabled = true, speed = 5,   bezier = "easeOutQuint" })
+hl.animation({ leaf = "windows",    enabled = true, speed = 4.5, bezier = "smooth", style = "slide" })
+hl.animation({ leaf = "windowsIn",  enabled = true, speed = 4.5, bezier = "smooth", style = "slide" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 3.5, bezier = "smooth", style = "slide" })
+hl.animation({ leaf = "fade",       enabled = true, speed = 3,   bezier = "smooth" })
+hl.animation({ leaf = "layers",     enabled = true, speed = 3.5, bezier = "smooth", style = "slide" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 4,   bezier = "smooth", style = "slide" })

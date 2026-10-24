@@ -58,3 +58,20 @@ vidrio oscurecer  # las inactivas se oscurecen un 35 %, como desactivadas
 ```
 
 Los modos están en `dotfiles/.config/theme/vidrio/*.glass`. Si no hay ninguno elegido, se usa `oscurecer`.
+
+## Animaciones y mosaico
+
+```bash
+animacion            # muestra el modo activo y los disponibles
+animacion defecto    # las del ejemplo oficial ("pop" y fundidos)
+animacion deslizar   # ventanas y escritorios se desplazan
+animacion rebote     # pequeño rebote al aparecer
+animacion rapidas    # casi instantáneas
+animacion ninguna    # sin animaciones
+
+mosaico dwindle      # cada ventana nueva divide el espacio en espiral
+mosaico master       # una ventana principal y las demás apiladas
+mosaico scrolling    # columnas que se desplazan de lado, al estilo Niri
+```
+
+Los modos de animación están en `dotfiles/.config/hypr/animaciones/*.lua`.

@@ -1,0 +1,17 @@
+#!/bin/bash
+# Cambia las animaciones de Hyprland.
+#   animacion          -> muestra el modo activo y los disponibles
+#   animacion <modo>   -> defecto | deslizar | rebote | rapidas | ninguna
+set -euo pipefail
+A="$HOME/.config/hypr/animaciones"
+F="${XDG_CACHE_HOME:-$HOME/.cache}/theme/anim"
+mkdir -p "$(dirname "$F")"
+if [ $# -eq 0 ]; then
+    echo "Activo: $(cat "$F" 2>/dev/null || echo defecto)"
+    echo "Modos:  $(ls "$A" | sed 's/\.lua$//' | tr '\n' ' ')"
+    exit 0
+fi
+[ -f "$A/$1.lua" ] || { echo "Modo desconocido: $1" >&2; "$0"; exit 1; }
+echo "$1" > "$F"
+hyprctl reload >/dev/null
+echo "Animación: $1"
