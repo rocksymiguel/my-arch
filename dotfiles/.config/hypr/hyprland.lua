@@ -137,11 +137,12 @@ hl.gesture({
 ---------------------
 local mainMod = "SUPER"
 
--- Apps: Enter = terminal, Espacio = lanzador, Z = Zen, T = Thunar
+-- Apps: Enter = terminal, Espacio = lanzador, Z = Zen, T = Thunar, F = Feishin
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Space",  hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + Z",      hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + T",      hl.dsp.exec_cmd(fileManager))
+hl.bind(mainMod .. " + F",      hl.dsp.exec_cmd("feishin"))
 
 -- Ventanas: Q = cerrar, SHIFT + Q = forzar cierre, B = pantalla completa, SHIFT + B = maximizar
 hl.bind(mainMod .. " + Q",         hl.dsp.window.close())

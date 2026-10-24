@@ -1,6 +1,5 @@
 #!/bin/bash
 # Menú de ajustes en fuzzel: tema, vidrio, no apagar la pantalla, fondo, energía,
-# Wi-Fi, Bluetooth y sonido.
 T="$HOME/.config/theme"
 C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
 menu() { fuzzel --dmenu --prompt "$1" --lines "$2" --width 32; }
@@ -17,10 +16,7 @@ op="$(printf '%s\n' \
     "󰅶  Pantalla: $pantalla" \
     "󰸉  Fondo de pantalla" \
     "󰓅  Energía: $energia_act" \
-    "󰖩  Wi-Fi" \
-    "󰂯  Bluetooth" \
-    "󰕾  Sonido" \
-    | menu "󰒓  " 8)" || exit 0
+    | menu "󰒓  " 5)" || exit 0
 
 case "$op" in
     *Tema:*)
@@ -41,7 +37,4 @@ case "$op" in
     *Energía:*)
         sel="$(printf '%s\n' "$(marca "$energia_act" balanced Equilibrado)" "$(marca "$energia_act" power-saver Ahorro)" | menu "Energía " 2)" || exit 0
         case "$sel" in *Equilibrado) powerprofilesctl set balanced ;; *Ahorro) powerprofilesctl set power-saver ;; esac ;;
-    *Wi-Fi)      setsid -f kitty -e nmtui >/dev/null 2>&1 ;;
-    *Bluetooth)  setsid -f blueman-manager >/dev/null 2>&1 ;;
-    *Sonido)     setsid -f pavucontrol >/dev/null 2>&1 ;;
 esac

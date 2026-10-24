@@ -87,6 +87,10 @@ aplicar() {
         pkill -SIGUSR1 -x kitty 2>/dev/null || true
         gsettings set org.gnome.desktop.interface color-scheme "prefer-$scheme" 2>/dev/null || true
         gsettings set org.gnome.desktop.interface icon-theme "$icons" 2>/dev/null || true
+        # Iconos de la bandeja (Wi-Fi, Bluetooth) con los iconos del modo nuevo
+        pkill -x nm-applet 2>/dev/null || true
+        pkill -f blueman-applet 2>/dev/null || true
+        (sleep 1; setsid -f nm-applet --indicator >/dev/null 2>&1; setsid -f blueman-applet >/dev/null 2>&1) &
         notify-send -a tema "Tema: $modo" 2>/dev/null || true
     fi
     sed -i "s/^gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)/; s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$icons/" \
