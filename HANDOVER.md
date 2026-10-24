@@ -32,7 +32,7 @@ Arch mínimo (systemd-boot, `linux` y `linux-lts`, zram, NetworkManager, PipeWir
 
 ## Repositorio de dotfiles
 
-`~/my-arch` en la Lenovo, subido a GitHub como **privado** en https://github.com/rocksymiguel/my-arch (remote SSH, `gh` con sesión en la Lenovo y en este PC). Las carpetas `~/.config/{hypr,waybar,kitty,fuzzel,mako,waypaper,gtk-3.0,gtk-4.0,theme}` y `~/.bashrc` son **enlaces** a `~/my-arch/dotfiles`. Hay que editar ahí, hacer **commit y push** después de cada cambio aprobado, y actualizar el README cuando haga falta. Los archivos generados (colors.*, fuzzel.ini, mako/config, hypridle.conf) están en `.gitignore`.
+`~/my-arch` en la Lenovo, subido a GitHub como **privado** en https://github.com/rocksymiguel/my-arch (remote SSH, `gh` con sesión en la Lenovo y en este PC). Las carpetas `~/.config/{hypr,waybar,kitty,rofi,swaync,waypaper,gtk-3.0,gtk-4.0,theme}` y `~/.bashrc` son **enlaces** a `~/my-arch/dotfiles`. Hay que editar ahí, hacer **commit y push** después de cada cambio aprobado, y actualizar el README cuando haga falta. Los archivos generados (colors.*, rofi/colors.rasi, swaync/style.css, hypridle.conf) están en `.gitignore`.
 
 Comandos propios (alias en `.bashrc`, scripts en `~/.config/theme/`):
 
@@ -116,4 +116,4 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 
 ## Siguiente paso sugerido
 
-Preguntar por los puntos **5–7** (fuzzel o rofi, mako o swaync, hyprlock), **B** (swayosd) y los **atajos del scrolling**, y seguir con 10–14 (kitty, GTK Nord, Papirus, Bibata y Zen) para que todo vaya con Nord.
+Cerrar la elección del **cursor** (y borrar los demás), y seguir con lo que queda: 15–18 (Thunar, fastfetch, btop, prompt), la terminal (M–P), capturas (J–L) y, más adelante, el modo juego, Quickshell y el `install.sh`.
