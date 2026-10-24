@@ -274,3 +274,10 @@ hl.layer_rule({
     blur  = true,
     ignore_alpha = 0.2,
 })
+
+-- Opacidad propia de kitty (activa / inactiva), según el modo de vidrio
+hl.window_rule({
+    name    = "kitty-opacity",
+    match   = { class = "^kitty$" },
+    opacity = theme.kitty_active .. " " .. theme.kitty_inactive,
+})

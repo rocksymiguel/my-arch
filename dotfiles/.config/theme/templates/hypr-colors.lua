@@ -11,4 +11,6 @@ return {
     win_inactive = {{win_inactive}},
     dim          = {{dim}},
     dim_strength = {{dim_strength}},
+    kitty_active   = {{kitty_active}},
+    kitty_inactive = {{kitty_inactive}},
 }

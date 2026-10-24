@@ -9,3 +9,5 @@ term_alpha=0.85
 bar_alpha=0.75
 menu_hex=d9
 notif_hex=e6
+kitty_active=1.0
+kitty_inactive=1.0
