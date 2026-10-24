@@ -34,7 +34,7 @@ renderizar() {
     local colores="$1" plantilla="$2" destino="$3" tmp glass
     tmp="$(mktemp)"
     glass="$CACHE/glass"
-    [ -f "$glass" ] || cp "$T/vidrio/sutil.glass" "$glass"
+    [ -f "$glass" ] || cp "$T/vidrio/oscurecer.glass" "$glass"
     cp "$plantilla" "$tmp"
     while IFS='=' read -r k v; do
         [[ -z "$k" || "$k" == \#* ]] && continue

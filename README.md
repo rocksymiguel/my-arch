@@ -53,11 +53,8 @@ en un equipo nuevo, después de `./link.sh`, ejecuta `tema oscuro`.
 
 ```bash
 vidrio            # muestra el modo activo y los disponibles
-vidrio sutil      # solo barra, menús y terminal translúcidos
-vidrio fuerte     # más transparencia y desenfoque
-vidrio inactivas  # las ventanas inactivas se vuelven cristal
-vidrio total      # todas las ventanas translúcidas
-vidrio oscurecer  # las inactivas se oscurecen en vez de volverse transparentes
+vidrio total      # todas las ventanas translúcidas (activa 85 %, inactivas 60 %)
+vidrio oscurecer  # las inactivas se oscurecen un 35 %, como desactivadas
 ```
 
-Los modos están en `dotfiles/.config/theme/vidrio/*.glass`.
+Los modos están en `dotfiles/.config/theme/vidrio/*.glass`. Si no hay ninguno elegido, se usa `oscurecer`.
