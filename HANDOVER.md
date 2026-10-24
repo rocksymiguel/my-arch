@@ -106,12 +106,13 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | L | hyprpicker | ✅ Como app "Selector de color" en rofi (sin atajo) |
 | M–P | Terminal | ✅ fish (solo en kitty), eza, bat (cat), fzf, zoxide (z), yazi (y) |
 | Q | plymouth | ✅ amdgpu en MODULES (aparece antes), hook tras systemd, `quiet splash`. Colección adi1090x: **connect** (n.º 16). Cambiar: `sudo bash ~/my-arch/install/plymouth.sh <tema>` |
-| R | Limine o rEFInd con tema | ⏳ |
-| S | Pantalla de login | ⏳ Va junto con el **modo juego** |
+| R | Gestor de arranque | ✅ Limine con tema Nord |
+| S | Pantalla de login | ❌ No hay: autologin + elección en Limine |
 | T–V | Apps | ✅ Vesktop (Discord; el tema Nord lo elige el usuario en Vencord) · Qt y Spotify no hacen falta |
 
 ## Otros pendientes grandes
 
+- **Modo juego (hecho, 2026-10-24):** Limine (`/boot/EFI/limine/BOOTX64.EFI`, config `/boot/EFI/limine/limine.conf` generada desde `install/limine.conf`, fondo `install/limine-fondo.png`) con entradas Escritorio / Juego / LTS que pasan `modo=` en cmdline; systemd-boot sigue en la UEFI como respaldo (F12). Autologin en tty1 (getty override); fish llama a `modo-bin arrancar` en tty1, que abre `start-hyprland` (bloqueado al inicio: BLOQUEAR_AL_INICIO=1 → inicio-bin lanza bloquear-bin) o `gamescope-session-plus steam`, y al cerrarse abre el modo pedido en `~/.cache/theme/siguiente-modo`. Cambiar: ⏻ → Modo juego (`modo-bin juego`); en Steam, Cambiar a escritorio → `/usr/lib/os-session-select` → `modo-bin escritorio`. Instalación: `sudo bash ~/my-arch/install/modo-juego.sh`.
 - **Arranque y modo juego (decidido):** elegir "Arch – Escritorio" o "Arch – Juego" **en el menú de arranque**, con un gestor bonito (Limine o rEFInd con tema Nord) y entrada directa sin pantalla de login. Se hará cuando toque el modo juego.
 
 - **Modo juego** al estilo SteamOS: `gamescope-session-steam`, multilib, `lib32-mesa`, `lib32-vulkan-radeon`. Elegible desde **systemd-boot** con las entradas "Arch – Escritorio" y "Arch – Juego". El usuario prefiere una sola pantalla de selección.

@@ -1,4 +1,6 @@
 bibata-cursor-theme-bin
+gamescope-session-git
+gamescope-session-steam-git
 nordic-polar-theme
 nordic-theme
 papirus-folders

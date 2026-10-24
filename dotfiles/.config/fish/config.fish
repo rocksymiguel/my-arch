@@ -13,6 +13,7 @@ alias inactividad "~/.config/theme/inactividad-bin"
 alias fondos     "~/.config/theme/fondos-bin"
 alias musica     "~/.config/theme/musica-bin"
 alias hypr       "start-hyprland"
+alias modo       "~/.config/theme/modo-bin"
 
 # Herramientas modernas
 alias ls  "eza --icons --group-directories-first"
@@ -44,4 +45,11 @@ if status is-interactive
         set -gx FASTFETCH_HECHO 1
         fastfetch
     end
+end
+
+# Inicio automático en tty1: abrir el modo elegido en el menú de arranque (Limine).
+# Al salir sin pedir otro modo se vuelve aquí, a la terminal.
+if status is-login; and test (tty) = /dev/tty1; and not set -q WAYLAND_DISPLAY; and not set -q MODO_LANZADO
+    set -gx MODO_LANZADO 1
+    ~/.config/theme/modo-bin arrancar
 end

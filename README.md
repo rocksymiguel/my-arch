@@ -112,3 +112,11 @@ Animación con plymouth. Cambiar de tema (regenera el arranque):
 ```bash
 sudo bash ~/my-arch/install/plymouth.sh connect
 ```
+
+## Modo juego
+
+Al encender, Limine ofrece **Escritorio** (Hyprland) o **Juego** (Steam Big Picture con Gamescope). Inicio de sesión automático; el escritorio se abre bloqueado.
+
+- Escritorio → juego: ⏻ → Modo juego (o `modo juego`)
+- Juego → escritorio: Steam → Encendido → Cambiar a escritorio
+- Instalar/reinstalar: `sudo bash ~/my-arch/install/modo-juego.sh`

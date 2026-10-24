@@ -10,6 +10,7 @@ brightnessctl
 btop
 cava
 cliphist
+efibootmgr
 eza
 fastfetch
 feishin
@@ -19,6 +20,7 @@ fish
 fontconfig
 fwupd
 fzf
+gamescope
 git
 github-cli
 gpu-screen-recorder
@@ -30,7 +32,10 @@ hyprlock
 hyprpicker
 hyprpolkitagent
 kitty
+lib32-mesa
+lib32-vulkan-radeon
 libnotify
+limine
 linux
 linux-firmware
 linux-lts
@@ -62,11 +67,13 @@ rofi
 satty
 slurp
 starship
+steam
 sudo
 swaync
 thunar
 thunar-archive-plugin
 ttf-jetbrains-mono-nerd
+ttf-liberation
 tumbler
 unzip
 upower

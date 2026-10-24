@@ -1,0 +1,48 @@
+#!/bin/bash
+# Modos de la laptop: escritorio (Hyprland) o juego (Steam Big Picture con Gamescope).
+#   modo arrancar    -> lo llama fish al iniciar sesión en tty1: abre el modo elegido en el
+#                       menú de arranque (modo=escritorio | modo=juego) y, al cerrarse, el
+#                       que se haya pedido; si no se pidió ninguno, vuelve a la terminal
+#   modo juego       -> desde el escritorio: cierra Hyprland y abre el modo juego
+#   modo escritorio  -> pide el escritorio (Steam lo hace con "Cambiar a escritorio")
+#   modo actual      -> muestra el modo con el que arrancó la laptop
+C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+SIG="$C/siguiente-modo"
+mkdir -p "$C"
+
+del_arranque() { grep -oE '\bmodo=[a-z]+' /proc/cmdline | cut -d= -f2 | head -n 1; }
+
+escritorio() {
+    # La primera vez tras encender, el escritorio se abre bloqueado (inicio sin contraseña)
+    BLOQUEAR_AL_INICIO="${1:-0}" start-hyprland
+}
+
+juego() {
+    gamescope-session-plus steam
+}
+
+case "${1:-}" in
+    arrancar)
+        modo="$(del_arranque)"; modo="${modo:-escritorio}"
+        primera=1
+        rm -f "$SIG"
+        while true; do
+            case "$modo" in
+                juego) juego ;;
+                *)     escritorio "$primera" ;;
+            esac
+            primera=0
+            modo="$(cat "$SIG" 2>/dev/null)"
+            rm -f "$SIG"
+            [ -n "$modo" ] || break      # se cerró sin pedir otro modo: volver a la terminal
+        done ;;
+    juego)
+        echo juego > "$SIG"
+        hyprctl dispatch 'hl.dsp.exit()' >/dev/null 2>&1 ;;
+    escritorio)
+        echo escritorio > "$SIG"
+        steam -shutdown >/dev/null 2>&1 ;;
+    actual)
+        m="$(del_arranque)"; echo "${m:-escritorio}" ;;
+    *) sed -n '2,8p' "$0" | sed 's/^# //'; exit 1 ;;
+esac

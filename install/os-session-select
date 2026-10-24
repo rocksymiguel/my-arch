@@ -1,0 +1,4 @@
+#!/bin/bash
+# Steam → Encendido → "Cambiar a escritorio" (steamos-session-select) llama a este script.
+# Pide el modo escritorio y cierra Steam; la sesión abre Hyprland a continuación.
+exec "$HOME/.config/theme/modo-bin" escritorio
