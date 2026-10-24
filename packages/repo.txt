@@ -55,6 +55,7 @@ pipewire
 pipewire-alsa
 pipewire-pulse
 playerctl
+plymouth
 power-profiles-daemon
 python-gobject
 qt5-wayland

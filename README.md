@@ -104,3 +104,11 @@ La isla de música muestra barritas de **cava** (`theme/cava-bin`) mientras suen
 - Impr: elegir zona y editarla con satty · Shift+Impr: pantalla completa a ~/Imágenes/Capturas
 - Super+Shift+R: grabar pantalla (isla roja ⏺ REC; clic o el atajo para parar) → ~/Vídeos/Grabaciones
 - "Selector de color" en el lanzador (hyprpicker): copia el color de un punto de la pantalla
+
+## Arranque
+
+Animación con plymouth. Cambiar de tema (regenera el arranque):
+
+```bash
+sudo bash ~/my-arch/install/plymouth.sh arch-logo
+```

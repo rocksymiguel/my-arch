@@ -105,7 +105,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | K | Grabar pantalla | ✅ gpu-screen-recorder, Super+Shift+R, isla REC (`grabar-bin`) |
 | L | hyprpicker | ✅ Como app "Selector de color" en rofi (sin atajo) |
 | M–P | Terminal | ✅ fish (solo en kitty), eza, bat (cat), fzf, zoxide (z), yazi (y) |
-| Q | plymouth | ⏳ |
+| Q | plymouth | ✅ Hook tras systemd, `quiet splash` en systemd-boot. Probando arch-logo; luego arch-charge-big y quizá la colección adi1090x. Cambiar con `sudo bash ~/my-arch/install/plymouth.sh <tema>`; al elegir, desinstalar los otros |
 | R | Limine o rEFInd con tema | ⏳ |
 | S | Pantalla de login | ⏳ Va junto con el **modo juego** |
 | T–V | Apps | ✅ Vesktop (Discord; el tema Nord lo elige el usuario en Vencord) · Qt y Spotify no hacen falta |
