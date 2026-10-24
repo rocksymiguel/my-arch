@@ -1,4 +1,4 @@
-/* rofi minimalista, al estilo de fuzzel: una lista centrada con buscador.
+/* rofi minimalista: una lista centrada con buscador.
  * Los colores salen del tema activo (colors.rasi lo genera `tema`). */
 configuration {
     modi: "drun,run";
@@ -13,6 +13,7 @@ configuration {
     matching: "fuzzy";
     sort: true;
     hover-select: true;
+    click-to-exit: true;
     me-select-entry: "";
     me-accept-entry: "MousePrimary";
 }

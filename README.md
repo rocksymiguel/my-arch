@@ -6,7 +6,7 @@ Mi instalación de Arch Linux con Hyprland: listas de paquetes, dotfiles y guía
 
 | Carpeta | Qué hay |
 |---|---|
-| `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `fuzzel`, `mako`, `waypaper`, `gtk-3.0`, `gtk-4.0`, `~/.bashrc`, cursor) |
+| `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`, `waypaper`, `gtk-3.0`, `gtk-4.0`, `~/.bashrc`, cursor) |
 | `packages/repo.txt` | Paquetes de los repositorios oficiales instalados a mano |
 | `packages/aur.txt` | Paquetes del AUR |
 | `install/` | Guía de instalación manual (por ahora). Más adelante: `install.sh` único con módulos `iso`, `base`, `hardware/amd`, `hardware/nvidia`, `hyprland` |
@@ -46,7 +46,7 @@ tema dinamico   # colores del fondo actual con matugen
 ```
 
 Los colores viven en `themes/*.colors` y las plantillas por programa en `templates/`.
-Los archivos que genera (`colors.lua`, `colors.css`, `fuzzel.ini`, `mako/config`…) no se versionan:
+Los archivos que genera (`colors.lua`, `colors.css`, `rofi.ini`, `swaync/config`…) no se versionan:
 en un equipo nuevo, después de `./link.sh`, ejecuta `tema oscuro`.
 
 ## Vidrio

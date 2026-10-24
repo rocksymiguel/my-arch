@@ -51,10 +51,15 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 
 - **Tema central:** Nord profundo (base oscura), Nord claro y dinámico. Fuentes compactas (JetBrains Mono Nerd), redondeo de 10, separación de 3 y 6, borde de 2 con degradado del tema. El modo claro tiene un borde más oscuro.
 - **Hyprland:** animación **rebote medio** (`hypr/animaciones.lua`), layout **scrolling**, reglas (pantalla completa opaca y sin atenuar, diálogos centrados, progreso de Thunar flotante, vídeo flotante de Zen y Feishin mini).
-- **Atajos:** Super + Enter kitty · Espacio fuzzel · Z Zen · T Thunar · F Feishin · W waypaper · L bloquear · Q cerrar · Shift + Q forzar cierre · B pantalla completa · Shift + B maximizar · M salir · V flotar · P pseudo · J división · S y Shift + S scratchpad · Shift + V portapapeles · Impr y Shift + Impr capturas · 1…0 escritorios · teclas Fn.
-- **Waybar en islas:** escritorios **1-3 fijos** con iconos de apps · música (MPRIS; clic pausa, clic derecho muestra Feishin) · reloj con fecha · tiempo de Daule (wttr.in) · CPU, RAM y temperatura (clic: btop) · bandeja (Wi-Fi y BT de nm-applet y blueman) · brillo y volumen · batería · ⚙ ajustes · ⏻ apagado. La config se genera con iconos por código.
-- **Menú de ajustes** (fuzzel, `waybar/scripts/menu-ajustes`): Tema, Vidrio, Inactividad (submenús de minutos y pausa), Fondo (elegir, siguiente, rotar) y Energía (equilibrado o ahorro). Al elegir vuelve atrás, Esc vuelve atrás, y antes de abrir cierra cualquier fuzzel atascado.
+- **Atajos:** Super + Enter kitty · Espacio rofi · Z Zen · T Thunar · F Feishin · W waypaper · L bloquear · Q cerrar · Shift + Q forzar cierre · B pantalla completa · Shift + B maximizar · M salir · V flotar · P pseudo · J división · S y Shift + S scratchpad · Shift + V portapapeles · Impr y Shift + Impr capturas · 1…0 escritorios · teclas Fn.
+- **Waybar en islas:** escritorios **1-3 fijos** con iconos de apps · música (MPRIS; clic pausa, clic derecho muestra Feishin) · reloj con fecha · tiempo de Daule (wttr.in) · CPU, RAM y temperatura (clic: btop) · bandeja (Wi-Fi y BT de nm-applet y blueman) · brillo y volumen · batería · 🔔 notificaciones (swaync: clic abre el panel, clic derecho "No molestar") · ⚙ ajustes · ⏻ apagado. La config se genera con iconos por código.
+- **Lanzador rofi** minimalista (`rofi/config.rasi` + `colors.rasi` generado por tema). Clic fuera lo cierra. Apps que no usa escondidas con `.desktop` NoDisplay en `dotfiles/.local/share/applications`.
+- **Menú de ajustes** (rofi, `waybar/scripts/menu-ajustes`): Tema, Vidrio, Inactividad (submenús de minutos y pausa), Fondo (elegir, siguiente, rotar), Energía (equilibrado o ahorro) y Cursor. Al elegir vuelve atrás, Esc vuelve atrás, y antes de abrir cierra cualquier rofi atascado.
 - **Menú de apagado:** bloquear, cerrar sesión, reiniciar y apagar, con confirmación.
+- **Notificaciones swaync** (arriba a la derecha, panel con No molestar, música, volumen y brillo). **Avisos (OSD)** con `osd-bin` como notificaciones de swaync: volumen y brillo solo con barra; micrófono, Bloq Mayús y Bloq Num con texto. No van al historial. Bloq Num activado al iniciar.
+- **Bloqueo** con `bloquear-bin` y hyprlock estilo completo: hora, fecha y tiempo, batería, música, aviso de Bloq Mayús (borde naranja = Mayús) y el fondo actual desenfocado. La rotación de fondos se congela mientras está bloqueado.
+- **Apariencia:** GTK Nordic (oscuro) y Nordic-Polar (claro); carpetas en gris azulado u nordic (copia de Papirus en `~/.local/share/icons`, papirus-folders sin sudo), todo cambiado por `tema`. kitty con cursor de línea parpadeante y pestañas powerline. Zen con tema Nord (lo puso el usuario). `cursor` / Ajustes → Cursor para probar Bibata, Nordzy y phinger (el usuario aún no ha elegido; después, borrar los demás).
+- fuzzel y mako **desinstalados** y sin rastro en el repo.
 - **Feishin** (repo extra): arranca escondido. El usuario desactivó "Show tray". Su música está en Navidrome, en el NAS.
 
 ## Problemas conocidos o decisiones
@@ -68,28 +73,28 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | # | Pieza | Estado |
 |---|---|---|
 | 1 | Tema central | ✅ Hecho |
-| 2 | Hyprland | ✅ Hecho · ❓ falta preguntar por los atajos de ancho y movimiento de columnas del scrolling |
+| 2 | Hyprland | ✅ Hecho (el usuario no quiere atajos extra para el scrolling) |
 | 3 | waybar | ✅ Islas · ⏳ probar la barra **flotante** y los escritorios en **japonés** (一 二 三) |
 | 4 | Módulos de waybar | ✅ Hecho (ventana activa y perfil de energía quitados; la energía va en ajustes) |
-| 5 | fuzzel | ⏳ Personalizar su aspecto. **Pendiente probar rofi** (el usuario lo pidió) |
-| 6 | mako | ⏳ Por personalizar. **Pendiente probar swaync** (centro de notificaciones) |
-| 7 | hyprlock | ⏳ Por personalizar (ahora es el ejemplo oficial con los colores del tema) |
+| 5 | Lanzador | ✅ rofi minimalista (fuzzel desinstalado) |
+| 6 | Notificaciones | ✅ swaync (mako desinstalado) |
+| 7 | hyprlock | ✅ Estilo completo |
 | 8 | hypridle | ✅ Hecho (menú de inactividad) |
-| 9 | Fondos | ✅ Por modo y con rotación · ⏳ selector con miniaturas en rofi (cuando se pruebe rofi) |
-| 10 | kitty | ⏳ Por personalizar (colores del tema ya aplicados) |
-| 11 | Apariencia GTK | ⏳ Tema GTK con Nord (ahora es Adwaita oscuro o claro) |
-| 12 | Papirus | ⏳ Color de carpetas con papirus-folders (¿nordic?) |
-| 13 | Bibata | ⏳ Variante del cursor (ahora Modern Classic) |
-| 14 | Zen | ⏳ Tema Nord / mods |
+| 9 | Fondos | ✅ Por modo y con rotación · ⏳ selector con miniaturas en rofi (opcional) |
+| 10 | kitty | ✅ Cursor y pestañas |
+| 11 | Apariencia GTK | ✅ Nordic / Nordic-Polar |
+| 12 | Papirus | ✅ Carpetas por tema |
+| 13 | Cursor | ⏳ El usuario está probando (`cursor`); al elegir, borrar el resto |
+| 14 | Zen | ✅ Tema Nord |
 | 15 | Thunar | ⏳ |
 | 16 | fastfetch | ⏳ |
 | 17 | btop | ⏳ Tema Nord |
 | 18 | Bash / prompt | ⏳ Junto con M y N |
 | A | matugen | ✅ Hecho (tema dinámico) |
-| B | swayosd | ⏳ Propuesto: avisos al subir el volumen y el brillo |
-| C | Menú de apagado | ✅ Hecho (fuzzel) |
-| D | rofi | ⏳ Pendiente pedido por el usuario |
-| E | swaync | ⏳ Pendiente pedido por el usuario |
+| B | Avisos de volumen y brillo | ✅ Con swaync (`osd-bin`); que salgan bajo su isla → lista de deseos de Quickshell |
+| C | Menú de apagado | ✅ Hecho (rofi) |
+| D | rofi | ✅ Hecho |
+| E | swaync | ✅ Hecho |
 | F | Dock | ⏳ Sin decidir |
 | G | Plugins de Hyprland | ⏳ Comprobar compatibilidad con la 0.56 en Lua |
 | H | Fondos animados | ❌ Desaconsejado (RAM) |

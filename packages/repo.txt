@@ -12,7 +12,6 @@ cliphist
 fastfetch
 feishin
 fontconfig
-fuzzel
 fwupd
 git
 github-cli
@@ -27,7 +26,6 @@ libnotify
 linux
 linux-firmware
 linux-lts
-mako
 man-db
 man-pages
 man-pages-es

@@ -90,3 +90,7 @@ progressbar progress { background: @accent; border-radius: 99px; min-height: 6px
 trough { background: @surface_hi; border-radius: 99px; min-height: 6px; }
 highlight { background: @accent; border-radius: 99px; }
 slider { background: @text; border-radius: 99px; min-width: 12px; min-height: 12px; }
+
+/* Avisos de volumen y brillo: solo la barra, más compactos */
+.notification.low .notification-content { padding: 4px 10px 8px; }
+.notification.low .summary { font-size: 1px; }

@@ -5,8 +5,8 @@
 C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
 mkdir -p "$C"
 
-avisar() {   # avisar "texto" [porcentaje]
-    local id args=(-a osd -u low -t 1500 -p)
+avisar() {   # avisar "texto" [porcentaje] [urgencia: low = solo barra]
+    local id args=(-a osd -u "${3:-normal}" -t 1500 -p)
     id="$(cat "$C/osd-id" 2>/dev/null)"
     [[ "$id" =~ ^[0-9]+$ ]] && args+=(-r "$id")
     [ -n "${2:-}" ] && args+=(-h "int:value:$2")
@@ -27,7 +27,7 @@ case "${1:-}" in
     silencio)     wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;&
     volumen-sube|volumen-baja|silencio)
         read -r pct mudo <<< "$(volumen)"
-        if [ -n "$mudo" ]; then avisar "󰝟  Sonido silenciado"; else avisar "󰕾  Volumen  $pct%" "$pct"; fi ;;
+        if [ -n "$mudo" ]; then avisar "󰝟  Sonido silenciado"; else avisar " " "$pct" low; fi ;;
     mic)
         wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
         if wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED; then avisar "󰍭  Micrófono silenciado"; else avisar "󰍬  Micrófono activo"; fi ;;
@@ -35,7 +35,7 @@ case "${1:-}" in
     brillo-baja)  brightnessctl -q -e4 -n2 set 5%- ;;&
     brillo-sube|brillo-baja)
         pct="$(brightnessctl -m | cut -d, -f4 | tr -d '%')"
-        avisar "󰃠  Brillo  $pct%" "$pct" ;;
+        avisar " " "$pct" low ;;
     mayus)
         sleep 0.1
         [ "$(led capslock)" = 1 ] && avisar "󰪛  Mayúsculas activadas" || avisar "󰪛  Mayúsculas desactivadas" ;;

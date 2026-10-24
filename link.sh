@@ -23,3 +23,8 @@ for d in "$R"/dotfiles/.config/*/; do
 done
 enlazar "$R/dotfiles/.bashrc" "$HOME/.bashrc"
 enlazar "$R/dotfiles/.icons/default/index.theme" "$HOME/.icons/default/index.theme"
+
+# Apps escondidas del lanzador (NoDisplay)
+for f in "$R"/dotfiles/.local/share/applications/*.desktop; do
+    [ -e "$f" ] && enlazar "$f" "$HOME/.local/share/applications/$(basename "$f")"
+done
