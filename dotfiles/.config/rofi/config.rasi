@@ -27,7 +27,7 @@ configuration {
 
 window {
     location: center;
-    width: 25em;
+    width: 330px;
     border: 2px;
     border-color: @acento;
     border-radius: 10px;

@@ -26,7 +26,7 @@ progressbar progress { background: @accent; border-radius: 99px; min-height: 6px
     background: alpha(@bg, {{bar_alpha}});
     border: 2px solid @accent;
     border-radius: 10px;
-    margin: 4px 6px;
+    margin: 4px 4px;
     padding: 0;
 }
 .notification.critical { border-color: @err; }
@@ -91,20 +91,17 @@ trough { background: @surface_hi; border-radius: 99px; min-height: 6px; }
 highlight { background: @accent; border-radius: 99px; }
 slider { background: @text; border-radius: 99px; min-width: 12px; min-height: 12px; }
 
-/* Avisos de volumen y brillo: solo la barra, centrada bajo la isla de brillo y volumen
-   (pantalla de 1366 px: la isla va de x=1055 a x=1170) */
-.notification.low {
-    margin: 4px 151px 4px 25px;
+/* Notificaciones y avisos de texto: compactos */
+.notification .notification-content { padding: 6px 10px; }
+.notification .time { font-size: 9px; margin-right: 24px; }
+
+/* Avisos de volumen y brillo (urgencia baja): solo la barra, centrada bajo la isla
+   de brillo y volumen (pantalla de 1366 px: la isla va de x=1055 a x=1170) */
+.notification.low { margin: 4px 151px 4px 4px; }
+.notification.low .notification-content { padding: 0 10px 9px; }
+.notification.low .text-box, .notification.low .summary, .notification.low .body,
+.notification.low .time {
+    min-height: 0; min-width: 0; margin: 0; padding: 0; font-size: 1px;
 }
-.notification.low .notification-content {
-    padding: 8px 10px;
-}
-.notification.low .text-box, .notification.low .summary, .notification.low .body, .notification.low .time {
-    min-height: 0;
-    margin: 0;
-    padding: 0;
-    font-size: 1px;
-}
-.notification.low .image, .notification.low .app-icon { min-width: 0; min-height: 0; margin: 0; }
-.notification.low progressbar { margin: 0; min-width: 110px; }
+.notification.low progressbar { margin: 0; min-width: 96px; }
 .notification.low .close-button { min-width: 0; min-height: 0; margin: 0; padding: 0; opacity: 0; }
