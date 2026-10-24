@@ -124,3 +124,15 @@ window#waybar {
     margin: 0;
     min-width: 0;
 }
+
+/* cava: barritas pegadas a la derecha de la isla de música */
+#custom-cava {
+    background: @bar_bg;
+    color: @accent;
+    border-radius: 0 10px 10px 0;
+    padding: 0 10px 0 2px;
+    margin-left: -6px;
+}
+#mpris.playing {
+    border-radius: 10px 0 0 10px;
+}

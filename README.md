@@ -97,6 +97,8 @@ y                      # yazi: gestor de archivos en la terminal
 Ctrl+R / Ctrl+T        # fzf: historial / archivos
 ```
 
+La isla de música muestra barritas de **cava** (`theme/cava-bin`) mientras suena algo.
+
 ## Capturas y grabación
 
 - Impr: elegir zona y editarla con satty · Shift+Impr: pantalla completa a ~/Imágenes/Capturas

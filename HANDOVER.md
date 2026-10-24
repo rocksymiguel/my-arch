@@ -76,7 +76,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 |---|---|---|
 | 1 | Tema central | ✅ Hecho |
 | 2 | Hyprland | ✅ Hecho (el usuario no quiere atajos extra para el scrolling) |
-| 3 | waybar | ✅ Islas · ⏳ probar la barra **flotante** y los escritorios en **japonés** (一 二 三) |
+| 3 | waybar | ✅ Islas, escritorios con números (descartados flotante y japonés) |
 | 4 | Módulos de waybar | ✅ Hecho (ventana activa y perfil de energía quitados; la energía va en ajustes) |
 | 5 | Lanzador | ✅ rofi minimalista |
 | 6 | Notificaciones | ✅ swaync |
@@ -97,10 +97,10 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | C | Menú de apagado | ✅ Hecho (rofi) |
 | D | rofi | ✅ Hecho |
 | E | swaync | ✅ Hecho |
-| F | Dock | ⏳ Sin decidir |
-| G | Plugins de Hyprland | ⏳ Comprobar compatibilidad con la 0.56 en Lua |
+| F | Dock | ❌ Descartado (ya hay lanzador e iconos en los escritorios) |
+| G | Plugins de Hyprland | ⏳ Solo hyprexpo, **cuando la versión oficial sea compatible** con su Hyprland (el usuario no quiere la versión no oficial de sandwichfarm). hyprbars, hyprtrails y hyprfocus descartados |
 | H | Fondos animados | ❌ Desaconsejado (RAM) |
-| I | cava | ⏳ Sin decidir |
+| I | cava | ✅ Barritas pegadas a la isla de música (`cava-bin`; el waybar de Arch no trae el módulo cava) |
 | J | Editar capturas | ✅ satty en Impr |
 | K | Grabar pantalla | ✅ gpu-screen-recorder, Super+Shift+R, isla REC (`grabar-bin`) |
 | L | hyprpicker | ✅ Como app "Selector de color" en rofi (sin atajo) |
@@ -108,9 +108,11 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | Q | plymouth | ⏳ |
 | R | Limine o rEFInd con tema | ⏳ |
 | S | Pantalla de login | ⏳ Va junto con el **modo juego** |
-| T–V | Qt, Spotify, Discord | ⏳ Solo si los usa |
+| T–V | Apps | ✅ Vesktop (Discord; el tema Nord lo elige el usuario en Vencord) · Qt y Spotify no hacen falta |
 
 ## Otros pendientes grandes
+
+- **Arranque y modo juego (decidido):** elegir "Arch – Escritorio" o "Arch – Juego" **en el menú de arranque**, con un gestor bonito (Limine o rEFInd con tema Nord) y entrada directa sin pantalla de login. Se hará cuando toque el modo juego.
 
 - **Modo juego** al estilo SteamOS: `gamescope-session-steam`, multilib, `lib32-mesa`, `lib32-vulkan-radeon`. Elegible desde **systemd-boot** con las entradas "Arch – Escritorio" y "Arch – Juego". El usuario prefiere una sola pantalla de selección.
 - **Quickshell** (cuando arregle la RAM): migrar pieza por pieza, en una rama `quickshell`. Ir llevando una **lista de deseos** de lo que waybar no puede hacer (panel de ajustes con interruptores, por ejemplo).

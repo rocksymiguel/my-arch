@@ -1,0 +1,25 @@
+#!/bin/bash
+# Barritas de cava para la isla de música de waybar (el módulo cava de waybar no viene en Arch).
+# Imprime una línea por fotograma; en silencio, una línea vacía (waybar esconde el módulo).
+CONF="${XDG_CACHE_HOME:-$HOME/.cache}/theme/cava-waybar.conf"
+mkdir -p "$(dirname "$CONF")"
+cat > "$CONF" <<'EOF'
+[general]
+bars = 10
+framerate = 25
+sleep_timer = 2
+
+[input]
+method = pipewire
+source = auto
+
+[output]
+method = raw
+raw_target = /dev/stdout
+data_format = ascii
+ascii_max_range = 7
+bar_delimiter = 59
+EOF
+
+# 0..7 -> ▁..█ ; todo ceros = silencio = línea vacía
+exec cava -p "$CONF" | LC_ALL=C.UTF-8 sed -u -e 's/;//g' -e 's/^0*$//' -e 'y/01234567/▁▂▃▄▅▆▇█/'

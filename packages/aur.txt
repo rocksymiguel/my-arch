@@ -3,5 +3,6 @@ nordic-polar-theme
 nordic-theme
 papirus-folders
 paru
+vesktop-bin
 waypaper
 zen-browser-bin
