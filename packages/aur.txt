@@ -1,6 +1,9 @@
 bibata-cursor-theme-bin
 nordic-polar-theme
 nordic-theme
+nordzy-cursors
+papirus-folders
 paru
+phinger-cursors
 waypaper
 zen-browser-bin

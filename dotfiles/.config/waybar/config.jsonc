@@ -172,11 +172,11 @@
         "tooltip": false,
         "format": "{icon} {text}",
         "format-icons": {
-            "notification": "󱅫",
+            "notification": "󰂚",
             "none": "󰂚",
             "dnd-notification": "󰂛",
             "dnd-none": "󰂛",
-            "inhibited-notification": "󱅫",
+            "inhibited-notification": "󰂚",
             "inhibited-none": "󰂚",
             "dnd-inhibited-notification": "󰂛",
             "dnd-inhibited-none": "󰂛"

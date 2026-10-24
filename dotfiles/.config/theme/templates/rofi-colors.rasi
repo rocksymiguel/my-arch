@@ -1,0 +1,11 @@
+/* Generado por tema. No editar: cambia los archivos de ~/.config/theme/templates */
+configuration {
+    icon-theme: "{{icons}}";
+}
+* {
+    fondo:     #{{bg}}{{menu_hex}};
+    texto:     #{{text}};
+    tenue:     #{{muted}};
+    acento:    #{{accent}};
+    seleccion: #{{surface_hi}}cc;
+}

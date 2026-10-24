@@ -13,7 +13,14 @@
     font-size: 11px;
 }
 
-/* Cada notificación */
+/* Cada notificación (sin el cuadro rectangular de fondo) */
+.notification-background, .notification-row, .notification-group,
+.notification-group-headers, .control-center-list, .floating-notifications {
+    background: transparent;
+    box-shadow: none;
+}
+progressbar trough { background: @surface_hi; border-radius: 99px; min-height: 6px; }
+progressbar progress { background: @accent; border-radius: 99px; min-height: 6px; }
 .notification-row { outline: none; }
 .notification {
     background: alpha(@bg, {{bar_alpha}});

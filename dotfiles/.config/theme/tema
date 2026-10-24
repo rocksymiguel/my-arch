@@ -70,7 +70,8 @@ aplicar() {
     renderizar "$colores" "$T/templates/hyprlock-colors.conf" "$C/hypr/colors-hyprlock.conf"
     renderizar "$colores" "$T/templates/waybar-colors.css"   "$C/waybar/colors.css"
     renderizar "$colores" "$T/templates/kitty-colors.conf"   "$C/kitty/colors.conf"
-    renderizar "$colores" "$T/templates/fuzzel.ini"          "$C/fuzzel/fuzzel.ini"
+    mkdir -p "$C/rofi"
+    renderizar "$colores" "$T/templates/rofi-colors.rasi"    "$C/rofi/colors.rasi"
     mkdir -p "$C/swaync"
     renderizar "$colores" "$T/templates/swaync.css"          "$C/swaync/style.css"
 
@@ -78,6 +79,11 @@ aplicar() {
     scheme="$(sed -n 's/^scheme=//p' "$colores")"
     icons="$(sed -n 's/^icons=//p' "$colores")"
     gtk="$(sed -n 's/^gtk=//p' "$colores")"
+    # Color de carpetas en la copia personal de Papirus (~/.local/share/icons): sin contraseña
+    local carpetas; carpetas="$(sed -n 's/^carpetas=//p' "$colores")"
+    if [ -n "$carpetas" ] && [ -d "$HOME/.local/share/icons/$icons" ]; then
+        (papirus-folders -C "$carpetas" -t "$icons" -o >/dev/null 2>&1 &)
+    fi
     echo "$modo" > "$ESTADO"
 
     # Recargar lo que esté abierto (si no hay sesión gráfica, no pasa nada)

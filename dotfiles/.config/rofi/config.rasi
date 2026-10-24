@@ -1,0 +1,102 @@
+/* rofi minimalista, al estilo de fuzzel: una lista centrada con buscador.
+ * Los colores salen del tema activo (colors.rasi lo genera `tema`). */
+configuration {
+    modi: "drun,run";
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    font: "JetBrainsMono Nerd Font 10";
+    terminal: "kitty";
+    drun-display-format: "{name}";
+    display-drun: "󰍉";
+    display-run: "󰍉";
+    display-dmenu: "󰍉";
+    matching: "fuzzy";
+    sort: true;
+    hover-select: true;
+    me-select-entry: "";
+    me-accept-entry: "MousePrimary";
+}
+
+@import "colors.rasi"
+
+* {
+    background-color: transparent;
+    text-color: @texto;
+}
+
+window {
+    location: center;
+    width: 30em;
+    border: 2px;
+    border-color: @acento;
+    border-radius: 10px;
+    background-color: @fondo;
+    padding: 10px;
+}
+
+mainbox {
+    children: [ inputbar, listview ];
+    spacing: 8px;
+}
+
+inputbar {
+    children: [ prompt, entry ];
+    spacing: 8px;
+    padding: 4px 6px;
+}
+
+prompt {
+    text-color: @acento;
+}
+
+entry {
+    placeholder: "Escribe para buscar…";
+    placeholder-color: @tenue;
+    cursor: text;
+}
+
+listview {
+    border: 0;
+    lines: 12;
+    fixed-height: false;
+    scrollbar: false;
+    spacing: 2px;
+}
+
+element {
+    padding: 4px 8px;
+    border-radius: 6px;
+    spacing: 8px;
+}
+
+element selected {
+    background-color: @seleccion;
+}
+
+element-icon {
+    size: 1.2em;
+}
+
+element-text {
+    vertical-align: 0.5;
+    highlight: bold;
+}
+
+element selected element-text {
+    text-color: @acento;
+}
+
+/* Sin los colores del tema por defecto de rofi (filas crema y línea punteada) */
+element normal.normal, element alternate.normal, element normal.urgent,
+element alternate.urgent, element normal.active, element alternate.active {
+    background-color: transparent;
+    text-color: @texto;
+}
+element selected.normal, element selected.urgent, element selected.active {
+    background-color: @seleccion;
+    text-color: @acento;
+}
+element-icon, element-text {
+    background-color: inherit;
+    text-color: inherit;
+}

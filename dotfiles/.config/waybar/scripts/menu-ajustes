@@ -1,14 +1,14 @@
 #!/bin/bash
-# Menú de ajustes en fuzzel: tema, vidrio, inactividad, fondo y energía.
+# Menú de ajustes en rofi: tema, vidrio, inactividad, fondo y energía.
 # Navegación: al elegir algo se vuelve al menú anterior; Esc vuelve atrás
 # (y en el menú principal, cierra).
 T="$HOME/.config/theme"
 C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
 
-# Si quedó un fuzzel abierto (escondido o atascado), cerrarlo: solo puede haber uno
-pkill -x fuzzel 2>/dev/null && sleep 0.2
+# Si quedó un rofi abierto (escondido o atascado), cerrarlo: solo puede haber uno
+pkill -x rofi 2>/dev/null && sleep 0.2
 
-menu() { fuzzel --dmenu --prompt "$1" --lines "$2" --width 36 --placeholder "Escribe para buscar…"; }
+menu() { rofi -dmenu -i -p "$1" -l "$2" -theme-str 'window { width: 36em; }'; }
 marca() { [ "$1" = "$2" ] && echo "● $3" || echo "  $3"; }
 mins() { [ "$1" -eq 0 ] && echo "nunca" || echo "$1 min"; }
 limpiar() { local s="${1#● }"; echo "${s#  }"; }

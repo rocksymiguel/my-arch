@@ -1,0 +1,36 @@
+#!/bin/bash
+# Cambia el cursor del ratón al momento.
+#   cursor            -> muestra el activo y los disponibles
+#   cursor <nombre>   -> por ejemplo: cursor Bibata-Modern-Ice
+#   cursor siguiente  -> pasa al siguiente de la lista (para probarlos)
+set -euo pipefail
+C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+mkdir -p "$C"
+TAM=24
+
+disponibles() {
+    for d in /usr/share/icons/*/cursors "$HOME"/.local/share/icons/*/cursors; do
+        [ -d "$d" ] && basename "$(dirname "$d")"
+    done | grep -viE '^(default|Adwaita|hicolor)$' | sort -u
+}
+actual() { cat "$C/cursor" 2>/dev/null || echo Bibata-Modern-Classic; }
+
+aplicar() {
+    local n="$1"
+    disponibles | grep -qx "$n" || { echo "No existe el cursor: $n" >&2; exit 1; }
+    echo "$n" > "$C/cursor"
+    hyprctl setcursor "$n" "$TAM" >/dev/null 2>&1 || true
+    gsettings set org.gnome.desktop.interface cursor-theme "$n" 2>/dev/null || true
+    sed -i "s/^gtk-cursor-theme-name=.*/gtk-cursor-theme-name=$n/" "$HOME/.config/gtk-3.0/settings.ini" "$HOME/.config/gtk-4.0/settings.ini"
+    printf '[Icon Theme]\nInherits=%s\n' "$n" > "$(readlink -f "$HOME/.icons/default/index.theme")"
+    echo "Cursor: $n"
+}
+
+case "${1:-}" in
+    "")  echo "Activo: $(actual)"; echo "Disponibles:"; disponibles | sed 's/^/  /' ;;
+    siguiente)
+        mapfile -t L < <(disponibles)
+        i=0; for j in "${!L[@]}"; do [ "${L[$j]}" = "$(actual)" ] && i=$(( (j + 1) % ${#L[@]} )); done
+        aplicar "${L[$i]}" ;;
+    *)   aplicar "$1" ;;
+esac

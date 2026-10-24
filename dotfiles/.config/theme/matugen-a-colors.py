@@ -41,6 +41,7 @@ valores = {
     "scheme": "dark",
     "icons": "Papirus-Dark",
     "gtk": "Nordic",
+    "carpetas": "bluegrey",
 }
 
 print("# Generado por matugen a partir del fondo actual")

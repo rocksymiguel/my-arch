@@ -1,7 +1,7 @@
 #!/bin/bash
-# Menú de apagado en fuzzel: bloquear, cerrar sesión, reiniciar, apagar.
-pkill -x fuzzel 2>/dev/null && sleep 0.2
-menu() { fuzzel --dmenu --prompt "$1" --lines "$2" --width 24; }
+# Menú de apagado en rofi: bloquear, cerrar sesión, reiniciar, apagar.
+pkill -x rofi 2>/dev/null && sleep 0.2
+menu() { rofi -dmenu -i -p "$1" -l "$2" -theme-str 'window { width: 22em; }'; }
 
 op="$(printf '%s\n' "󰌾  Bloquear" "󰍃  Cerrar sesión" "󰜉  Reiniciar" "󰐥  Apagar" | menu "󰐥  " 4)" || exit 0
 

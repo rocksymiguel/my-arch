@@ -1,0 +1,46 @@
+#!/bin/bash
+# Avisos en pantalla (OSD) con swaync, arriba a la derecha bajo las islas.
+#   osd volumen-sube | volumen-baja | silencio | mic | brillo-sube | brillo-baja | mayus | numeros
+# Cada aviso reemplaza al anterior y no se guarda en el historial (app "osd").
+C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+mkdir -p "$C"
+
+avisar() {   # avisar "texto" [porcentaje]
+    local id args=(-a osd -u low -t 1500 -p)
+    id="$(cat "$C/osd-id" 2>/dev/null)"
+    [[ "$id" =~ ^[0-9]+$ ]] && args+=(-r "$id")
+    [ -n "${2:-}" ] && args+=(-h "int:value:$2")
+    notify-send "${args[@]}" "$1" > "$C/osd-id"
+}
+
+volumen() {  # imprime el % y si está silenciado
+    local v; v="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)"
+    awk '{printf "%d", $2*100}' <<< "$v"
+    [[ "$v" == *MUTED* ]] && echo " mudo"
+}
+
+led() { cat /sys/class/leds/*::"$1"/brightness 2>/dev/null | head -n 1; }
+
+case "${1:-}" in
+    volumen-sube) wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ ;;&
+    volumen-baja) wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;&
+    silencio)     wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;&
+    volumen-sube|volumen-baja|silencio)
+        read -r pct mudo <<< "$(volumen)"
+        if [ -n "$mudo" ]; then avisar "󰝟  Sonido silenciado"; else avisar "󰕾  Volumen  $pct%" "$pct"; fi ;;
+    mic)
+        wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+        if wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED; then avisar "󰍭  Micrófono silenciado"; else avisar "󰍬  Micrófono activo"; fi ;;
+    brillo-sube)  brightnessctl -q -e4 -n2 set 5%+ ;;&
+    brillo-baja)  brightnessctl -q -e4 -n2 set 5%- ;;&
+    brillo-sube|brillo-baja)
+        pct="$(brightnessctl -m | cut -d, -f4 | tr -d '%')"
+        avisar "󰃠  Brillo  $pct%" "$pct" ;;
+    mayus)
+        sleep 0.1
+        [ "$(led capslock)" = 1 ] && avisar "󰪛  Mayúsculas activadas" || avisar "󰪛  Mayúsculas desactivadas" ;;
+    numeros)
+        sleep 0.1
+        [ "$(led numlock)" = 1 ] && avisar "󰎠  Bloq Num activado" || avisar "󰎠  Bloq Num desactivado" ;;
+    *) sed -n '2,4p' "$0" | sed 's/^# //'; exit 1 ;;
+esac

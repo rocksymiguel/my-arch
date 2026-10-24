@@ -53,6 +53,7 @@ python-gobject
 qt5-wayland
 qt6-wayland
 reflector
+rofi
 slurp
 sudo
 swaync

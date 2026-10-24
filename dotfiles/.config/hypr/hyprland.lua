@@ -17,7 +17,7 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" 
 ---------------------
 local terminal    = "kitty"
 local fileManager = "thunar"
-local menu        = "fuzzel"
+local menu        = "rofi -show drun"
 local browser     = "zen-browser"
 
 -------------------
@@ -37,7 +37,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
     hl.exec_cmd("sleep 1 && waypaper --restore")
     -- Cursor y fuente para las apps GTK; claro/oscuro e iconos los pone `tema`
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'")
+    hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme " .. cursor_elegido)
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-size 24")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface font-name 'JetBrainsMono Nerd Font 9'")
     hl.exec_cmd("sleep 2 && ~/.config/theme/tema \"$(~/.config/theme/tema actual)\"")
@@ -46,7 +46,13 @@ end)
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
-hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
+local cursor_elegido = "Bibata-Modern-Classic"
+do
+    local f = io.open(os.getenv("HOME") .. "/.cache/theme/cursor", "r")
+    if f then cursor_elegido = f:read("*l") or cursor_elegido; f:close() end
+end
+hl.env("XCURSOR_THEME", cursor_elegido)
+hl.env("HYPRCURSOR_THEME", cursor_elegido)
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
@@ -118,6 +124,7 @@ hl.config({
         kb_model   = "",
         kb_options = "",
         kb_rules   = "",
+        numlock_by_default = true, -- Bloq Num activado al iniciar
         follow_mouse = 1,
         sensitivity = 0,
         touchpad = {
@@ -159,7 +166,7 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 -- Bloquear, fondos y portapapeles
 hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("~/.config/theme/bloquear-bin"))
 hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("waypaper"))
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"))
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p Portapapeles | cliphist decode | wl-copy"))
 
 -- Capturas: Impr = zona al portapapeles; SHIFT + Impr = pantalla completa a ~/Imágenes/Capturas
 hl.bind("Print",         hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy"))
@@ -186,12 +193,15 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Teclas Fn: volumen, micrófono, brillo y multimedia
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
-hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("~/.config/theme/osd-bin volumen-sube"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("~/.config/theme/osd-bin volumen-baja"),      { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("~/.config/theme/osd-bin silencio"),     { locked = true, repeating = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("~/.config/theme/osd-bin mic"),   { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("~/.config/theme/osd-bin brillo-sube"),                  { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("~/.config/theme/osd-bin brillo-baja"),                  { locked = true, repeating = true })
+-- Avisos de Bloq Mayús y Bloq Num (la tecla sigue funcionando)
+hl.bind("Caps_Lock", hl.dsp.exec_cmd("~/.config/theme/osd-bin mayus"),   { locked = true, non_consuming = true })
+hl.bind("Num_Lock",  hl.dsp.exec_cmd("~/.config/theme/osd-bin numeros"), { locked = true, non_consuming = true })
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
@@ -237,7 +247,7 @@ hl.window_rule({
 -- Efecto vidrio en la barra, el lanzador y las notificaciones
 hl.layer_rule({
     name  = "glass-layers",
-    match = { namespace = "^(waybar|launcher|swaync-control-center|swaync-notification-window)$" },
+    match = { namespace = "^(waybar|rofi|swaync-control-center|swaync-notification-window)$" },
     blur  = true,
     ignore_alpha = 0.2,
 })
