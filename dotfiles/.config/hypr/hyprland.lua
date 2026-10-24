@@ -24,22 +24,8 @@ local browser     = "zen-browser"
 ---- AUTOSTART ----
 -------------------
 hl.on("hyprland.start", function()
-    hl.exec_cmd("systemctl --user start hyprpolkitagent")
-    hl.exec_cmd("waybar")
-    hl.exec_cmd("swaync")
-    hl.exec_cmd("~/.config/theme/inactividad-bin; hypridle")
-    hl.exec_cmd("~/.config/theme/fondos-bin demonio")
-    hl.exec_cmd("feishin") -- escondido en special:musica; Super + F lo muestra
-    hl.exec_cmd("awww-daemon")
-    hl.exec_cmd("~/.config/theme/avion-bin vigilar") -- iconos de Wi-Fi/Bluetooth o avión
-    hl.exec_cmd("wl-paste --type text --watch cliphist store")
-    hl.exec_cmd("wl-paste --type image --watch cliphist store")
-    hl.exec_cmd("sleep 1 && waypaper --restore")
-    -- Cursor y fuente para las apps GTK; claro/oscuro e iconos los pone `tema`
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme " .. cursor_elegido)
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-size 24")
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface font-name 'JetBrainsMono Nerd Font 9'")
-    hl.exec_cmd("sleep 2 && ~/.config/theme/tema \"$(~/.config/theme/tema actual)\"")
+    -- Todo el arranque está en un script (con registro en ~/.cache/theme/inicio.log)
+    hl.exec_cmd("~/.config/theme/inicio-bin")
 end)
 
 -------------------------------
@@ -51,7 +37,6 @@ do
     if f then cursor_elegido = f:read("*l") or cursor_elegido; f:close() end
 end
 hl.env("XCURSOR_THEME", cursor_elegido)
-hl.env("HYPRCURSOR_THEME", cursor_elegido)
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
