@@ -59,7 +59,6 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 - **Notificaciones swaync** (arriba a la derecha, panel con No molestar, música, volumen y brillo). **Avisos (OSD)** con `osd-bin` como notificaciones de swaync: volumen y brillo solo con barra; micrófono, Bloq Mayús y Bloq Num con texto. No van al historial. Bloq Num activado al iniciar.
 - **Bloqueo** con `bloquear-bin` y hyprlock estilo completo: hora, fecha y tiempo, batería, música, aviso de Bloq Mayús (borde naranja = Mayús) y el fondo actual desenfocado. La rotación de fondos se congela mientras está bloqueado.
 - **Apariencia:** GTK Nordic (oscuro) y Nordic-Polar (claro); carpetas en gris azulado u nordic (copia de Papirus en `~/.local/share/icons`, papirus-folders sin sudo), todo cambiado por `tema`. kitty con cursor de línea parpadeante y pestañas powerline. Zen con tema Nord (lo puso el usuario). `cursor` / Ajustes → Cursor para probar Bibata, Nordzy y phinger (el usuario aún no ha elegido; después, borrar los demás).
-- fuzzel y mako **desinstalados** y sin rastro en el repo.
 - **Feishin** (repo extra): arranca escondido. El usuario desactivó "Show tray". Su música está en Navidrome, en el NAS.
 
 ## Problemas conocidos o decisiones
@@ -76,8 +75,8 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | 2 | Hyprland | ✅ Hecho (el usuario no quiere atajos extra para el scrolling) |
 | 3 | waybar | ✅ Islas · ⏳ probar la barra **flotante** y los escritorios en **japonés** (一 二 三) |
 | 4 | Módulos de waybar | ✅ Hecho (ventana activa y perfil de energía quitados; la energía va en ajustes) |
-| 5 | Lanzador | ✅ rofi minimalista (fuzzel desinstalado) |
-| 6 | Notificaciones | ✅ swaync (mako desinstalado) |
+| 5 | Lanzador | ✅ rofi minimalista |
+| 6 | Notificaciones | ✅ swaync |
 | 7 | hyprlock | ✅ Estilo completo |
 | 8 | hypridle | ✅ Hecho (menú de inactividad) |
 | 9 | Fondos | ✅ Por modo y con rotación · ⏳ selector con miniaturas en rofi (opcional) |
