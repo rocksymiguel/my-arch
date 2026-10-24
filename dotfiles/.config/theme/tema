@@ -19,6 +19,21 @@ fondo_actual() {
     awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1
 }
 
+# Fondos por modo: en ~/Imágenes/Fondos, los que llevan "Dark Mode" en el nombre son
+# para el oscuro y los que llevan "Light Mode", para el claro. Si el fondo actual ya
+# es del modo, se queda; si no, se pone el primero de ese modo.
+FONDOS="$HOME/Imágenes/Fondos"
+poner_fondo() {
+    local patron actual nuevo
+    case "$1" in oscuro) patron="Dark Mode" ;; claro) patron="Light Mode" ;; *) return 0 ;; esac
+    actual="$(fondo_actual)"
+    [[ "$(basename "$actual")" == *"$patron"* ]] && return 0
+    nuevo="$(find "$FONDOS" -maxdepth 1 -type f -name "*$patron*" 2>/dev/null | sort | head -n 1)"
+    [ -n "$nuevo" ] || return 0
+    awww img "$nuevo" --transition-type grow --transition-duration 1.5 --transition-fps 60 >/dev/null 2>&1 || return 0
+    sed -i "s|^wallpaper = .*|wallpaper = ${nuevo/#$HOME/\~}|" "$C/waypaper/config.ini" 2>/dev/null || true
+}
+
 generar_dinamico() {
     local img; img="$(fondo_actual)"
     if [ -z "$img" ] || [ ! -f "$img" ]; then
@@ -65,6 +80,7 @@ aplicar() {
 
     # Recargar lo que esté abierto (si no hay sesión gráfica, no pasa nada)
     if [ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || ls /run/user/"$(id -u)"/hypr/* >/dev/null 2>&1; then
+        poner_fondo "$modo"
         hyprctl reload >/dev/null 2>&1 || true
         pkill -SIGUSR2 -x waybar 2>/dev/null || true
         makoctl reload 2>/dev/null || true

@@ -59,19 +59,14 @@ vidrio oscurecer  # las inactivas se oscurecen un 35 %, como desactivadas
 
 Los modos están en `dotfiles/.config/theme/vidrio/*.glass`. Si no hay ninguno elegido, se usa `oscurecer`.
 
-## Animaciones y mosaico
+## Fondos
 
-```bash
-animacion            # muestra el modo activo y los disponibles
-animacion defecto    # las del ejemplo oficial ("pop" y fundidos)
-animacion deslizar   # ventanas y escritorios se desplazan
-animacion rebote     # rebote al aparecer (nivel con: rebote suave|medio|fuerte|exagerado)
-animacion rapidas    # casi instantáneas
-animacion ninguna    # sin animaciones
+En `~/Imágenes/Fondos` (no se versionan): los que llevan `Dark Mode` en el nombre
+son para `tema oscuro` y los que llevan `Light Mode`, para `tema claro`. Al cambiar de tema
+se pone uno de ese modo, salvo que el actual ya lo sea.
 
-mosaico dwindle      # cada ventana nueva divide el espacio en espiral
-mosaico master       # una ventana principal y las demás apiladas
-mosaico scrolling    # columnas que se desplazan de lado, al estilo Niri
-```
+## Barra
 
-Los modos de animación están en `dotfiles/.config/hypr/animaciones/*.lua`.
+Islas: escritorios con iconos de apps, música (MPRIS, p. ej. Feishin), reloj y tiempo (wttr.in, Daule),
+CPU/RAM/temperatura, bandeja, brillo/volumen/Bluetooth/Wi-Fi, batería, ajustes () y apagado ().
+Los menús están en `dotfiles/.config/waybar/scripts/`.

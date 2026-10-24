@@ -7,48 +7,89 @@
     min-height: 0;
 }
 
+/* Barra en islas: la barra es invisible y cada grupo es una isla */
 window#waybar {
-    background: @bar_bg;
+    background: transparent;
     color: @text;
 }
 
-#workspaces button {
-    padding: 0 8px;
-    color: @muted;
-    border-radius: 6px;
+#workspaces,
+#mpris,
+#clock,
+#custom-clima,
+#sistema,
+#tray,
+#controles,
+#battery,
+#custom-ajustes,
+#custom-apagado {
+    background: @bar_bg;
+    border-radius: 10px;
+    padding: 0 10px;
 }
 
+/* Reloj y tiempo forman una sola isla en el centro */
+#clock {
+    font-weight: bold;
+    border-radius: 10px 0 0 10px;
+    padding-right: 6px;
+}
+#custom-clima {
+    border-radius: 0 10px 10px 0;
+    padding-left: 6px;
+    color: @muted;
+}
+
+#workspaces {
+    padding: 0 4px;
+}
+#workspaces button {
+    padding: 0 7px;
+    margin: 3px 1px;
+    color: @muted;
+    border-radius: 7px;
+}
 #workspaces button.active {
     color: @bg;
     background: linear-gradient(45deg, @accent, @accent2);
 }
-
 #workspaces button:hover {
     background: alpha(@text, 0.1);
 }
 
-#window {
-    padding: 0 10px;
+#mpris {
     color: @muted;
 }
-
-#clock {
-    font-weight: bold;
-    padding: 0 12px;
+#mpris.playing {
+    color: @accent;
 }
 
-#tray, #power-profiles-daemon, #backlight, #pulseaudio, #network, #battery {
-    padding: 0 10px;
+#cpu, #memory, #temperature,
+#backlight, #pulseaudio, #bluetooth, #network {
+    padding: 0 6px;
+}
+#temperature.critical {
+    color: @err;
 }
 
-#pulseaudio.muted, #network.disconnected {
+#pulseaudio.muted, #network.disconnected, #bluetooth.off {
     color: @muted;
 }
 
 #battery.warning:not(.charging) {
     color: @warn;
 }
-
 #battery.critical:not(.charging) {
     color: @err;
+}
+
+#custom-ajustes, #custom-apagado {
+    font-size: 13px;
+    padding: 0 11px;
+}
+#custom-apagado {
+    color: @err;
+}
+#custom-ajustes:hover, #custom-apagado:hover {
+    background: alpha(@accent, 0.25);
 }

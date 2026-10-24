@@ -1,0 +1,47 @@
+#!/bin/bash
+# Menú de ajustes en fuzzel: tema, vidrio, no apagar la pantalla, fondo, energía,
+# Wi-Fi, Bluetooth y sonido.
+T="$HOME/.config/theme"
+C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+menu() { fuzzel --dmenu --prompt "$1" --lines "$2" --width 32; }
+marca() { [ "$1" = "$2" ] && echo "● $3" || echo "  $3"; }
+
+tema_act="$("$T/tema" actual)"
+vidrio_act="$(sed -n 's/^glass=//p' "$C/glass" 2>/dev/null)"
+pgrep -x hypridle >/dev/null && pantalla="se apaga sola" || pantalla="siempre encendida"
+energia_act="$(powerprofilesctl get 2>/dev/null)"
+
+op="$(printf '%s\n' \
+    "  Tema: $tema_act" \
+    "󰂵  Vidrio: $vidrio_act" \
+    "󰅶  Pantalla: $pantalla" \
+    "󰸉  Fondo de pantalla" \
+    "󰓅  Energía: $energia_act" \
+    "  Wi-Fi" \
+    "󰂯  Bluetooth" \
+    "󰕾  Sonido" \
+    | menu "  " 8)" || exit 0
+
+case "$op" in
+    *Tema:*)
+        sel="$(printf '%s\n' "$(marca "$tema_act" oscuro Oscuro)" "$(marca "$tema_act" claro Claro)" "$(marca "$tema_act" dinamico Dinámico)" | menu "Tema " 3)" || exit 0
+        case "$sel" in *Oscuro) "$T/tema" oscuro ;; *Claro) "$T/tema" claro ;; *Dinámico) "$T/tema" dinamico ;; esac ;;
+    *Vidrio:*)
+        sel="$(printf '%s\n' "$(marca "$vidrio_act" total Total)" "$(marca "$vidrio_act" oscurecer Oscurecer)" | menu "Vidrio " 2)" || exit 0
+        case "$sel" in *Total) "$T/vidrio-bin" total ;; *Oscurecer) "$T/vidrio-bin" oscurecer ;; esac ;;
+    *Pantalla:*)
+        if pgrep -x hypridle >/dev/null; then
+            pkill -x hypridle
+            notify-send -a ajustes "Pantalla siempre encendida" "No se atenuará por inactividad"
+        else
+            setsid -f hypridle >/dev/null 2>&1
+            notify-send -a ajustes "Pantalla normal" "Se atenúa a los 5 minutos sin uso"
+        fi ;;
+    *Fondo*)     setsid -f waypaper >/dev/null 2>&1 ;;
+    *Energía:*)
+        sel="$(printf '%s\n' "$(marca "$energia_act" balanced Equilibrado)" "$(marca "$energia_act" power-saver Ahorro)" | menu "Energía " 2)" || exit 0
+        case "$sel" in *Equilibrado) powerprofilesctl set balanced ;; *Ahorro) powerprofilesctl set power-saver ;; esac ;;
+    *Wi-Fi)      setsid -f kitty -e nmtui >/dev/null 2>&1 ;;
+    *Bluetooth)  setsid -f blueman-manager >/dev/null 2>&1 ;;
+    *Sonido)     setsid -f pavucontrol >/dev/null 2>&1 ;;
+esac

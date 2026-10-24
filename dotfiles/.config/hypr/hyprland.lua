@@ -5,15 +5,6 @@
 -- Colores del tema activo; los genera `tema` en ~/.config/hypr/colors.lua
 local theme = dofile(os.getenv("HOME") .. "/.config/hypr/colors.lua")
 
--- Modos elegidos con los comandos `animacion` y `mosaico` (~/.cache/theme)
-local function leer_modo(nombre, defecto)
-    local f = io.open(os.getenv("HOME") .. "/.cache/theme/" .. nombre, "r")
-    if not f then return defecto end
-    local v = f:read("*l")
-    f:close()
-    return (v and v ~= "") and v or defecto
-end
-
 ------------------
 ---- MONITORS ----
 ------------------
@@ -74,7 +65,7 @@ hl.config({
         },
         resize_on_border = true,
         allow_tearing = false,
-        layout = leer_modo("mosaico", "scrolling"),
+        layout = "scrolling", -- columnas que se desplazan de lado, al estilo Niri
     },
     decoration = {
         rounding       = 10,
@@ -101,28 +92,16 @@ hl.config({
     },
 })
 
--- Animaciones: el modo lo elige `animacion` (defecto, deslizar, rebote, rapidas, ninguna)
-dofile(os.getenv("HOME") .. "/.config/hypr/animaciones/" .. leer_modo("anim", "rebote") .. ".lua")
-
-hl.config({
-    dwindle = {
-        preserve_split = true,
-    },
-})
-
-hl.config({
-    master = {
-        new_status = "master",
-    },
-})
+-- Animaciones con rebote medio
+dofile(os.getenv("HOME") .. "/.config/hypr/animaciones.lua")
 
 ----------------
 ----  MISC  ----
 ----------------
 hl.config({
     misc = {
-        force_default_wallpaper = -1,
-        disable_hyprland_logo   = false,
+        force_default_wallpaper = 0,    -- sin los fondos de Hyprland: los pone `tema`
+        disable_hyprland_logo   = true,
     },
 })
 
