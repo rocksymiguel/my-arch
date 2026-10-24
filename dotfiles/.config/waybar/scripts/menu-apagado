@@ -1,18 +1,16 @@
 #!/bin/bash
-# Menú de apagado en rofi: modo juego, bloquear, cerrar sesión, reiniciar, apagar.
+# Menú de apagado en rofi: modo juego, bloquear, suspender, cerrar sesión, reiniciar, apagar.
 pkill -x rofi 2>/dev/null && sleep 0.2
 menu() { rofi -dmenu -i -p "$1" -l "$2" -theme-str 'window { width: 22em; }'; }
 
-op="$(printf '%s\n' "󰊗  Modo juego" "󰌾  Bloquear" "󰍃  Cerrar sesión" "󰜉  Reiniciar" "󰐥  Apagar" | menu "󰐥  " 5)" || exit 0
+op="$(printf '%s\n' "󰊗  Modo juego" "󰌾  Bloquear" "󰤄  Suspender" "󰍃  Cerrar sesión" "󰜉  Reiniciar" "󰐥  Apagar" | menu "󰐥  " 6)" || exit 0
 
-confirmar() {
-    [ "$(printf '%s\n' "No" "Sí, $1" | menu "¿$1? " 2)" = "Sí, $1" ]
-}
 
 case "$op" in
     *"Modo juego")    ~/.config/theme/modo-bin juego ;;
     *Bloquear)       ~/.config/theme/bloquear-bin ;;
-    *"Cerrar sesión") confirmar "cerrar sesión" && hyprctl dispatch 'hl.dsp.exit()' ;;
-    *Reiniciar)      confirmar "reiniciar" && systemctl reboot ;;
-    *Apagar)         confirmar "apagar" && systemctl poweroff ;;
+    *Suspender)      systemctl suspend ;;
+    *"Cerrar sesión") hyprctl dispatch 'hl.dsp.exit()' ;;
+    *Reiniciar)      systemctl reboot ;;
+    *Apagar)         systemctl poweroff ;;
 esac

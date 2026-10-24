@@ -9,7 +9,7 @@ local theme = dofile(os.getenv("HOME") .. "/.config/hypr/colors.lua")
 ---- MONITORS ----
 ------------------
 -- Pantalla de la laptop a 1:1; cualquier monitor externo, en automático.
-hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x0", scale = 1 })
+hl.monitor({ output = "eDP-1", disabled = false, mode = "preferred", position = "0x0", scale = 1 })
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
 
 ---------------------
@@ -196,7 +196,7 @@ hl.bind("switch:on:Lid Switch", function()
     hl.monitor({ output = "eDP-1", disabled = true })
 end, { locked = true })
 hl.bind("switch:off:Lid Switch", function()
-    hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x0", scale = 1 })
+    hl.monitor({ output = "eDP-1", disabled = false, mode = "preferred", position = "0x0", scale = 1 })
 end, { locked = true })
 
 --------------------------------

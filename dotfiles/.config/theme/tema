@@ -108,7 +108,7 @@ aplicar() {
         pkill -f blueman-applet 2>/dev/null || true
         pkill -x waybar 2>/dev/null || true
         (sleep 0.5; setsid -f waybar >/dev/null 2>&1; sleep 1; ~/.config/theme/avion-bin bandeja) &
-        notify-send -a tema "Tema: $modo" 2>/dev/null || true
+        [ -n "${TEMA_SIN_AVISO:-}" ] || notify-send -a tema "Tema: $modo" 2>/dev/null || true
     fi
     sed -i "s/^gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)/; s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$icons/; s/^gtk-theme-name=.*/gtk-theme-name=$gtk/; s/^gtk-cursor-theme-name=.*/gtk-cursor-theme-name=$cursor/" \
         "$C/gtk-3.0/settings.ini" "$C/gtk-4.0/settings.ini"

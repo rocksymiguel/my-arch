@@ -12,12 +12,21 @@ mkdir -p "$C"
 
 del_arranque() { grep -oE '\bmodo=[a-z]+' /proc/cmdline | cut -d= -f2 | head -n 1; }
 
+# Variables que deja un modo en el entorno de systemd y que confunden al siguiente
+# (p. ej. WAYLAND_DISPLAY=wayland-1 de Hyprland hace que Gamescope se abra "dentro" de él)
+limpiar_entorno() {
+    systemctl --user unset-environment WAYLAND_DISPLAY DISPLAY XAUTHORITY         HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE 2>/dev/null
+    unset WAYLAND_DISPLAY DISPLAY XAUTHORITY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP
+}
+
 escritorio() {
+    limpiar_entorno
     # La primera vez tras encender, el escritorio se abre bloqueado (inicio sin contraseña)
-    BLOQUEAR_AL_INICIO="${1:-0}" start-hyprland
+    BLOQUEAR_AL_INICIO="${1:-0}" XDG_SESSION_TYPE=wayland start-hyprland
 }
 
 juego() {
+    limpiar_entorno
     gamescope-session-plus steam
 }
 

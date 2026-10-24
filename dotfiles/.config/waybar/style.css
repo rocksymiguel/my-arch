@@ -90,6 +90,10 @@ window#waybar {
 }
 #custom-apagado {
     color: @err;
+    font-weight: 900;
+    font-size: 15px;
+    padding: 0 9px;
+    text-shadow: 0 0 1px @err, 0 0 1px @err, 0 0 1px @err;
 }
 #custom-ajustes:hover, #custom-apagado:hover {
     background: alpha(@accent, 0.25);

@@ -24,6 +24,7 @@ lanzar awww-daemon
 lanzar "$T/fondos-bin" demonio
 lanzar "$T/avion-bin" vigilar          # iconos de Wi-Fi/Bluetooth o avión
 lanzar feishin                         # escondido en special:musica; Super + F lo muestra
+lanzar steam -silent                   # arranca sólo en la bandeja, sin ventana
 lanzar wl-paste --type text --watch cliphist store
 lanzar wl-paste --type image --watch cliphist store
 
@@ -38,7 +39,7 @@ lanzar waybar
 # Fondo y tema (tema también reinicia la barra y la bandeja con los colores del modo)
 for _ in $(seq 1 20); do awww query >/dev/null 2>&1 && break; sleep 0.25; done
 waypaper --restore
-"$T/tema" "$("$T/tema" actual)"
+TEMA_SIN_AVISO=1 "$T/tema" "$("$T/tema" actual)"
 sleep 2
 pgrep -x waybar >/dev/null || lanzar waybar
 echo "inicio terminado"
