@@ -12,15 +12,15 @@ pgrep -x hypridle >/dev/null && pantalla="se apaga sola" || pantalla="siempre en
 energia_act="$(powerprofilesctl get 2>/dev/null)"
 
 op="$(printf '%s\n' \
-    "  Tema: $tema_act" \
+    "󰏘  Tema: $tema_act" \
     "󰂵  Vidrio: $vidrio_act" \
     "󰅶  Pantalla: $pantalla" \
     "󰸉  Fondo de pantalla" \
     "󰓅  Energía: $energia_act" \
-    "  Wi-Fi" \
+    "󰖩  Wi-Fi" \
     "󰂯  Bluetooth" \
     "󰕾  Sonido" \
-    | menu "  " 8)" || exit 0
+    | menu "󰒓  " 8)" || exit 0
 
 case "$op" in
     *Tema:*)

@@ -1,4 +1,4 @@
-// Barra en islas para Hyprland
+// Barra en islas para Hyprland (generada con iconos por código)
 {
     "layer": "top",
     "position": "top",
@@ -7,69 +7,87 @@
     "margin-left": 6,
     "margin-right": 6,
     "spacing": 6,
-
-    "modules-left": ["hyprland/workspaces", "mpris"],
-    "modules-center": ["clock", "custom/clima"],
-    "modules-right": ["group/sistema", "tray", "group/controles", "battery", "custom/ajustes", "custom/apagado"],
-
-    // Número del escritorio + iconos de las apps abiertas en él
+    "modules-left": [
+        "hyprland/workspaces",
+        "mpris"
+    ],
+    "modules-center": [
+        "clock",
+        "custom/clima"
+    ],
+    "modules-right": [
+        "group/sistema",
+        "tray",
+        "group/controles",
+        "battery",
+        "custom/ajustes",
+        "custom/apagado"
+    ],
     "hyprland/workspaces": {
         "format": "{name} {windows}",
         "format-window-separator": " ",
-        "window-rewrite-default": "",
         "window-rewrite": {
-            "class<kitty>": "",
+            "class<kitty>": "󰆍",
             "class<zen.*>": "󰈹",
-            "class<thunar>": "",
+            "class<thunar>": "󰉋",
             "class<feishin>": "󰝚",
             "class<org.pulseaudio.pavucontrol>": "󰕾",
             "class<blueman-manager>": "󰂯",
             "class<waypaper>": "󰸉",
-            "class<nwg-look>": ""
+            "class<nwg-look>": "󰏘"
         },
         "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
-        "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'"
+        "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
+        "persistent-workspaces": {
+            "*": 3
+        }
     },
-
-    // Música de cualquier app compatible (Feishin, Zen…); clic = pausa, clic derecho = abrir Feishin
     "mpris": {
         "format": "{player_icon} {artist} · {title}",
         "format-paused": "{status_icon} {artist} · {title}",
-        "player-icons": { "default": "󰝚", "feishin": "󰝚", "firefox": "󰈹", "zen": "󰈹" },
-        "status-icons": { "paused": "󰏤" },
+        "player-icons": {
+            "default": "󰝚",
+            "feishin": "󰝚",
+            "firefox": "󰈹",
+            "zen": "󰈹"
+        },
+        "status-icons": {
+            "paused": "󰏤"
+        },
         "max-length": 40,
         "on-click": "playerctl play-pause",
         "on-click-right": "feishin",
         "on-scroll-up": "playerctl next",
         "on-scroll-down": "playerctl previous"
     },
-
     "clock": {
         "format": "{:%H:%M · %a %d}",
         "format-alt": "{:%A %d de %B de %Y, %H:%M}",
         "locale": "es_EC.UTF-8",
         "tooltip-format": "<tt><small>{calendar}</small></tt>"
     },
-
-    // El tiempo en Daule (wttr.in), cada 30 min
     "custom/clima": {
         "exec": "~/.config/waybar/scripts/clima",
         "return-type": "json",
         "interval": 1800,
         "on-click": "xdg-open https://wttr.in/Daule?lang=es"
     },
-
     "group/sistema": {
         "orientation": "horizontal",
-        "modules": ["cpu", "memory", "temperature"]
+        "modules": [
+            "cpu",
+            "memory",
+            "temperature"
+        ]
     },
     "cpu": {
-        "format": " {usage}%",
+        "format": "󰻠 {usage}%",
         "interval": 5,
-        "on-click": "kitty -e btop"
+        "on-click": "kitty -e btop",
+        "tooltip-format": "Procesador: {usage}%"
     },
     "memory": {
-        "format": " {percentage}%",
+        "format": "󰍛 {percentage}%",
         "interval": 5,
         "tooltip-format": "{used:0.1f} de {total:0.1f} GiB",
         "on-click": "kitty -e btop"
@@ -78,63 +96,75 @@
         "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
         "input-filename": "temp1_input",
         "critical-threshold": 85,
-        "format": " {temperatureC}°",
-        "on-click": "kitty -e btop"
+        "format": "󰔏 {temperatureC}°",
+        "on-click": "kitty -e btop",
+        "tooltip-format": "Procesador: {temperatureC} °C"
     },
-
     "tray": {
         "spacing": 8
     },
-
     "group/controles": {
         "orientation": "horizontal",
-        "modules": ["backlight", "pulseaudio", "bluetooth", "network"]
+        "modules": [
+            "backlight",
+            "pulseaudio"
+        ]
     },
     "backlight": {
         "format": "{icon} {percent}%",
-        "format-icons": ["󰃞", "󰃟", "󰃠"],
+        "format-icons": [
+            "󰃞",
+            "󰃟",
+            "󰃠"
+        ],
         "on-scroll-up": "brightnessctl -e4 -n2 set 5%+",
-        "on-scroll-down": "brightnessctl -e4 -n2 set 5%-"
+        "on-scroll-down": "brightnessctl -e4 -n2 set 5%-",
+        "tooltip-format": "Brillo: {percent}%"
     },
     "pulseaudio": {
         "format": "{icon} {volume}%",
         "format-muted": "󰝟",
-        "format-icons": { "headphone": "", "default": ["", "", ""] },
+        "format-icons": {
+            "headphone": "󰋋",
+            "default": [
+                "󰕿",
+                "󰖀",
+                "󰕾"
+            ]
+        },
         "on-click": "pavucontrol",
-        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "tooltip-format": "Volumen: {volume}% · {desc}"
     },
-    "bluetooth": {
-        "format": "󰂯",
-        "format-off": "󰂲",
-        "format-connected": "󰂱 {num_connections}",
-        "tooltip-format-connected": "{device_enumerate}",
-        "tooltip-format-enumerate-connected": "{device_alias}",
-        "on-click": "blueman-manager"
-    },
-    "network": {
-        "format-wifi": " {signalStrength}%",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰤭",
-        "tooltip-format-wifi": "{essid} · {ipaddr}",
-        "on-click": "kitty -e nmtui"
-    },
-
     "battery": {
-        "states": { "warning": 30, "critical": 15 },
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
         "format": "{icon} {capacity}%",
         "format-charging": "󰂄 {capacity}%",
-        "format-plugged": " {capacity}%",
-        "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"]
+        "format-plugged": "󰚥 {capacity}%",
+        "format-icons": [
+            "󰁺",
+            "󰁼",
+            "󰁾",
+            "󰂀",
+            "󰁹"
+        ],
+        "tooltip-format": "Batería: {capacity}% · {timeTo}"
     },
-
     "custom/ajustes": {
-        "format": "",
+        "format": "{}",
         "tooltip-format": "Ajustes",
-        "on-click": "~/.config/waybar/scripts/menu-ajustes"
+        "on-click": "~/.config/waybar/scripts/menu-ajustes",
+        "exec": "echo '󰒓'",
+        "interval": "once"
     },
     "custom/apagado": {
-        "format": "",
+        "format": "{}",
         "tooltip-format": "Apagar, reiniciar, bloquear…",
-        "on-click": "~/.config/waybar/scripts/menu-apagado"
+        "on-click": "~/.config/waybar/scripts/menu-apagado",
+        "exec": "echo '󰐥'",
+        "interval": "once"
     }
 }

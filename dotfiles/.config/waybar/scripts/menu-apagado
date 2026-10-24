@@ -2,7 +2,7 @@
 # Menú de apagado en fuzzel: bloquear, cerrar sesión, reiniciar, apagar.
 menu() { fuzzel --dmenu --prompt "$1" --lines "$2" --width 24; }
 
-op="$(printf '%s\n' "󰌾  Bloquear" "󰍃  Cerrar sesión" "󰜉  Reiniciar" "󰐥  Apagar" | menu "  " 4)" || exit 0
+op="$(printf '%s\n' "󰌾  Bloquear" "󰍃  Cerrar sesión" "󰜉  Reiniciar" "󰐥  Apagar" | menu "󰐥  " 4)" || exit 0
 
 confirmar() {
     [ "$(printf '%s\n' "No" "Sí, $1" | menu "¿$1? " 2)" = "Sí, $1" ]

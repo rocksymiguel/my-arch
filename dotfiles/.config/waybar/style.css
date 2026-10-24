@@ -65,14 +65,14 @@ window#waybar {
 }
 
 #cpu, #memory, #temperature,
-#backlight, #pulseaudio, #bluetooth, #network {
+#backlight, #pulseaudio {
     padding: 0 6px;
 }
 #temperature.critical {
     color: @err;
 }
 
-#pulseaudio.muted, #network.disconnected, #bluetooth.off {
+#pulseaudio.muted {
     color: @muted;
 }
 
