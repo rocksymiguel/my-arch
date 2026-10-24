@@ -1,19 +1,26 @@
 #!/bin/bash
 # Activa plymouth (animación de arranque) o cambia su tema.
-# Uso: sudo bash ~/my-arch/install/plymouth.sh [tema]   (por defecto arch-logo)
+# Uso: sudo bash ~/my-arch/install/plymouth.sh [tema]   (por defecto connect)
 set -euo pipefail
 [ "$(id -u)" -eq 0 ] || { echo "Ejecuta con: sudo bash ~/my-arch/install/plymouth.sh [tema]"; exit 1; }
-TEMA="${1:-arch-logo}"
+TEMA="${1:-connect}"
 echo "Temas instalados: $(plymouth-set-default-theme -l | tr '\n' ' ')"
 if ! plymouth-set-default-theme -l | grep -qx "$TEMA"; then
-    TEMA="$(plymouth-set-default-theme -l | grep -m1 -i "^${1:-arch-logo}" || true)"
-    [ -n "$TEMA" ] || { echo "No encuentro el tema ${1:-arch-logo}"; exit 1; }
+    TEMA="$(plymouth-set-default-theme -l | grep -m1 -i "^${1:-connect}" || true)"
+    [ -n "$TEMA" ] || { echo "No encuentro el tema ${1:-connect}"; exit 1; }
 fi
 
 echo "==> Hook de plymouth en el arranque (después de systemd)"
 grep -qE '^HOOKS=.*\bplymouth\b' /etc/mkinitcpio.conf || \
     sed -i -E 's/^(HOOKS=\(base systemd)/\1 plymouth/' /etc/mkinitcpio.conf
 grep -E '^HOOKS' /etc/mkinitcpio.conf
+
+echo "==> Cargar el driver de la gráfica al principio (la animación aparece antes)"
+GPU="$(lspci -k 2>/dev/null | grep -A3 -iE 'vga|3d|display' | awk '/Kernel driver in use/ {print $5; exit}')"
+if [ -n "$GPU" ] && ! grep -qE "^MODULES=.*\b$GPU\b" /etc/mkinitcpio.conf; then
+    sed -i -E "s/^MODULES=\((.*)\)/MODULES=(\1 $GPU)/; s/^MODULES=\( /MODULES=(/" /etc/mkinitcpio.conf
+fi
+grep -E '^MODULES' /etc/mkinitcpio.conf
 
 echo "==> quiet splash en las entradas de systemd-boot"
 for e in /boot/loader/entries/arch*.conf; do

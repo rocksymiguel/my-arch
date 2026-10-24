@@ -3,8 +3,8 @@ nordic-polar-theme
 nordic-theme
 papirus-folders
 paru
-plymouth-theme-arch-charge-big
-plymouth-theme-arch-logo
+plymouth-theme-connect-git
+plymouth-theme-hexagon-dots-alt-git
 vesktop-bin
 waypaper
 zen-browser-bin
