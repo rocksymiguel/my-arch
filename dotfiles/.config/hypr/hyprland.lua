@@ -74,7 +74,7 @@ hl.config({
         },
         resize_on_border = true,
         allow_tearing = false,
-        layout = leer_modo("mosaico", "dwindle"),
+        layout = leer_modo("mosaico", "scrolling"),
     },
     decoration = {
         rounding       = 10,
@@ -102,7 +102,7 @@ hl.config({
 })
 
 -- Animaciones: el modo lo elige `animacion` (defecto, deslizar, rebote, rapidas, ninguna)
-dofile(os.getenv("HOME") .. "/.config/hypr/animaciones/" .. leer_modo("anim", "defecto") .. ".lua")
+dofile(os.getenv("HOME") .. "/.config/hypr/animaciones/" .. leer_modo("anim", "rebote") .. ".lua")
 
 hl.config({
     dwindle = {
