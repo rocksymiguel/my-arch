@@ -52,6 +52,7 @@ case "${1:-}" in
             min="$(cat "$INTERVALO" 2>/dev/null || echo 0)"
             [[ "$min" =~ ^[0-9]+$ ]] || min=0
             if [ "$min" -eq 0 ]; then pasado=0; continue; fi
+            pidof hyprlock >/dev/null && continue   # bloqueada: el tiempo se congela
             pasado=$((pasado + 30))
             if [ "$pasado" -ge $((min * 60)) ]; then pasado=0; siguiente || true; fi
         done ;;

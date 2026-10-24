@@ -26,7 +26,7 @@ esac
 {
     echo "# Generado por \`inactividad\`. No editar: usa Ajustes → Inactividad."
     echo "general {"
-    echo "    lock_cmd = pidof hyprlock || hyprlock"
+    echo "    lock_cmd = ~/.config/theme/bloquear-bin"
     echo "    before_sleep_cmd = loginctl lock-session"
     echo "    after_sleep_cmd = hyprctl dispatch 'hl.dsp.dpms({action = \"on\"})'"
     echo "}"

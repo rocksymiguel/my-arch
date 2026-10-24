@@ -71,21 +71,24 @@ aplicar() {
     renderizar "$colores" "$T/templates/waybar-colors.css"   "$C/waybar/colors.css"
     renderizar "$colores" "$T/templates/kitty-colors.conf"   "$C/kitty/colors.conf"
     renderizar "$colores" "$T/templates/fuzzel.ini"          "$C/fuzzel/fuzzel.ini"
-    renderizar "$colores" "$T/templates/mako-config"         "$C/mako/config"
+    mkdir -p "$C/swaync"
+    renderizar "$colores" "$T/templates/swaync.css"          "$C/swaync/style.css"
 
-    local scheme icons
+    local scheme icons gtk
     scheme="$(sed -n 's/^scheme=//p' "$colores")"
     icons="$(sed -n 's/^icons=//p' "$colores")"
+    gtk="$(sed -n 's/^gtk=//p' "$colores")"
     echo "$modo" > "$ESTADO"
 
     # Recargar lo que esté abierto (si no hay sesión gráfica, no pasa nada)
     if [ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || ls /run/user/"$(id -u)"/hypr/* >/dev/null 2>&1; then
         poner_fondo "$modo"
         hyprctl reload >/dev/null 2>&1 || true
-        makoctl reload 2>/dev/null || true
+        swaync-client -rs >/dev/null 2>&1 || true
         pkill -SIGUSR1 -x kitty 2>/dev/null || true
         gsettings set org.gnome.desktop.interface color-scheme "prefer-$scheme" 2>/dev/null || true
         gsettings set org.gnome.desktop.interface icon-theme "$icons" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface gtk-theme "$gtk" 2>/dev/null || true
         # Iconos de la bandeja (Wi-Fi, Bluetooth) con los iconos del modo nuevo
         pkill -x nm-applet 2>/dev/null || true
         pkill -f blueman-applet 2>/dev/null || true
@@ -93,7 +96,7 @@ aplicar() {
         (sleep 0.5; setsid -f waybar >/dev/null 2>&1; sleep 1; setsid -f nm-applet --indicator >/dev/null 2>&1; setsid -f blueman-applet >/dev/null 2>&1) &
         notify-send -a tema "Tema: $modo" 2>/dev/null || true
     fi
-    sed -i "s/^gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)/; s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$icons/" \
+    sed -i "s/^gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)/; s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$icons/; s/^gtk-theme-name=.*/gtk-theme-name=$gtk/" \
         "$C/gtk-3.0/settings.ini" "$C/gtk-4.0/settings.ini"
     echo "Tema: $modo"
 }

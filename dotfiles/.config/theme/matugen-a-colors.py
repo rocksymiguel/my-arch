@@ -40,6 +40,7 @@ valores = {
     "ansi_white": c("on_surface_variant", "e5e9f0"),
     "scheme": "dark",
     "icons": "Papirus-Dark",
+    "gtk": "Nordic",
 }
 
 print("# Generado por matugen a partir del fondo actual")

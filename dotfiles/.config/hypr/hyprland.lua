@@ -26,7 +26,7 @@ local browser     = "zen-browser"
 hl.on("hyprland.start", function()
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("waybar")
-    hl.exec_cmd("mako")
+    hl.exec_cmd("swaync")
     hl.exec_cmd("~/.config/theme/inactividad-bin; hypridle")
     hl.exec_cmd("~/.config/theme/fondos-bin demonio")
     hl.exec_cmd("feishin") -- escondido en special:musica; Super + F lo muestra
@@ -157,7 +157,7 @@ hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 
 -- Bloquear, fondos y portapapeles
-hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("loginctl lock-session"))
+hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("~/.config/theme/bloquear-bin"))
 hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("waypaper"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"))
 
@@ -237,7 +237,7 @@ hl.window_rule({
 -- Efecto vidrio en la barra, el lanzador y las notificaciones
 hl.layer_rule({
     name  = "glass-layers",
-    match = { namespace = "^(waybar|launcher|notifications)$" },
+    match = { namespace = "^(waybar|launcher|swaync-control-center|swaync-notification-window)$" },
     blur  = true,
     ignore_alpha = 0.2,
 })

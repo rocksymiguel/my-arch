@@ -21,6 +21,7 @@ window#waybar {
 #tray,
 #controles,
 #battery,
+#custom-notificaciones,
 #custom-ajustes,
 #custom-apagado {
     background: @bar_bg;
@@ -92,4 +93,11 @@ window#waybar {
 }
 #custom-ajustes:hover, #custom-apagado:hover {
     background: alpha(@accent, 0.25);
+}
+
+#custom-notificaciones.notification, #custom-notificaciones.inhibited-notification {
+    color: @accent;
+}
+#custom-notificaciones.dnd-none, #custom-notificaciones.dnd-notification {
+    color: @muted;
 }

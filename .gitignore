@@ -6,5 +6,5 @@ dotfiles/.config/hypr/colors-hyprlock.conf
 dotfiles/.config/waybar/colors.css
 dotfiles/.config/kitty/colors.conf
 dotfiles/.config/fuzzel/fuzzel.ini
-dotfiles/.config/mako/config
+dotfiles/.config/swaync/style.css
 dotfiles/.config/hypr/hypridle.conf

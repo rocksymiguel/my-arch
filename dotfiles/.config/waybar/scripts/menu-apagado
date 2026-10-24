@@ -10,7 +10,7 @@ confirmar() {
 }
 
 case "$op" in
-    *Bloquear)       loginctl lock-session ;;
+    *Bloquear)       ~/.config/theme/bloquear-bin ;;
     *"Cerrar sesión") confirmar "cerrar sesión" && hyprctl dispatch 'hl.dsp.exit()' ;;
     *Reiniciar)      confirmar "reiniciar" && systemctl reboot ;;
     *Apagar)         confirmar "apagar" && systemctl poweroff ;;

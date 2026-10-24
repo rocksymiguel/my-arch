@@ -1,0 +1,85 @@
+/* Generado por tema. No editar: cambia los archivos de ~/.config/theme/templates */
+@define-color bg #{{bg}};
+@define-color surface #{{surface}};
+@define-color surface_hi #{{surface_hi}};
+@define-color text #{{text}};
+@define-color muted #{{muted}};
+@define-color accent #{{accent}};
+@define-color accent2 #{{accent2}};
+@define-color err #{{err}};
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 11px;
+}
+
+/* Cada notificación */
+.notification-row { outline: none; }
+.notification {
+    background: alpha(@bg, {{bar_alpha}});
+    border: 2px solid @accent;
+    border-radius: 10px;
+    margin: 4px 6px;
+    padding: 0;
+}
+.notification.critical { border-color: @err; }
+.notification-content { padding: 8px; }
+.summary { color: @text; font-weight: bold; font-size: 12px; }
+.time { color: @muted; }
+.body { color: @text; }
+.notification-default-action, .notification-action {
+    background: transparent;
+    color: @text;
+    border: none;
+    border-radius: 10px;
+}
+.notification-default-action:hover, .notification-action:hover { background: alpha(@text, 0.08); }
+.close-button {
+    background: @surface_hi;
+    color: @text;
+    border-radius: 99px;
+    margin: 6px;
+    min-width: 20px;
+    min-height: 20px;
+}
+.close-button:hover { background: @err; color: @bg; }
+
+/* Centro de notificaciones */
+.control-center {
+    background: alpha(@bg, {{bar_alpha}});
+    border: 2px solid @accent;
+    border-radius: 12px;
+    color: @text;
+}
+.control-center-list { background: transparent; }
+.widget-title { margin: 8px 10px 4px; font-size: 14px; color: @text; }
+.widget-title > button {
+    background: @surface_hi;
+    color: @text;
+    border: none;
+    border-radius: 8px;
+    padding: 2px 10px;
+}
+.widget-title > button:hover { background: @err; color: @bg; }
+.widget-dnd { margin: 4px 10px; color: @text; }
+.widget-dnd > switch { background: @surface_hi; border-radius: 99px; }
+.widget-dnd > switch:checked { background: @accent; }
+.widget-dnd > switch slider { background: @text; border-radius: 99px; }
+.widget-mpris { margin: 4px 10px; }
+.widget-mpris-player {
+    background: alpha(@surface, 0.8);
+    border-radius: 10px;
+    padding: 8px;
+}
+.widget-mpris-title { color: @text; font-weight: bold; }
+.widget-mpris-subtitle { color: @muted; }
+.widget-volume, .widget-backlight {
+    margin: 2px 10px;
+    padding: 4px 8px;
+    background: alpha(@surface, 0.8);
+    border-radius: 10px;
+    color: @accent;
+}
+trough { background: @surface_hi; border-radius: 99px; min-height: 6px; }
+highlight { background: @accent; border-radius: 99px; }
+slider { background: @text; border-radius: 99px; min-width: 12px; min-height: 12px; }

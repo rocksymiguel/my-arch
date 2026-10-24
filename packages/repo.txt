@@ -55,6 +55,7 @@ qt6-wayland
 reflector
 slurp
 sudo
+swaync
 thunar
 ttf-jetbrains-mono-nerd
 tumbler

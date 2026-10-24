@@ -3,6 +3,7 @@
 CIUDAD="Daule"
 corto="$(curl -sf --max-time 8 "https://wttr.in/${CIUDAD}?format=%c%t&lang=es" | tr -s ' ')"
 largo="$(curl -sf --max-time 8 "https://wttr.in/${CIUDAD}?format=%C,+%t+(sensación+%f),+humedad+%h,+viento+%w&lang=es")"
+if [ "${1:-}" = "texto" ]; then echo "$corto"; exit 0; fi
 if [ -z "$corto" ]; then
     echo '{"text": "", "tooltip": "Sin datos del tiempo"}'
     exit 0

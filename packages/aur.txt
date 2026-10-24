@@ -1,4 +1,6 @@
 bibata-cursor-theme-bin
+nordic-polar-theme
+nordic-theme
 paru
 waypaper
 zen-browser-bin

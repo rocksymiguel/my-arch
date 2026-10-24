@@ -1,0 +1,9 @@
+#!/bin/bash
+# Bloquea la pantalla con hyprlock usando el fondo actual (desenfocado por hyprlock).
+# Lo llaman Super + L, el menú de apagado y la inactividad (lock_cmd de hypridle).
+pidof hyprlock >/dev/null && exit 0
+C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+mkdir -p "$C"
+fondo="$(awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1)"
+[ -f "$fondo" ] && ln -sf "$fondo" "$C/fondo-bloqueo"
+exec hyprlock
