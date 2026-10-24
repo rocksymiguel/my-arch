@@ -17,11 +17,9 @@ enlazar() {
     echo "$destino -> $origen"
 }
 
-for d in "$R"/dotfiles/.config/*/; do
-    d="${d%/}"
+for d in "$R"/dotfiles/.config/*; do
     enlazar "$d" "$HOME/.config/$(basename "$d")"
 done
-enlazar "$R/dotfiles/.bashrc" "$HOME/.bashrc"
 enlazar "$R/dotfiles/.icons/default/index.theme" "$HOME/.icons/default/index.theme"
 
 # Apps escondidas del lanzador (NoDisplay)

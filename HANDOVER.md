@@ -32,9 +32,9 @@ Arch mínimo (systemd-boot, `linux` y `linux-lts`, zram, NetworkManager, PipeWir
 
 ## Repositorio de dotfiles
 
-`~/my-arch` en la Lenovo, subido a GitHub como **privado** en https://github.com/rocksymiguel/my-arch (remote SSH, `gh` con sesión en la Lenovo y en este PC). Las carpetas `~/.config/{hypr,waybar,kitty,rofi,swaync,waypaper,gtk-3.0,gtk-4.0,theme}` y `~/.bashrc` son **enlaces** a `~/my-arch/dotfiles`. Hay que editar ahí, hacer **commit y push** después de cada cambio aprobado, y actualizar el README cuando haga falta. Los archivos generados (colors.*, rofi/colors.rasi, swaync/style.css, hypridle.conf) están en `.gitignore`.
+`~/my-arch` en la Lenovo, subido a GitHub como **privado** en https://github.com/rocksymiguel/my-arch (remote SSH, `gh` con sesión en la Lenovo y en este PC). Las carpetas `~/.config/{hypr,waybar,kitty,rofi,swaync,waypaper,gtk-3.0,gtk-4.0,theme}` son **enlaces** a `~/my-arch/dotfiles`. Hay que editar ahí, hacer **commit y push** después de cada cambio aprobado, y actualizar el README cuando haga falta. Los archivos generados (colors.*, rofi/colors.rasi, swaync/style.css, hypridle.conf) están en `.gitignore`.
 
-Comandos propios (alias en `.bashrc`, scripts en `~/.config/theme/`):
+Comandos propios (alias en scripts en `~/.config/theme/`):
 
 | Comando | Qué hace |
 |---|---|
@@ -91,7 +91,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | 15 | Thunar | ✅ Comprimir/extraer, miniaturas de vídeo, "Abrir terminal aquí" |
 | 16 | fastfetch | ✅ Mightyena (logo.png generado con PIL) y datos esenciales, al abrir kitty |
 | 17 | btop | ✅ Tema Nord |
-| 18 | Prompt | ⏳ starship con 4 estilos (`prompt`); el usuario elige y se borran los demás |
+| 18 | Prompt | ✅ starship de una línea, con línea en blanco entre comandos |
 | A | matugen | ✅ Hecho (tema dinámico) |
 | B | Avisos de volumen y brillo | ✅ Con swaync (`osd-bin`); que salgan bajo su isla → lista de deseos de Quickshell |
 | C | Menú de apagado | ✅ Hecho (rofi) |

@@ -5,7 +5,6 @@ set -gx EDITOR nano
 set -gx VISUAL nano
 set -gx BAT_THEME ansi                        # bat usa los colores del tema de kitty
 set -gx FZF_DEFAULT_OPTS "--color=16 --height=40% --layout=reverse --border=rounded"
-set -gx STARSHIP_CONFIG "$HOME/.cache/theme/starship.toml"
 
 # Comandos propios del escritorio
 alias tema       "~/.config/theme/tema"
@@ -13,7 +12,6 @@ alias vidrio     "~/.config/theme/vidrio-bin"
 alias inactividad "~/.config/theme/inactividad-bin"
 alias fondos     "~/.config/theme/fondos-bin"
 alias musica     "~/.config/theme/musica-bin"
-alias prompt     "~/.config/theme/prompt-bin"
 alias hypr       "start-hyprland"
 
 # Herramientas modernas
@@ -24,7 +22,10 @@ alias tree "eza --icons --tree"
 alias cat "bat --paging=never"
 
 if status is-interactive
-    starship init fish | source
+    # En la TTY (sin iconos ni colores ricos) prompt sencillo; en kitty, starship
+    if test "$TERM" != linux
+        starship init fish | source
+    end
     zoxide init fish | source                 # z <carpeta>: cd inteligente
     fzf --fish | source                       # Ctrl+R historial, Ctrl+T archivos
 

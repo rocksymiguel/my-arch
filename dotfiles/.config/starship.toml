@@ -1,5 +1,5 @@
-# Una línea: carpeta, git y la flecha
-add_newline = false
+# Prompt de una línea: carpeta, rama de git, duración (si tardó más de 2 s) y la flecha
+add_newline = true   # una línea en blanco entre un comando y el siguiente
 format = "$directory$git_branch$git_status$cmd_duration$character"
 
 [directory]

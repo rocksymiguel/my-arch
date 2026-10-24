@@ -6,7 +6,7 @@ Mi instalación de Arch Linux con Hyprland: listas de paquetes, dotfiles y guía
 
 | Carpeta | Qué hay |
 |---|---|
-| `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`, `waypaper`, `gtk-3.0`, `gtk-4.0`, `~/.bashrc`, cursor) |
+| `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`, `waypaper`, `gtk-3.0`, `gtk-4.0`, cursor) |
 | `packages/repo.txt` | Paquetes de los repositorios oficiales instalados a mano |
 | `packages/aur.txt` | Paquetes del AUR |
 | `install/` | Guía de instalación manual (por ahora). Más adelante: `install.sh` único con módulos `iso`, `base`, `hardware/amd`, `hardware/nvidia`, `hyprland` |
@@ -87,11 +87,9 @@ musica                          # Super + F: mostrar/esconder Feishin
 
 ## Terminal
 
-kitty usa **fish** (la TTY sigue con bash). Prompt con **starship** y fastfetch al abrir.
+**fish** es la shell del usuario (TTY y kitty); bash queda solo para los scripts. Prompt de una línea con **starship** (`~/.config/starship.toml`) y fastfetch al abrir.
 
 ```bash
-prompt                 # estilo activo y disponibles
-prompt dos-lineas      # una-linea | dos-lineas | islas | minimo
 ls / ll / la / tree    # eza con iconos
 cat archivo            # bat con colores
 z carpeta              # zoxide: cd inteligente
