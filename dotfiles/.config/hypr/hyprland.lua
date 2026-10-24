@@ -224,7 +224,7 @@ hl.window_rule({
 -- Ventanas pequeñas que van mejor flotando
 hl.window_rule({
     name  = "float-tools",
-    match = { class = "^(org.pulseaudio.pavucontrol|blueman-manager|nm-connection-editor|waypaper|nwg-look)$" },
+    match = { class = "^(org.pulseaudio.pavucontrol|blueman-manager|nm-connection-editor|waypaper)$" },
     float = true,
 })
 

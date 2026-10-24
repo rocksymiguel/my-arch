@@ -4,7 +4,6 @@ nordic-theme
 papirus-folders
 paru
 plymouth-theme-connect-git
-plymouth-theme-hexagon-dots-alt-git
 vesktop-bin
 waypaper
 zen-browser-bin

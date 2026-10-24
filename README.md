@@ -110,5 +110,5 @@ La isla de música muestra barritas de **cava** (`theme/cava-bin`) mientras suen
 Animación con plymouth. Cambiar de tema (regenera el arranque):
 
 ```bash
-sudo bash ~/my-arch/install/plymouth.sh connect      # o hexagon_dots_alt
+sudo bash ~/my-arch/install/plymouth.sh connect
 ```

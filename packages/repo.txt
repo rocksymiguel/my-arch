@@ -2,7 +2,6 @@ amd-ucode
 awww
 base
 base-devel
-bash-completion
 bat
 blueman
 bluez
@@ -46,7 +45,6 @@ networkmanager
 noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
-nwg-look
 openssh
 pacman-contrib
 papirus-icon-theme
@@ -58,7 +56,6 @@ playerctl
 plymouth
 power-profiles-daemon
 python-gobject
-qt5-wayland
 qt6-wayland
 reflector
 rofi

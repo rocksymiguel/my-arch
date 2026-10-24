@@ -36,8 +36,7 @@
             "class<feishin>": "󰝚",
             "class<org.pulseaudio.pavucontrol>": "󰕾",
             "class<blueman-manager>": "󰂯",
-            "class<waypaper>": "󰸉",
-            "class<nwg-look>": "󰏘"
+            "class<waypaper>": "󰸉"
         },
         "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
         "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
