@@ -1,0 +1,27 @@
+#!/bin/bash
+# Abre rofi con el ancho justo para el nombre de app más largo que haya en ese momento.
+# (Super + Espacio). Cuenta las apps visibles: las de /usr/share/applications y
+# ~/.local/share/applications, sin las escondidas (NoDisplay o Hidden).
+CHAR=8      # píxeles por carácter (JetBrains Mono Nerd 10)
+EXTRA=74    # icono, márgenes, borde y relleno
+MIN=220
+
+declare -A vistas
+for dir in /usr/share/applications "$HOME/.local/share/applications"; do
+    for f in "$dir"/*.desktop; do
+        [ -e "$f" ] || continue
+        id="$(basename "$f")"
+        if grep -qiE '^(NoDisplay|Hidden)=true' "$f"; then vistas[$id]=""; continue; fi
+        n="$(grep -m1 '^Name\[es\]=' "$f" | cut -d= -f2-)"
+        [ -n "$n" ] || n="$(grep -m1 '^Name=' "$f" | cut -d= -f2-)"
+        vistas[$id]="$n"
+    done
+done
+
+largo=0
+for n in "${vistas[@]}"; do [ ${#n} -gt $largo ] && largo=${#n}; done
+ancho=$(( largo * CHAR + EXTRA ))
+[ $ancho -lt $MIN ] && ancho=$MIN
+
+pkill -x rofi 2>/dev/null && exit 0   # si ya estaba abierto, Super + Espacio lo cierra
+exec rofi -show drun -theme-str "window { width: ${ancho}px; }"

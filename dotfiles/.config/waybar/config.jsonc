@@ -17,7 +17,7 @@
     ],
     "modules-right": [
         "group/sistema",
-        "tray",
+        "group/conexion",
         "group/controles",
         "battery",
         "custom/notificaciones",
@@ -187,5 +187,20 @@
         "on-click": "swaync-client -t -sw",
         "on-click-right": "swaync-client -d -sw",
         "escape": true
+    },
+    "group/conexion": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/avion",
+            "tray"
+        ]
+    },
+    "custom/avion": {
+        "exec": "~/.config/theme/avion-bin estado",
+        "interval": "once",
+        "signal": 9,
+        "tooltip": false,
+        "on-click": "rfkill unblock all",
+        "return-type": "json"
     }
 }

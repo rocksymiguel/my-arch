@@ -17,7 +17,7 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" 
 ---------------------
 local terminal    = "kitty"
 local fileManager = "thunar"
-local menu        = "rofi -show drun"
+local menu        = "~/.config/theme/lanzador-bin"
 local browser     = "zen-browser"
 
 -------------------
@@ -31,8 +31,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("~/.config/theme/fondos-bin demonio")
     hl.exec_cmd("feishin") -- escondido en special:musica; Super + F lo muestra
     hl.exec_cmd("awww-daemon")
-    hl.exec_cmd("nm-applet --indicator")
-    hl.exec_cmd("blueman-applet")
+    hl.exec_cmd("~/.config/theme/avion-bin vigilar") -- iconos de Wi-Fi/Bluetooth o avión
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
     hl.exec_cmd("sleep 1 && waypaper --restore")

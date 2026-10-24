@@ -61,6 +61,9 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 - **Apariencia:** GTK Nordic (oscuro) y Nordic-Polar (claro); carpetas en gris azulado u nordic (copia de Papirus en `~/.local/share/icons`, papirus-folders sin sudo), todo cambiado por `tema`. kitty con cursor de línea parpadeante y pestañas powerline. Zen con tema Nord (lo puso el usuario). Cursor por modo: Bibata Modern Ice en oscuro y Classic en claro (lo cambia `tema`). Las otras variantes de Bibata no se instalan (NoExtract en /etc/pacman.conf).
 - **Feishin** (repo extra): arranca escondido. El usuario desactivó "Show tray". Su música está en Navidrome, en el NAS.
 
+- **Modo avión:** `avion-bin vigilar` (arranca con Hyprland) escucha `rfkill event`; con el modo avión activo cierra nm-applet y blueman-applet y la isla `group/conexion` muestra solo el avión; al desactivarlo los vuelve a abrir. Ojo: en la sesión `rfkill` sale en español, por eso usa `LC_ALL=C`; usa un PID (no flock) porque los applets heredarían el candado.
+- **Lanzador:** `lanzador-bin` (Super + Espacio) calcula el ancho de rofi según el nombre de app visible más largo (8 px por carácter + 74). Otra vez Super + Espacio lo cierra.
+
 ## Problemas conocidos o decisiones
 
 - **El clic en los escritorios de waybar no funciona:** waybar 0.15 manda `dispatch workspace N` y Hyprland en Lua lo rechaza (Waybar #5008, arreglado pero sin publicar). El usuario **decidió no instalar waybar-git** y esperar a la versión oficial. Mientras tanto, usa Super + número.

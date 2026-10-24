@@ -1,0 +1,52 @@
+#!/bin/bash
+# Modo avión en la barra: con el modo avión activado, la isla de conexión muestra solo un
+# avión (se cierran los iconos de Wi-Fi y Bluetooth); al desactivarlo, vuelven los dos.
+#   avion activo     -> sale con 0 si el modo avión está activado
+#   avion estado     -> JSON para waybar (el avión o nada)
+#   avion bandeja    -> abre o cierra los iconos de Wi-Fi y Bluetooth según el estado
+#   avion vigilar    -> se queda escuchando cambios (lo arranca Hyprland)
+
+# Modo avión = todas las radios Wi-Fi bloqueadas
+activo() {
+    local wlan
+    wlan="$(LC_ALL=C rfkill -rno TYPE,SOFT,HARD | awk '$1 == "wlan"')"
+    [ -n "$wlan" ] && ! grep -q "unblocked unblocked" <<< "$wlan"
+}
+
+bandeja() {
+    if activo; then
+        pkill -x nm-applet 2>/dev/null
+        pkill -f blueman-applet 2>/dev/null
+    else
+        pgrep -x nm-applet >/dev/null || setsid -f nm-applet --indicator >/dev/null 2>&1
+        pgrep -f blueman-applet >/dev/null || setsid -f blueman-applet >/dev/null 2>&1
+    fi
+    pkill -RTMIN+9 -x waybar 2>/dev/null
+}
+
+case "${1:-}" in
+    activo) activo ;;
+    estado) if activo; then echo '{"text": "󰀝", "class": "on"}'; else echo '{"text": "", "class": "off"}'; fi ;;
+    bandeja) bandeja ;;
+    vigilar)
+        # Una sola copia: PID en ~/.cache/theme/avion.pid
+        PIDF="${XDG_CACHE_HOME:-$HOME/.cache}/theme/avion.pid"
+        viejo="$(cat "$PIDF" 2>/dev/null)"
+        [ -n "$viejo" ] && grep -q "avion-bin" "/proc/$viejo/cmdline" 2>/dev/null && exit 0
+        echo $$ > "$PIDF"
+        antes="$(activo && echo si || echo no)"
+        bandeja
+        LC_ALL=C rfkill event | while read -r _; do
+            sleep 0.4
+            ahora="$(activo && echo si || echo no)"
+            [ "$ahora" = "$antes" ] && continue
+            antes="$ahora"
+            bandeja
+            if [ "$ahora" = si ]; then
+                notify-send -a osd -u normal -t 1500 "󰀝  Modo avión activado"
+            else
+                notify-send -a osd -u normal -t 1500 "󰀞  Modo avión desactivado"
+            fi
+        done ;;
+    *) sed -n '2,8p' "$0" | sed 's/^# //'; exit 1 ;;
+esac

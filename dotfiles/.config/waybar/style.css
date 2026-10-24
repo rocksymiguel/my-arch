@@ -18,7 +18,7 @@ window#waybar {
 #clock,
 #custom-clima,
 #sistema,
-#tray,
+#conexion,
 #controles,
 #battery,
 #custom-notificaciones,
@@ -100,4 +100,14 @@ window#waybar {
 }
 #custom-notificaciones.dnd-none, #custom-notificaciones.dnd-notification {
     color: @muted;
+}
+
+#custom-avion {
+    color: @warn;
+    padding: 0 4px;
+}
+#custom-avion.off {
+    padding: 0;
+    margin: 0;
+    min-width: 0;
 }
