@@ -1,0 +1,21 @@
+#!/bin/bash
+# Cambia la transparencia y el desenfoque del escritorio.
+#   vidrio            -> muestra el modo activo y los disponibles
+#   vidrio <modo>     -> sutil | fuerte | inactivas | total | oscurecer
+set -euo pipefail
+
+T="$HOME/.config/theme"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+mkdir -p "$CACHE"
+
+if [ $# -eq 0 ]; then
+    echo "Activo: $(sed -n 's/^glass=//p' "$CACHE/glass" 2>/dev/null || echo sutil)"
+    echo "Modos:  $(ls "$T/vidrio" | sed 's/\.glass$//' | tr '\n' ' ')"
+    exit 0
+fi
+
+P="$T/vidrio/$1.glass"
+[ -f "$P" ] || { echo "Modo desconocido: $1" >&2; "$0"; exit 1; }
+cp "$P" "$CACHE/glass"
+"$T/tema" "$("$T/tema" actual)" >/dev/null
+echo "Vidrio: $1"

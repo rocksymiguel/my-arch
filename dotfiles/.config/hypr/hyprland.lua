@@ -70,8 +70,10 @@ hl.config({
     decoration = {
         rounding       = 10,
         rounding_power = 2,
-        active_opacity   = 1.0,
-        inactive_opacity = 1.0,
+        active_opacity   = theme.win_active,
+        inactive_opacity = theme.win_inactive,
+        dim_inactive     = theme.dim,
+        dim_strength     = theme.dim_strength,
         shadow = {
             enabled      = true,
             range        = 4,
@@ -80,8 +82,8 @@ hl.config({
         },
         blur = {
             enabled   = true,
-            size      = 6,
-            passes    = 3,
+            size      = theme.blur_size,
+            passes    = theme.blur_passes,
             vibrancy  = 0.1696,
             noise     = 0.02,
             popups    = true,

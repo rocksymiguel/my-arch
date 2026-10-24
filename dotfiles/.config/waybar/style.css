@@ -8,7 +8,7 @@
 }
 
 window#waybar {
-    background: alpha(@bg, 0.7);
+    background: @bar_bg;
     color: @text;
 }
 

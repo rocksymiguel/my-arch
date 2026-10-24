@@ -10,3 +10,4 @@
 @define-color ok #{{ok}};
 @define-color warn #{{warn}};
 @define-color err #{{err}};
+@define-color bar_bg alpha(#{{bg}}, {{bar_alpha}});

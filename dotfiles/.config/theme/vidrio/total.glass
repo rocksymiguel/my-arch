@@ -1,0 +1,11 @@
+glass=total
+blur_size=8
+blur_passes=4
+win_active=0.9
+win_inactive=0.78
+dim=false
+dim_strength=0.0
+term_alpha=0.7
+bar_alpha=0.55
+menu_hex=b3
+notif_hex=bf

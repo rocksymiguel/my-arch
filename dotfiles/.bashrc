@@ -12,3 +12,4 @@ PS1='[\u@\h \W]\$ '
 # Abrir Hyprland desde la TTY
 alias hypr="start-hyprland"
 alias tema="~/.config/theme/tema"
+alias vidrio="~/.config/theme/vidrio-bin"

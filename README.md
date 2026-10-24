@@ -48,3 +48,16 @@ tema dinamico   # colores del fondo actual con matugen
 Los colores viven en `themes/*.colors` y las plantillas por programa en `templates/`.
 Los archivos que genera (`colors.lua`, `colors.css`, `fuzzel.ini`, `mako/config`…) no se versionan:
 en un equipo nuevo, después de `./link.sh`, ejecuta `tema oscuro`.
+
+## Vidrio
+
+```bash
+vidrio            # muestra el modo activo y los disponibles
+vidrio sutil      # solo barra, menús y terminal translúcidos
+vidrio fuerte     # más transparencia y desenfoque
+vidrio inactivas  # las ventanas inactivas se vuelven cristal
+vidrio total      # todas las ventanas translúcidas
+vidrio oscurecer  # las inactivas se oscurecen en vez de volverse transparentes
+```
+
+Los modos están en `dotfiles/.config/theme/vidrio/*.glass`.

@@ -1,6 +1,6 @@
 # Generado por `tema`. No editar: cambia ~/.config/theme/templates/mako-config
 font=JetBrainsMono Nerd Font 9
-background-color=#{{bg}}d9
+background-color=#{{bg}}{{notif_hex}}
 text-color=#{{text}}
 border-color=#{{accent}}
 progress-color=over #{{accent2}}
