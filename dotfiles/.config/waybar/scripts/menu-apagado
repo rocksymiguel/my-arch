@@ -1,5 +1,6 @@
 #!/bin/bash
 # Menú de apagado en fuzzel: bloquear, cerrar sesión, reiniciar, apagar.
+pkill -x fuzzel 2>/dev/null && sleep 0.2
 menu() { fuzzel --dmenu --prompt "$1" --lines "$2" --width 24; }
 
 op="$(printf '%s\n' "󰌾  Bloquear" "󰍃  Cerrar sesión" "󰜉  Reiniciar" "󰐥  Apagar" | menu "󰐥  " 4)" || exit 0

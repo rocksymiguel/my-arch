@@ -29,6 +29,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("mako")
     hl.exec_cmd("~/.config/theme/inactividad-bin; hypridle")
     hl.exec_cmd("~/.config/theme/fondos-bin demonio")
+    hl.exec_cmd("feishin") -- escondido en special:musica; Super + F lo muestra
     hl.exec_cmd("awww-daemon")
     hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd("blueman-applet")
