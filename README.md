@@ -65,7 +65,7 @@ Los modos están en `dotfiles/.config/theme/vidrio/*.glass`. Si no hay ninguno e
 animacion            # muestra el modo activo y los disponibles
 animacion defecto    # las del ejemplo oficial ("pop" y fundidos)
 animacion deslizar   # ventanas y escritorios se desplazan
-animacion rebote     # pequeño rebote al aparecer
+animacion rebote     # rebote al aparecer (nivel con: rebote suave|medio|fuerte|exagerado)
 animacion rapidas    # casi instantáneas
 animacion ninguna    # sin animaciones
 
