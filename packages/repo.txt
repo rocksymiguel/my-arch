@@ -14,6 +14,7 @@ fontconfig
 fuzzel
 fwupd
 git
+github-cli
 grim
 gvfs
 hypridle
@@ -29,6 +30,7 @@ mako
 man-db
 man-pages
 man-pages-es
+matugen
 mesa
 nano
 network-manager-applet

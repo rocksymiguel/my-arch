@@ -1,0 +1,18 @@
+# Nord claro: tonos Snow Storm de Nord
+bg=eceff4
+bg_alt=e5e9f0
+surface=e5e9f0
+surface_hi=d8dee9
+border_off=c2c9d6
+text=2e3440
+muted=4c566a
+accent=5e81ac
+accent2=81a1c1
+ok=6f8f4e
+warn=c27c4e
+err=bf616a
+purple=8f6f8d
+ansi_black=3b4252
+ansi_white=d8dee9
+scheme=light
+icons=Papirus-Light

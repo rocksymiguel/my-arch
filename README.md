@@ -33,3 +33,18 @@ pacman -Qqem > packages/aur.txt
 
 - Hyprland 0.56+ usa configuración en **Lua**: `dotfiles/.config/hypr/hyprland.lua`.
 - No guardar aquí contraseñas, claves Wi-Fi ni claves SSH.
+
+## Tema
+
+`~/.config/theme` define los colores de todo el escritorio:
+
+```bash
+tema            # siguiente modo: oscuro -> claro -> dinamico
+tema oscuro     # Nord profundo (base)
+tema claro      # Nord claro (Snow Storm)
+tema dinamico   # colores del fondo actual con matugen
+```
+
+Los colores viven en `themes/*.colors` y las plantillas por programa en `templates/`.
+Los archivos que genera (`colors.lua`, `colors.css`, `fuzzel.ini`, `mako/config`…) no se versionan:
+en un equipo nuevo, después de `./link.sh`, ejecuta `tema oscuro`.

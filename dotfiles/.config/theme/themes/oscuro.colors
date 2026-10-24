@@ -1,0 +1,18 @@
+# Nord profundo: Nord con el fondo más oscuro
+bg=1f232b
+bg_alt=272c36
+surface=2b303b
+surface_hi=3b4252
+border_off=434c5e
+text=eceff4
+muted=8a93a6
+accent=88c0d0
+accent2=5e81ac
+ok=a3be8c
+warn=ebcb8b
+err=bf616a
+purple=b48ead
+ansi_black=3b4252
+ansi_white=e5e9f0
+scheme=dark
+icons=Papirus-Dark

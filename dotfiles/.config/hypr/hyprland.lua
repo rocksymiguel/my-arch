@@ -2,6 +2,9 @@
 -- Basada en el ejemplo oficial: /usr/share/hypr/hyprland.lua
 -- Wiki: https://wiki.hypr.land/Configuring/Start/
 
+-- Colores del tema activo; los genera `tema` en ~/.config/hypr/colors.lua
+local theme = dofile(os.getenv("HOME") .. "/.config/hypr/colors.lua")
+
 ------------------
 ---- MONITORS ----
 ------------------
@@ -31,12 +34,11 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
     hl.exec_cmd("sleep 1 && waypaper --restore")
-    -- Tema oscuro, iconos, cursor y fuente para las apps GTK
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'")
+    -- Cursor y fuente para las apps GTK; claro/oscuro e iconos los pone `tema`
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-size 24")
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface font-name 'JetBrainsMono Nerd Font 10'")
+    hl.exec_cmd("gsettings set org.gnome.desktop.interface font-name 'JetBrainsMono Nerd Font 9'")
+    hl.exec_cmd("sleep 2 && ~/.config/theme/tema \"$(~/.config/theme/tema actual)\"")
 end)
 
 -------------------------------
@@ -51,15 +53,15 @@ hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
 -----------------------
 ---- LOOK AND FEEL ----
 -----------------------
--- Efectos moderados: desenfoque suave mientras la RAM esté en 3,2 GB.
+-- Separación compacta, borde de 2 con degradado del tema y efecto vidrio.
 hl.config({
     general = {
-        gaps_in  = 4,
-        gaps_out = 10,
+        gaps_in  = 3,
+        gaps_out = 6,
         border_size = 2,
         col = {
-            active_border   = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
-            inactive_border = "rgba(595959aa)",
+            active_border   = { colors = { theme.accent, theme.accent2 }, angle = 45 },
+            inactive_border = theme.border_off,
         },
         resize_on_border = true,
         allow_tearing = false,
@@ -78,9 +80,11 @@ hl.config({
         },
         blur = {
             enabled   = true,
-            size      = 3,
-            passes    = 1,
+            size      = 6,
+            passes    = 3,
             vibrancy  = 0.1696,
+            noise     = 0.02,
+            popups    = true,
         },
     },
     animations = {
@@ -259,4 +263,12 @@ hl.window_rule({
     name  = "float-tools",
     match = { class = "^(org.pulseaudio.pavucontrol|blueman-manager|nm-connection-editor|waypaper|nwg-look)$" },
     float = true,
+})
+
+-- Efecto vidrio en la barra, el lanzador y las notificaciones
+hl.layer_rule({
+    name  = "glass-layers",
+    match = { namespace = "^(waybar|launcher|notifications)$" },
+    blur  = true,
+    ignore_alpha = 0.2,
 })
