@@ -1,0 +1,53 @@
+#!/bin/bash
+# Inactividad: cuándo atenuar, bloquear, apagar la pantalla y suspender.
+#   inactividad                    -> genera hypridle.conf y reinicia hypridle (si está activo)
+#   inactividad <clave> <minutos>  -> cambia un valor (0 = nunca) y aplica
+#   inactividad ver                -> muestra los valores
+# Claves: atenuar, bloquear, apagar, suspender
+set -euo pipefail
+
+C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+F="$C/inactividad"
+OUT="$HOME/.config/hypr/hypridle.conf"
+mkdir -p "$C"
+[ -f "$F" ] || printf 'atenuar=5\nbloquear=0\napagar=0\nsuspender=0\n' > "$F"
+
+valor() { sed -n "s/^$1=//p" "$F"; }
+
+case "${1:-}" in
+    ver) cat "$F"; exit 0 ;;
+    atenuar|bloquear|apagar|suspender)
+        [[ "${2:-}" =~ ^[0-9]+$ ]] || { echo "Uso: inactividad $1 <minutos>" >&2; exit 1; }
+        sed -i "s/^$1=.*/$1=$2/" "$F" ;;
+    "") ;;
+    *) echo "Clave desconocida: $1 (atenuar, bloquear, apagar, suspender)" >&2; exit 1 ;;
+esac
+
+{
+    echo "# Generado por \`inactividad\`. No editar: usa Ajustes → Inactividad."
+    echo "general {"
+    echo "    lock_cmd = pidof hyprlock || hyprlock"
+    echo "    before_sleep_cmd = loginctl lock-session"
+    echo "    after_sleep_cmd = hyprctl dispatch 'hl.dsp.dpms({action = \"on\"})'"
+    echo "}"
+    a="$(valor atenuar)"; b="$(valor bloquear)"; p="$(valor apagar)"; s="$(valor suspender)"
+    if [ "$a" -gt 0 ]; then
+        printf '\nlistener {\n    timeout = %d\n    on-timeout = brightnessctl -s set 10\n    on-resume = brightnessctl -r\n}\n' $((a * 60))
+    fi
+    if [ "$b" -gt 0 ]; then
+        printf '\nlistener {\n    timeout = %d\n    on-timeout = loginctl lock-session\n}\n' $((b * 60))
+    fi
+    if [ "$p" -gt 0 ]; then
+        printf '\nlistener {\n    timeout = %d\n    on-timeout = hyprctl dispatch '"'"'hl.dsp.dpms({action = "off"})'"'"'\n    on-resume = hyprctl dispatch '"'"'hl.dsp.dpms({action = "on"})'"'"'\n}\n' $((p * 60))
+    fi
+    if [ "$s" -gt 0 ]; then
+        printf '\nlistener {\n    timeout = %d\n    on-timeout = systemctl suspend\n}\n' $((s * 60))
+    fi
+} > "$OUT"
+
+# Reiniciar hypridle solo si estaba activo (si está en pausa, se respeta)
+if pgrep -x hypridle >/dev/null; then
+    pkill -x hypridle || true
+    sleep 0.3
+    setsid -f hypridle >/dev/null 2>&1
+fi

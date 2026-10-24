@@ -27,7 +27,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("waybar")
     hl.exec_cmd("mako")
-    hl.exec_cmd("hypridle")
+    hl.exec_cmd("~/.config/theme/inactividad-bin; hypridle")
+    hl.exec_cmd("~/.config/theme/fondos-bin demonio")
     hl.exec_cmd("awww-daemon")
     hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd("blueman-applet")
@@ -137,12 +138,12 @@ hl.gesture({
 ---------------------
 local mainMod = "SUPER"
 
--- Apps: Enter = terminal, Espacio = lanzador, Z = Zen, T = Thunar, F = Feishin
+-- Apps: Enter = terminal, Espacio = lanzador, Z = Zen, T = Thunar, F = Feishin (mostrar/esconder)
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Space",  hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + Z",      hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + T",      hl.dsp.exec_cmd(fileManager))
-hl.bind(mainMod .. " + F",      hl.dsp.exec_cmd("feishin"))
+hl.bind(mainMod .. " + F",      hl.dsp.exec_cmd("~/.config/theme/musica-bin"))
 
 -- Ventanas: Q = cerrar, SHIFT + Q = forzar cierre, B = pantalla completa, SHIFT + B = maximizar
 hl.bind(mainMod .. " + Q",         hl.dsp.window.close())
@@ -277,4 +278,14 @@ hl.window_rule({
     name  = "no-dormir-pantalla-completa",
     match = { class = ".*" },
     idle_inhibit = "fullscreen",
+})
+
+-- Feishin como mini reproductor: vive en el escritorio especial "musica" (Super + F)
+hl.window_rule({
+    name      = "feishin-mini",
+    match     = { class = "^feishin$" },
+    workspace = "special:musica silent",
+    float     = true,
+    size      = "960 560",
+    center    = true,
 })

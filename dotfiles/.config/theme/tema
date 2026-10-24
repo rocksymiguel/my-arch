@@ -82,7 +82,6 @@ aplicar() {
     if [ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || ls /run/user/"$(id -u)"/hypr/* >/dev/null 2>&1; then
         poner_fondo "$modo"
         hyprctl reload >/dev/null 2>&1 || true
-        pkill -SIGUSR2 -x waybar 2>/dev/null || true
         makoctl reload 2>/dev/null || true
         pkill -SIGUSR1 -x kitty 2>/dev/null || true
         gsettings set org.gnome.desktop.interface color-scheme "prefer-$scheme" 2>/dev/null || true
@@ -90,7 +89,8 @@ aplicar() {
         # Iconos de la bandeja (Wi-Fi, Bluetooth) con los iconos del modo nuevo
         pkill -x nm-applet 2>/dev/null || true
         pkill -f blueman-applet 2>/dev/null || true
-        (sleep 1; setsid -f nm-applet --indicator >/dev/null 2>&1; setsid -f blueman-applet >/dev/null 2>&1) &
+        pkill -x waybar 2>/dev/null || true
+        (sleep 0.5; setsid -f waybar >/dev/null 2>&1; sleep 1; setsid -f nm-applet --indicator >/dev/null 2>&1; setsid -f blueman-applet >/dev/null 2>&1) &
         notify-send -a tema "Tema: $modo" 2>/dev/null || true
     fi
     sed -i "s/^gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)/; s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$icons/" \

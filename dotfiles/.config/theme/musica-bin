@@ -1,0 +1,21 @@
+#!/bin/bash
+# Feishin como mini reproductor en el escritorio especial "musica".
+#   musica           -> muestra / esconde Feishin (Super + F)
+#   musica mostrar   -> solo lo muestra (clic derecho en la isla de música)
+# Si Feishin no está abierto, lo abre y lo muestra.
+
+alternar() { hyprctl dispatch 'hl.dsp.workspace.toggle_special("musica")' >/dev/null; }
+visible()  { hyprctl monitors | grep -q "special workspace: .*musica"; }
+
+if ! hyprctl clients | grep -q "class: feishin"; then
+    setsid -f feishin >/dev/null 2>&1
+    for _ in $(seq 1 60); do
+        hyprctl clients | grep -q "class: feishin" && break
+        sleep 0.25
+    done
+    visible || alternar
+    exit 0
+fi
+
+[ "${1:-}" = mostrar ] && visible && exit 0
+alternar

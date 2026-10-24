@@ -56,7 +56,7 @@
         },
         "max-length": 40,
         "on-click": "playerctl play-pause",
-        "on-click-right": "feishin",
+        "on-click-right": "~/.config/theme/musica-bin mostrar",
         "on-scroll-up": "playerctl next",
         "on-scroll-down": "playerctl previous"
     },

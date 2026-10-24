@@ -1,19 +1,36 @@
 #!/bin/bash
-# Menú de ajustes en fuzzel: tema, vidrio, no apagar la pantalla, fondo, energía,
+# Menú de ajustes en fuzzel: tema, vidrio, inactividad, fondo y energía.
 T="$HOME/.config/theme"
 C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
-menu() { fuzzel --dmenu --prompt "$1" --lines "$2" --width 32; }
+menu() { fuzzel --dmenu --prompt "$1" --lines "$2" --width 34; }
 marca() { [ "$1" = "$2" ] && echo "● $3" || echo "  $3"; }
+mins() { [ "$1" -eq 0 ] && echo "nunca" || echo "$1 min"; }
+
+# Submenú de minutos para una clave de inactividad
+elegir_minutos() {
+    local clave="$1" titulo="$2" actual sel opciones
+    actual="$(sed -n "s/^$clave=//p" "$C/inactividad")"
+    case "$clave" in
+        atenuar)   opciones="0 2 5 10" ;;
+        bloquear)  opciones="0 5 10 15" ;;
+        apagar)    opciones="0 10 15 30" ;;
+        suspender) opciones="0 30 60" ;;
+    esac
+    sel="$(for m in $opciones; do marca "$actual" "$m" "$(mins "$m")"; done | menu "$titulo " "$(wc -w <<< "$opciones")")" || return 0
+    sel="${sel#● }"; sel="${sel#  }"
+    [ "$sel" = nunca ] && sel=0 || sel="${sel% min}"
+    "$T/inactividad-bin" "$clave" "$sel"
+}
 
 tema_act="$("$T/tema" actual)"
 vidrio_act="$(sed -n 's/^glass=//p' "$C/glass" 2>/dev/null)"
-pgrep -x hypridle >/dev/null && pantalla="se apaga sola" || pantalla="siempre encendida"
+pgrep -x hypridle >/dev/null && inact="activa" || inact="pausada"
 energia_act="$(powerprofilesctl get 2>/dev/null)"
 
 op="$(printf '%s\n' \
     "󰏘  Tema: $tema_act" \
     "󰂵  Vidrio: $vidrio_act" \
-    "󰅶  Pantalla: $pantalla" \
+    "󰅶  Inactividad: $inact" \
     "󰸉  Fondo de pantalla" \
     "󰓅  Energía: $energia_act" \
     | menu "󰒓  " 5)" || exit 0
@@ -25,15 +42,41 @@ case "$op" in
     *Vidrio:*)
         sel="$(printf '%s\n' "$(marca "$vidrio_act" total Total)" "$(marca "$vidrio_act" oscurecer Oscurecer)" | menu "Vidrio " 2)" || exit 0
         case "$sel" in *Total) "$T/vidrio-bin" total ;; *Oscurecer) "$T/vidrio-bin" oscurecer ;; esac ;;
-    *Pantalla:*)
-        if pgrep -x hypridle >/dev/null; then
-            pkill -x hypridle
-            notify-send -a ajustes "Pantalla siempre encendida" "No se atenuará por inactividad"
-        else
-            setsid -f hypridle >/dev/null 2>&1
-            notify-send -a ajustes "Pantalla normal" "Se atenúa a los 5 minutos sin uso"
-        fi ;;
-    *Fondo*)     setsid -f waypaper >/dev/null 2>&1 ;;
+    *Inactividad:*)
+        "$T/inactividad-bin" ver >/dev/null
+        v() { sed -n "s/^$1=//p" "$C/inactividad"; }
+        if pgrep -x hypridle >/dev/null; then pausa="Pausar (pantalla siempre encendida)"; else pausa="Reanudar inactividad"; fi
+        sel="$(printf '%s\n' \
+            "Atenuar el brillo: $(mins "$(v atenuar)")" \
+            "Bloquear: $(mins "$(v bloquear)")" \
+            "Apagar la pantalla: $(mins "$(v apagar)")" \
+            "Suspender: $(mins "$(v suspender)")" \
+            "$pausa" | menu "Inactividad " 5)" || exit 0
+        case "$sel" in
+            Atenuar*)  elegir_minutos atenuar "Atenuar tras" ;;
+            Bloquear*) elegir_minutos bloquear "Bloquear tras" ;;
+            Apagar*)   elegir_minutos apagar "Apagar pantalla tras" ;;
+            Suspender*) elegir_minutos suspender "Suspender tras" ;;
+            Pausar*)
+                pkill -x hypridle
+                notify-send -a ajustes "Inactividad en pausa" "La pantalla no se atenuará ni se bloqueará" ;;
+            Reanudar*)
+                setsid -f hypridle >/dev/null 2>&1
+                notify-send -a ajustes "Inactividad activa" ;;
+        esac ;;
+    *Fondo*)
+        rot="$(cat "$C/rotar" 2>/dev/null || echo 0)"
+        sel="$(printf '%s\n' "Elegir fondo…" "Siguiente fondo" \
+            "$(marca "$rot" 0 "Rotar: apagado")" "$(marca "$rot" 5 "Rotar cada 5 min")" \
+            "$(marca "$rot" 10 "Rotar cada 10 min")" "$(marca "$rot" 30 "Rotar cada 30 min")" | menu "Fondo " 6)" || exit 0
+        case "$sel" in
+            Elegir*)    setsid -f waypaper >/dev/null 2>&1 ;;
+            Siguiente*) "$T/fondos-bin" siguiente ;;
+            *apagado)   "$T/fondos-bin" rotar 0 ;;
+            *"5 min")   "$T/fondos-bin" rotar 5 ;;
+            *"10 min")  "$T/fondos-bin" rotar 10 ;;
+            *"30 min")  "$T/fondos-bin" rotar 30 ;;
+        esac ;;
     *Energía:*)
         sel="$(printf '%s\n' "$(marca "$energia_act" balanced Equilibrado)" "$(marca "$energia_act" power-saver Ahorro)" | menu "Energía " 2)" || exit 0
         case "$sel" in *Equilibrado) powerprofilesctl set balanced ;; *Ahorro) powerprofilesctl set power-saver ;; esac ;;

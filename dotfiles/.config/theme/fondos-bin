@@ -1,0 +1,59 @@
+#!/bin/bash
+# Fondos por modo con rotación automática.
+#   fondos siguiente     -> pone el siguiente fondo del modo actual
+#   fondos rotar <min>   -> cada cuántos minutos rotar (0 = apagado)
+#   fondos rotar         -> muestra el intervalo
+#   fondos demonio       -> bucle que rota (lo arranca Hyprland)
+# Modo oscuro: fondos con "Dark Mode" en el nombre; claro: "Light Mode"; dinámico: todos.
+set -euo pipefail
+
+T="$HOME/.config/theme"
+C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+FONDOS="$HOME/Imágenes/Fondos"
+INTERVALO="$C/rotar"
+mkdir -p "$C"
+
+lista() {
+    local patron
+    case "$("$T/tema" actual)" in
+        oscuro) patron="*Dark Mode*" ;;
+        claro)  patron="*Light Mode*" ;;
+        *)      patron="*" ;;
+    esac
+    find "$FONDOS" -maxdepth 1 -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.webp" \) \
+        -name "$patron" 2>/dev/null | sort
+}
+
+siguiente() {
+    local actual todos n i
+    actual="$(awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1)"
+    mapfile -t todos < <(lista)
+    n=${#todos[@]}
+    [ "$n" -gt 0 ] || return 0
+    i=0
+    for j in "${!todos[@]}"; do [ "${todos[$j]}" = "$actual" ] && i=$(( (j + 1) % n )); done
+    awww img "${todos[$i]}" --transition-type grow --transition-duration 1.5 --transition-fps 60 >/dev/null 2>&1 || return 0
+    sed -i "s|^wallpaper = .*|wallpaper = ${todos[$i]/#$HOME/\~}|" "$HOME/.config/waypaper/config.ini" 2>/dev/null || true
+    [ "$("$T/tema" actual)" = dinamico ] && "$T/tema" dinamico >/dev/null
+    return 0
+}
+
+case "${1:-}" in
+    siguiente) siguiente ;;
+    rotar)
+        if [ -z "${2:-}" ]; then echo "Rotar cada: $(cat "$INTERVALO" 2>/dev/null || echo 0) min (0 = apagado)"; exit 0; fi
+        [[ "$2" =~ ^[0-9]+$ ]] || { echo "Uso: fondos rotar <minutos>" >&2; exit 1; }
+        echo "$2" > "$INTERVALO" ;;
+    demonio)
+        exec 9>"$C/fondos.lock"
+        flock -n 9 || exit 0
+        pasado=0
+        while sleep 30; do
+            min="$(cat "$INTERVALO" 2>/dev/null || echo 0)"
+            [[ "$min" =~ ^[0-9]+$ ]] || min=0
+            if [ "$min" -eq 0 ]; then pasado=0; continue; fi
+            pasado=$((pasado + 30))
+            if [ "$pasado" -ge $((min * 60)) ]; then pasado=0; siguiente || true; fi
+        done ;;
+    *) sed -n '2,7p' "$0" | sed 's/^# //'; exit 1 ;;
+esac

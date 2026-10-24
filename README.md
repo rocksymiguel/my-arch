@@ -70,3 +70,17 @@ se pone uno de ese modo, salvo que el actual ya lo sea.
 Islas: escritorios con iconos de apps, música (MPRIS, p. ej. Feishin), reloj y tiempo (wttr.in, Daule),
 CPU/RAM/temperatura, bandeja, brillo/volumen/Bluetooth/Wi-Fi, batería, ajustes () y apagado ().
 Los menús están en `dotfiles/.config/waybar/scripts/`.
+
+## Inactividad, fondos y música
+
+Desde el menú de ajustes () o con comandos:
+
+```bash
+inactividad ver                 # valores actuales (minutos, 0 = nunca)
+inactividad atenuar 5           # atenuar, bloquear, apagar, suspender
+fondos siguiente                # siguiente fondo del modo actual
+fondos rotar 10                 # rotar cada 10 min (0 = apagado)
+musica                          # Super + F: mostrar/esconder Feishin
+```
+
+`hypridle.conf` lo genera `inactividad` (no se versiona).

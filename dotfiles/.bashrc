@@ -13,3 +13,6 @@ PS1='[\u@\h \W]\$ '
 alias hypr="start-hyprland"
 alias tema="~/.config/theme/tema"
 alias vidrio="~/.config/theme/vidrio-bin"
+alias inactividad="~/.config/theme/inactividad-bin"
+alias fondos="~/.config/theme/fondos-bin"
+alias musica="~/.config/theme/musica-bin"
