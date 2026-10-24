@@ -79,6 +79,12 @@ aplicar() {
     scheme="$(sed -n 's/^scheme=//p' "$colores")"
     icons="$(sed -n 's/^icons=//p' "$colores")"
     gtk="$(sed -n 's/^gtk=//p' "$colores")"
+    # Cursor del modo (Hyprland lo lee de ~/.cache/theme/cursor al arrancar)
+    local cursor; cursor="$(sed -n 's/^cursor=//p' "$colores")"
+    if [ -n "$cursor" ]; then
+        echo "$cursor" > "$CACHE/cursor"
+        printf '[Icon Theme]\nInherits=%s\n' "$cursor" > "$(readlink -f "$HOME/.icons/default/index.theme")"
+    fi
     # Color de carpetas en la copia personal de Papirus (~/.local/share/icons): sin contraseña
     local carpetas; carpetas="$(sed -n 's/^carpetas=//p' "$colores")"
     if [ -n "$carpetas" ] && [ -d "$HOME/.local/share/icons/$icons" ]; then
@@ -95,6 +101,8 @@ aplicar() {
         gsettings set org.gnome.desktop.interface color-scheme "prefer-$scheme" 2>/dev/null || true
         gsettings set org.gnome.desktop.interface icon-theme "$icons" 2>/dev/null || true
         gsettings set org.gnome.desktop.interface gtk-theme "$gtk" 2>/dev/null || true
+        hyprctl setcursor "$cursor" 24 >/dev/null 2>&1 || true
+        gsettings set org.gnome.desktop.interface cursor-theme "$cursor" 2>/dev/null || true
         # Iconos de la bandeja (Wi-Fi, Bluetooth) con los iconos del modo nuevo
         pkill -x nm-applet 2>/dev/null || true
         pkill -f blueman-applet 2>/dev/null || true
@@ -102,7 +110,7 @@ aplicar() {
         (sleep 0.5; setsid -f waybar >/dev/null 2>&1; sleep 1; setsid -f nm-applet --indicator >/dev/null 2>&1; setsid -f blueman-applet >/dev/null 2>&1) &
         notify-send -a tema "Tema: $modo" 2>/dev/null || true
     fi
-    sed -i "s/^gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)/; s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$icons/; s/^gtk-theme-name=.*/gtk-theme-name=$gtk/" \
+    sed -i "s/^gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)/; s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$icons/; s/^gtk-theme-name=.*/gtk-theme-name=$gtk/; s/^gtk-cursor-theme-name=.*/gtk-cursor-theme-name=$cursor/" \
         "$C/gtk-3.0/settings.ini" "$C/gtk-4.0/settings.ini"
     echo "Tema: $modo"
 }

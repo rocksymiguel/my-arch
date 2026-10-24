@@ -58,7 +58,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 - **Menú de apagado:** bloquear, cerrar sesión, reiniciar y apagar, con confirmación.
 - **Notificaciones swaync** (arriba a la derecha, panel con No molestar, música, volumen y brillo). **Avisos (OSD)** con `osd-bin` como notificaciones de swaync: volumen y brillo solo con barra; micrófono, Bloq Mayús y Bloq Num con texto. No van al historial. Bloq Num activado al iniciar.
 - **Bloqueo** con `bloquear-bin` y hyprlock estilo completo: hora, fecha y tiempo, batería, música, aviso de Bloq Mayús (borde naranja = Mayús) y el fondo actual desenfocado. La rotación de fondos se congela mientras está bloqueado.
-- **Apariencia:** GTK Nordic (oscuro) y Nordic-Polar (claro); carpetas en gris azulado u nordic (copia de Papirus en `~/.local/share/icons`, papirus-folders sin sudo), todo cambiado por `tema`. kitty con cursor de línea parpadeante y pestañas powerline. Zen con tema Nord (lo puso el usuario). `cursor` / Ajustes → Cursor para probar Bibata, Nordzy y phinger (el usuario aún no ha elegido; después, borrar los demás).
+- **Apariencia:** GTK Nordic (oscuro) y Nordic-Polar (claro); carpetas en gris azulado u nordic (copia de Papirus en `~/.local/share/icons`, papirus-folders sin sudo), todo cambiado por `tema`. kitty con cursor de línea parpadeante y pestañas powerline. Zen con tema Nord (lo puso el usuario). Cursor por modo: Bibata Modern Ice en oscuro y Classic en claro (lo cambia `tema`). Las otras variantes de Bibata no se instalan (NoExtract en /etc/pacman.conf).
 - **Feishin** (repo extra): arranca escondido. El usuario desactivó "Show tray". Su música está en Navidrome, en el NAS.
 
 ## Problemas conocidos o decisiones
@@ -83,7 +83,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | 10 | kitty | ✅ Cursor y pestañas |
 | 11 | Apariencia GTK | ✅ Nordic / Nordic-Polar |
 | 12 | Papirus | ✅ Carpetas por tema |
-| 13 | Cursor | ⏳ El usuario está probando (`cursor`); al elegir, borrar el resto |
+| 13 | Cursor | ✅ Ice en oscuro, Classic en claro |
 | 14 | Zen | ✅ Tema Nord |
 | 15 | Thunar | ⏳ |
 | 16 | fastfetch | ⏳ |
@@ -116,4 +116,4 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 
 ## Siguiente paso sugerido
 
-Cerrar la elección del **cursor** (y borrar los demás), y seguir con lo que queda: 15–18 (Thunar, fastfetch, btop, prompt), la terminal (M–P), capturas (J–L) y, más adelante, el modo juego, Quickshell y el `install.sh`.
+Seguir con lo que queda: 15–18 (Thunar, fastfetch, btop, prompt), la terminal (M–P), capturas (J–L) y, más adelante, el modo juego, Quickshell y el `install.sh`.

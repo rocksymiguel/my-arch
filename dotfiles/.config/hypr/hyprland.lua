@@ -46,7 +46,7 @@ end)
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
-local cursor_elegido = "Bibata-Modern-Classic"
+local cursor_elegido = "Bibata-Modern-Ice" -- lo cambia `tema` según el modo
 do
     local f = io.open(os.getenv("HOME") .. "/.cache/theme/cursor", "r")
     if f then cursor_elegido = f:read("*l") or cursor_elegido; f:close() end

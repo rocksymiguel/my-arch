@@ -27,7 +27,7 @@ configuration {
 
 window {
     location: center;
-    width: 30em;
+    width: 25em;
     border: 2px;
     border-color: @acento;
     border-radius: 10px;
@@ -58,7 +58,7 @@ entry {
 
 listview {
     border: 0;
-    lines: 12;
+    lines: 10;
     fixed-height: false;
     scrollbar: false;
     spacing: 2px;

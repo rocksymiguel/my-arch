@@ -1,5 +1,5 @@
 #!/bin/bash
-# Menú de ajustes en rofi: tema, vidrio, inactividad, fondo, energía y cursor.
+# Menú de ajustes en rofi: tema, vidrio, inactividad, fondo y energía.
 # Navegación: al elegir algo se vuelve al menú anterior; Esc vuelve atrás
 # (y en el menú principal, cierra).
 T="$HOME/.config/theme"
@@ -84,13 +84,6 @@ menu_fondo() {
     done
 }
 
-menu_cursor() {
-    local act sel
-    act="$("$T/cursor-bin" lista >/dev/null; cat "$C/cursor" 2>/dev/null || echo Bibata-Modern-Classic)"
-    sel="$("$T/cursor-bin" lista | while read -r c; do marca "$act" "$c" "$c"; done | menu "Cursor " 10)" || return 0
-    "$T/cursor-bin" "$(limpiar "$sel")" >/dev/null
-}
-
 menu_energia() {
     local act sel
     act="$(powerprofilesctl get 2>/dev/null)"
@@ -106,14 +99,12 @@ while true; do
         "󰅶  Inactividad: $inact" \
         "󰸉  Fondo de pantalla" \
         "󰓅  Energía: $(energia_es "$(powerprofilesctl get 2>/dev/null)")" \
-        "󰇀  Cursor: $(cat "$C/cursor" 2>/dev/null || echo Bibata-Modern-Classic)" \
-        | menu "󰒓  " 6)" || exit 0
+        | menu "󰒓  " 5)" || exit 0
     case "$op" in
         *Tema:*)        menu_tema ;;
         *Vidrio:*)      menu_vidrio ;;
         *Inactividad:*) menu_inactividad ;;
         *Fondo*)        menu_fondo ;;
         *Energía:*)     menu_energia ;;
-        *Cursor:*)      menu_cursor ;;
     esac
 done

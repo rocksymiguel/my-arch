@@ -41,6 +41,7 @@ valores = {
     "scheme": "dark",
     "icons": "Papirus-Dark",
     "gtk": "Nordic",
+    "cursor": "Bibata-Modern-Ice",
     "carpetas": "bluegrey",
 }
 
