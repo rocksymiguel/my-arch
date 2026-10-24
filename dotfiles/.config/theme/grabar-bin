@@ -1,0 +1,29 @@
+#!/bin/bash
+# Grabar la pantalla con gpu-screen-recorder (usa la gráfica, casi no carga la CPU).
+#   grabar          -> empieza a grabar, o para si ya está grabando (Super + Shift + R)
+#   grabar estado   -> JSON para la isla roja de waybar
+# Los vídeos se guardan en ~/Vídeos/Grabaciones.
+DIR="$HOME/Vídeos/Grabaciones"
+
+grabando() { pgrep -f "^gpu-screen-recorder" >/dev/null; }
+refrescar() { pkill -RTMIN+10 -x waybar 2>/dev/null; }
+
+case "${1:-}" in
+    estado)
+        if grabando; then echo '{"text": "󰑊 REC", "class": "rec", "tooltip": "Grabando · clic para parar"}'
+        else echo '{"text": "", "class": "off"}'; fi ;;
+    "")
+        if grabando; then
+            pkill -INT -f "^gpu-screen-recorder"
+            sleep 1
+            refrescar
+            notify-send -a osd -u normal -t 2500 "󰑊  Grabación guardada en Vídeos/Grabaciones"
+        else
+            mkdir -p "$DIR"
+            setsid -f gpu-screen-recorder -w screen -f 60 -a default_output \
+                -o "$DIR/grabacion-$(date +%Y-%m-%d_%H-%M-%S).mp4" >/dev/null 2>&1
+            sleep 0.5
+            refrescar
+            grabando || notify-send -a osd -u normal -t 3000 "No se pudo empezar a grabar"
+        fi ;;
+esac

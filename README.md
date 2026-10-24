@@ -84,3 +84,23 @@ musica                          # Super + F: mostrar/esconder Feishin
 ```
 
 `hypridle.conf` lo genera `inactividad` (no se versiona).
+
+## Terminal
+
+kitty usa **fish** (la TTY sigue con bash). Prompt con **starship** y fastfetch al abrir.
+
+```bash
+prompt                 # estilo activo y disponibles
+prompt dos-lineas      # una-linea | dos-lineas | islas | minimo
+ls / ll / la / tree    # eza con iconos
+cat archivo            # bat con colores
+z carpeta              # zoxide: cd inteligente
+y                      # yazi: gestor de archivos en la terminal
+Ctrl+R / Ctrl+T        # fzf: historial / archivos
+```
+
+## Capturas y grabación
+
+- Impr: elegir zona y editarla con satty · Shift+Impr: pantalla completa a ~/Imágenes/Capturas
+- Super+Shift+R: grabar pantalla (isla roja ⏺ REC; clic o el atajo para parar) → ~/Vídeos/Grabaciones
+- "Selector de color" en el lanzador (hyprpicker): copia el color de un punto de la pantalla

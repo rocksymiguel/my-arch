@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Selector de color
+Comment=Copia el color de cualquier punto de la pantalla
+Exec=sh -c "$HOME/.config/theme/color-bin"
+Icon=color-select
+Terminal=false
+Categories=Utility;Graphics;

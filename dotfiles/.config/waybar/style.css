@@ -111,3 +111,16 @@ window#waybar {
     margin: 0;
     min-width: 0;
 }
+
+#custom-grabando.rec {
+    background: @err;
+    color: @bg;
+    border-radius: 10px;
+    padding: 0 10px;
+    font-weight: bold;
+}
+#custom-grabando.off {
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+}

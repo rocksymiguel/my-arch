@@ -1,0 +1,5 @@
+#!/bin/bash
+# Selector de color: pulsas un punto de la pantalla y su color se copia (formato #rrggbb).
+# Se abre desde el lanzador como "Selector de color".
+color="$(hyprpicker -a -f hex 2>/dev/null)"
+[ -n "$color" ] && notify-send -a osd -u normal -t 2500 "󰏘  Color copiado: $color"

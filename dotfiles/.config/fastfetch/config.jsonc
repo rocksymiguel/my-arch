@@ -1,0 +1,28 @@
+// fastfetch: Mightyena pequeño y lo esencial (sin kernel)
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+    "logo": {
+        "type": "kitty-direct",
+        "source": "/home/rocksymiguel/.config/fastfetch/logo.png",
+        "width": 16,
+        "padding": { "top": 1, "left": 2, "right": 3 }
+    },
+    "display": {
+        "separator": "  ",
+        "color": { "keys": "cyan", "title": "blue" }
+    },
+    "modules": [
+        "break",
+        { "type": "title", "format": "{user-name}@{host-name}" },
+        { "type": "os",       "key": "󰣇 Sistema",  "format": "{name}" },
+        { "type": "wm",       "key": "󱂬 Escritorio", "format": "{pretty-name}" },
+        { "type": "terminal", "key": "󰆍 Terminal" },
+        { "type": "cpu",      "key": "󰻠 CPU", "format": "{name}" },
+        { "type": "gpu",      "key": "󰍛 GPU", "format": "{name}" },
+        { "type": "memory",   "key": "󰑭 RAM" },
+        { "type": "disk",     "key": "󰋊 Disco", "folders": "/" },
+        { "type": "battery",  "key": "󰁹 Batería" },
+        "break",
+        { "type": "colors", "symbol": "circle" }
+    ]
+}

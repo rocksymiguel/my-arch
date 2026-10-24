@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Abrir terminal aquí</name>
+	<submenu></submenu>
+	<unique-id>abrir-terminal-aqui</unique-id>
+	<command>kitty --directory %f</command>
+	<description>Abre kitty en esta carpeta</description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+</actions>

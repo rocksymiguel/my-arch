@@ -88,10 +88,10 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | 12 | Papirus | ✅ Carpetas por tema |
 | 13 | Cursor | ✅ Ice en oscuro, Classic en claro |
 | 14 | Zen | ✅ Tema Nord |
-| 15 | Thunar | ⏳ |
-| 16 | fastfetch | ⏳ |
-| 17 | btop | ⏳ Tema Nord |
-| 18 | Bash / prompt | ⏳ Junto con M y N |
+| 15 | Thunar | ✅ Comprimir/extraer, miniaturas de vídeo, "Abrir terminal aquí" |
+| 16 | fastfetch | ✅ Mightyena (logo.png generado con PIL) y datos esenciales, al abrir kitty |
+| 17 | btop | ✅ Tema Nord |
+| 18 | Prompt | ⏳ starship con 4 estilos (`prompt`); el usuario elige y se borran los demás |
 | A | matugen | ✅ Hecho (tema dinámico) |
 | B | Avisos de volumen y brillo | ✅ Con swaync (`osd-bin`); que salgan bajo su isla → lista de deseos de Quickshell |
 | C | Menú de apagado | ✅ Hecho (rofi) |
@@ -101,10 +101,10 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | G | Plugins de Hyprland | ⏳ Comprobar compatibilidad con la 0.56 en Lua |
 | H | Fondos animados | ❌ Desaconsejado (RAM) |
 | I | cava | ⏳ Sin decidir |
-| J | Editar capturas (satty o swappy) | ⏳ |
-| K | Grabar pantalla | ⏳ |
-| L | hyprpicker | ⏳ |
-| M–P | zsh o fish, starship, eza, bat, fzf, zoxide, yazi | ⏳ Sin decidir |
+| J | Editar capturas | ✅ satty en Impr |
+| K | Grabar pantalla | ✅ gpu-screen-recorder, Super+Shift+R, isla REC (`grabar-bin`) |
+| L | hyprpicker | ✅ Como app "Selector de color" en rofi (sin atajo) |
+| M–P | Terminal | ✅ fish (solo en kitty), eza, bat (cat), fzf, zoxide (z), yazi (y) |
 | Q | plymouth | ⏳ |
 | R | Limine o rEFInd con tema | ⏳ |
 | S | Pantalla de login | ⏳ Va junto con el **modo juego** |

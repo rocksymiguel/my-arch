@@ -16,6 +16,7 @@
         "custom/clima"
     ],
     "modules-right": [
+        "custom/grabando",
         "group/sistema",
         "group/conexion",
         "group/controles",
@@ -202,5 +203,12 @@
         "tooltip": false,
         "on-click": "rfkill unblock all",
         "return-type": "json"
+    },
+    "custom/grabando": {
+        "exec": "~/.config/theme/grabar-bin estado",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 10,
+        "on-click": "~/.config/theme/grabar-bin"
     }
 }

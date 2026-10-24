@@ -1,0 +1,46 @@
+# fish: la shell de kitty. La TTY sigue con bash (ahí está el alias hypr).
+
+set -g fish_greeting ""                       # sin el mensaje de bienvenida
+set -gx EDITOR nano
+set -gx VISUAL nano
+set -gx BAT_THEME ansi                        # bat usa los colores del tema de kitty
+set -gx FZF_DEFAULT_OPTS "--color=16 --height=40% --layout=reverse --border=rounded"
+set -gx STARSHIP_CONFIG "$HOME/.cache/theme/starship.toml"
+
+# Comandos propios del escritorio
+alias tema       "~/.config/theme/tema"
+alias vidrio     "~/.config/theme/vidrio-bin"
+alias inactividad "~/.config/theme/inactividad-bin"
+alias fondos     "~/.config/theme/fondos-bin"
+alias musica     "~/.config/theme/musica-bin"
+alias prompt     "~/.config/theme/prompt-bin"
+alias hypr       "start-hyprland"
+
+# Herramientas modernas
+alias ls  "eza --icons --group-directories-first"
+alias ll  "eza --icons --group-directories-first -l --git"
+alias la  "eza --icons --group-directories-first -la --git"
+alias tree "eza --icons --tree"
+alias cat "bat --paging=never"
+
+if status is-interactive
+    starship init fish | source
+    zoxide init fish | source                 # z <carpeta>: cd inteligente
+    fzf --fish | source                       # Ctrl+R historial, Ctrl+T archivos
+
+    # yazi: al salir, quedarse en la carpeta donde estabas
+    function y
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        yazi $argv --cwd-file="$tmp"
+        if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+            builtin cd -- "$cwd"
+        end
+        rm -f -- "$tmp"
+    end
+
+    # fastfetch al abrir kitty (solo en la primera ventana de cada terminal)
+    if test "$TERM" = xterm-kitty; and not set -q FASTFETCH_HECHO
+        set -gx FASTFETCH_HECHO 1
+        fastfetch
+    end
+end

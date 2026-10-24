@@ -159,16 +159,16 @@ hl.bind(mainMod .. " + B",         hl.dsp.window.fullscreen({ action = "toggle",
 hl.bind(mainMod .. " + SHIFT + B", hl.dsp.window.fullscreen({ action = "toggle", mode = "maximized" }))
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 
 -- Bloquear, fondos y portapapeles
 hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("~/.config/theme/bloquear-bin"))
 hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("waypaper"))
+hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("~/.config/theme/grabar-bin")) -- grabar pantalla
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p Portapapeles | cliphist decode | wl-copy"))
 
--- Capturas: Impr = zona al portapapeles; SHIFT + Impr = pantalla completa a ~/Imágenes/Capturas
-hl.bind("Print",         hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy"))
+-- Capturas: Impr = elegir zona y editarla con satty; SHIFT + Impr = pantalla completa a ~/Imágenes/Capturas
+hl.bind("Print",         hl.dsp.exec_cmd("mkdir -p ~/Imágenes/Capturas && grim -g \"$(slurp)\" - | satty --filename - --output-filename ~/Imágenes/Capturas/captura-%Y-%m-%d_%H-%M-%S.png --copy-command wl-copy --early-exit"))
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("mkdir -p ~/Imágenes/Capturas && grim ~/Imágenes/Capturas/$(date +%Y-%m-%d_%H-%M-%S).png"))
 
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
