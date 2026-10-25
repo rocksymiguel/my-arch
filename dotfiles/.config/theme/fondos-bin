@@ -4,6 +4,7 @@
 #   fondos siguiente     -> pone el siguiente fondo del modo actual
 #   fondos poner <ruta>  -> pone ese fondo y lo recuerda (sin tocar el tema)
 #   fondos restaurar     -> vuelve a poner el último fondo (al iniciar la sesión)
+#   fondos preparar      -> crea las miniaturas que falten (al iniciar, en segundo plano)
 #   fondos rotar <min>   -> cada cuántos minutos rotar (0 = apagado)
 #   fondos rotar         -> muestra el intervalo
 #   fondos demonio       -> bucle que rota (lo arranca Hyprland)
@@ -59,23 +60,17 @@ siguiente() {
     return 0
 }
 
-# Miniaturas de 320x180 en caché: solo se hacen las que faltan (o cambiaron)
+# Miniaturas de 320x180 en caché (recortadas al centro): solo se hacen las que faltan (o cambiaron).
+# Si una falla, el selector sigue y esa entrada sale sin imagen.
 miniaturas() {
-    local faltan=() f
+    local f mini
     mkdir -p "$MINI"
-    for f in "$@"; do [ "$MINI/$(basename "$f").png" -nt "$f" ] || faltan+=("$f"); done
-    [ ${#faltan[@]} -gt 0 ] || return 0
-    python3 -I - "$MINI" "${faltan[@]}" <<'EOF'
-import os
-import sys
-from PIL import Image, ImageOps
-
-destino, *archivos = sys.argv[1:]
-for a in archivos:
-    with Image.open(a) as im:
-        mini = ImageOps.fit(im.convert("RGB"), (320, 180), Image.LANCZOS)
-        mini.save(os.path.join(destino, os.path.basename(a) + ".png"))
-EOF
+    for f in "$@"; do
+        mini="$MINI/$(basename "$f").png"
+        [ "$mini" -nt "$f" ] && continue
+        ffmpeg -nostdin -v error -y -i "$f" -frames:v 1 \
+            -vf "scale=320:180:force_original_aspect_ratio=increase,crop=320:180" "$mini" || true
+    done
 }
 
 # 4 columnas x 3 filas de miniaturas; cabe en la pantalla de 1366x768 junto a la barra
@@ -121,6 +116,9 @@ case "${1:-}" in
     siguiente) siguiente ;;
     poner) poner "${2:-}" ;;
     restaurar) restaurar ;;
+    preparar)   # miniaturas de todos los fondos, para que el selector abra al instante
+        mapfile -t todos < <(lista oscuro; lista claro)
+        miniaturas "${todos[@]}" ;;
     rotar)
         if [ -z "${2:-}" ]; then echo "Rotar cada: $(cat "$INTERVALO" 2>/dev/null || echo 0) min (0 = apagado)"; exit 0; fi
         [[ "$2" =~ ^[0-9]+$ ]] || { echo "Uso: fondos rotar <minutos>" >&2; exit 1; }
@@ -137,5 +135,5 @@ case "${1:-}" in
             pasado=$((pasado + 30))
             if [ "$pasado" -ge $((min * 60)) ]; then pasado=0; siguiente || true; fi
         done ;;
-    *) sed -n '2,10p' "$0" | sed 's/^# //'; exit 1 ;;
+    *) sed -n '2,11p' "$0" | sed 's/^# //'; exit 1 ;;
 esac

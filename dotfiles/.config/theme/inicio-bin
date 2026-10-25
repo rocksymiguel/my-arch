@@ -22,6 +22,7 @@ lanzar swaync
 lanzar awww-daemon
 "$T/inactividad-bin"; lanzar hypridle
 lanzar "$T/fondos-bin" demonio
+lanzar nice -n 19 "$T/fondos-bin" preparar     # miniaturas del selector de fondos (Super + W)
 lanzar "$T/avion-bin" vigilar          # iconos de Wi-Fi/Bluetooth o avión
 lanzar feishin                         # escondido en special:musica; Super + F lo muestra
 lanzar steam -silent                   # arranca sólo en la bandeja, sin ventana
