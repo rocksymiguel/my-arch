@@ -21,7 +21,8 @@ limpiar_entorno() {
 
 escritorio() {
     limpiar_entorno
-    # La primera vez tras encender, el escritorio se abre bloqueado (inicio sin contraseña)
+    # El primer escritorio tras encender se abre bloqueado (inicio sin contraseña), también si se
+    # arrancó en modo juego: hyprlock desbloquea el llavero y así gelly no lo pide
     BLOQUEAR_AL_INICIO="${1:-0}" XDG_SESSION_TYPE=wayland start-hyprland
 }
 
@@ -42,14 +43,13 @@ juego() {
 case "${1:-}" in
     arrancar)
         modo="$(del_arranque)"; modo="${modo:-escritorio}"
-        primera=1
+        primera=1                        # 1 hasta que se abra el primer escritorio
         rm -f "$SIG"
         while true; do
             case "$modo" in
                 juego) juego ;;
-                *)     escritorio "$primera" ;;
+                *)     escritorio "$primera"; primera=0 ;;
             esac
-            primera=0
             modo="$(cat "$SIG" 2>/dev/null)"
             rm -f "$SIG"
             [ -n "$modo" ] || break      # se cerró sin pedir otro modo: volver a la terminal
