@@ -75,7 +75,7 @@ en `~/.cache/theme/miniaturas`; el último fondo, en `~/.cache/theme/fondo`.
 
 ## Barra
 
-Islas: escritorios con iconos de apps, música (MPRIS, p. ej. Feishin), reloj y tiempo (wttr.in, Daule),
+Islas: escritorios con iconos de apps, música (MPRIS, p. ej. gelly), reloj y tiempo (wttr.in, Daule),
 CPU/RAM/temperatura, bandeja, brillo/volumen/Bluetooth/Wi-Fi, batería, ajustes () y apagado ().
 Los menús están en `dotfiles/.config/waybar/scripts/`.
 
@@ -89,7 +89,7 @@ inactividad atenuar 5           # atenuar, bloquear, apagar, suspender
 fondos elegir                   # selector con miniaturas (Super + W)
 fondos siguiente                # siguiente fondo del modo actual
 fondos rotar 10                 # rotar cada 10 min (0 = apagado)
-musica                          # Super + F: mostrar/esconder Feishin
+musica                          # Super + G: mostrar/esconder gelly
 ```
 
 `hypridle.conf` lo genera `inactividad` (no se versiona).

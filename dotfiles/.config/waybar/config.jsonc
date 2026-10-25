@@ -34,7 +34,7 @@
             "class<kitty>": "󰆍",
             "class<zen.*>": "󰈹",
             "class<thunar>": "󰉋",
-            "class<feishin>": "󰝚",
+            "class<io.m51.Gelly>": "󰝚",
             "class<org.pulseaudio.pavucontrol>": "󰕾",
             "class<blueman-manager>": "󰂯"
         },
@@ -49,7 +49,7 @@
         "format-paused": "{status_icon} {artist} · {title}",
         "player-icons": {
             "default": "󰝚",
-            "feishin": "󰝚",
+            "io.m51.Gelly": "󰝚",
             "firefox": "󰈹",
             "zen": "󰈹"
         },

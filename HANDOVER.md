@@ -24,7 +24,7 @@ Fecha: 2026-10-23. Para continuar en una conversación nueva.
 ## Equipo
 
 Lenovo IdeaPad 3 15ADA05 · Ryzen 5 3500U · Vega 8 · **pantalla de 1366×768** · Wi-Fi RTL8822CE · NVMe de 954 GB.
-⚠️ **RAM:** el módulo de la ranura falla a veces y solo quedan 3,2 GB de 8. Hay que tenerlo en cuenta con apps pesadas (Feishin, shells de Quickshell).
+⚠️ **RAM:** el módulo de la ranura falla a veces y solo quedan 3,2 GB de 8. Hay que tenerlo en cuenta con apps pesadas (shells de Quickshell).
 
 ## Sistema
 
@@ -42,7 +42,7 @@ Comandos propios (alias en scripts en `~/.config/theme/`):
 | `vidrio total\|oscurecer` | Opacidad y desenfoque (`theme/vidrio/*.glass`). Total: ventanas al 75 % activas y 10 % inactivas; kitty igual |
 | `inactividad [clave min]` | Genera `hypridle.conf` (atenuar, bloquear, apagar, suspender). Ahora: atenuar 10, lo demás nunca |
 | `fondos elegir\|siguiente\|poner\|restaurar\|rotar N\|demonio` | Fondos de `~/Imágenes/Fondos` según el modo ("Dark Mode" / "Light Mode" en el nombre). `elegir` (Super + W) es el selector con miniaturas en rofi, Tab alterna oscuros/claros y elegir uno del otro modo cambia el modo; **waypaper se quitó**. awww pinta el fondo y `~/.cache/theme/fondo` recuerda el último. Rotación cada N minutos |
-| `musica` (Super + F) | Muestra o esconde Feishin en el escritorio especial `musica`, flotando a 960×560 |
+| `musica` (Super + G) | Muestra o esconde gelly en el escritorio especial `musica`, flotando a 490×540 |
 | `hypr` | Abre Hyprland desde la TTY |
 
 Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
@@ -50,16 +50,16 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 ## Lo que ya está hecho
 
 - **Tema central:** Nord profundo (base oscura), Nord claro y dinámico. Fuentes compactas (JetBrains Mono Nerd), redondeo de 10, separación de 3 y 6, borde de 2 con degradado del tema. El modo claro tiene un borde más oscuro.
-- **Hyprland:** animación **rebote medio** (`hypr/animaciones.lua`), layout **scrolling**, reglas (pantalla completa opaca y sin atenuar, diálogos centrados, progreso de Thunar flotante, vídeo flotante de Zen y Feishin mini).
-- **Atajos:** Super + Enter kitty · Espacio rofi · Z Zen · T Thunar · F Feishin · W waypaper · L bloquear · Q cerrar · Shift + Q forzar cierre · B pantalla completa · Shift + B maximizar · M salir · V flotar · P pseudo · J división · S y Shift + S scratchpad · Shift + V portapapeles · Impr y Shift + Impr capturas · 1…0 escritorios · teclas Fn.
-- **Waybar en islas:** escritorios **1-3 fijos** con iconos de apps · música (MPRIS; clic pausa, clic derecho muestra Feishin) · reloj con fecha · tiempo de Daule (wttr.in) · CPU, RAM y temperatura (clic: btop) · bandeja (Wi-Fi y BT de nm-applet y blueman) · brillo y volumen · batería · 🔔 notificaciones (swaync: clic abre el panel, clic derecho "No molestar") · ⚙ ajustes · ⏻ apagado. La config se genera con iconos por código.
+- **Hyprland:** animación **rebote medio** (`hypr/animaciones.lua`), layout **scrolling**, reglas (pantalla completa opaca y sin atenuar, diálogos centrados, progreso de Thunar flotante, vídeo flotante de Zen y gelly mini).
+- **Atajos:** Super + Enter kitty · Espacio rofi · Z Zen · T Thunar · G gelly · W waypaper · L bloquear · Q cerrar · Shift + Q forzar cierre · B pantalla completa · Shift + B maximizar · M salir · V flotar · P pseudo · J división · S y Shift + S scratchpad · Shift + V portapapeles · Impr y Shift + Impr capturas · 1…0 escritorios · teclas Fn.
+- **Waybar en islas:** escritorios **1-3 fijos** con iconos de apps · música (MPRIS; clic pausa, clic derecho muestra gelly) · reloj con fecha · tiempo de Daule (wttr.in) · CPU, RAM y temperatura (clic: btop) · bandeja (Wi-Fi y BT de nm-applet y blueman) · brillo y volumen · batería · 🔔 notificaciones (swaync: clic abre el panel, clic derecho "No molestar") · ⚙ ajustes · ⏻ apagado. La config se genera con iconos por código.
 - **Lanzador rofi** minimalista (`rofi/config.rasi` + `colors.rasi` generado por tema). Clic fuera lo cierra. Apps que no usa escondidas con `.desktop` NoDisplay en `dotfiles/.local/share/applications`.
 - **Menú de ajustes** (rofi, `waybar/scripts/menu-ajustes`): Tema, Vidrio, Inactividad (submenús de minutos y pausa), Fondo (elegir, siguiente, rotar) y Cursor. Al elegir vuelve atrás, Esc vuelve atrás, y antes de abrir cierra cualquier rofi atascado.
 - **Menú de apagado:** bloquear, cerrar sesión, reiniciar y apagar, con confirmación.
 - **Notificaciones swaync** (arriba a la derecha, panel con No molestar, música, volumen y brillo). **Avisos (OSD)** con `osd-bin` como notificaciones de swaync: volumen y brillo solo con barra; micrófono, Bloq Mayús y Bloq Num con texto. No van al historial. Bloq Num activado al iniciar.
 - **Bloqueo** con `bloquear-bin` y hyprlock estilo completo: hora, fecha y tiempo, batería, música, aviso de Bloq Mayús (borde naranja = Mayús) y el fondo actual desenfocado. La rotación de fondos se congela mientras está bloqueado.
 - **Apariencia:** GTK Nordic (oscuro) y Nordic-Polar (claro); carpetas en gris azulado u nordic (copia de Papirus en `~/.local/share/icons`, papirus-folders sin sudo), todo cambiado por `tema`. kitty con cursor de línea parpadeante y pestañas powerline. Zen con tema Nord (lo puso el usuario). Cursor por modo: Bibata Modern Ice en oscuro y Classic en claro (lo cambia `tema`). Las otras variantes de Bibata no se instalan (NoExtract en /etc/pacman.conf).
-- **Feishin** (repo extra): arranca escondido. El usuario desactivó "Show tray". Su música está en Navidrome, en el NAS.
+- **gelly** (AUR, compilado con `CARGO_BUILD_JOBS=2` para no agotar la RAM): arranca escondido en `special:musica`. Credenciales en gnome-keyring (llavero sin contraseña por el autologin). Su música está en Navidrome, en el NAS. Sustituyó a Feishin y Strawberry el 2026-10-25 tras medirlos: gelly 4 % CPU / 164 MB / +1,2 W; Strawberry 12 % / 149 MB / +2,3 W; Feishin 22 % / 356 MB / +1,8 W.
 
 - **Modo avión:** `avion-bin vigilar` (arranca con Hyprland) escucha `rfkill event`; con el modo avión activo cierra nm-applet y blueman-applet y la isla `group/conexion` muestra solo el avión; al desactivarlo los vuelve a abrir. Ojo: en la sesión `rfkill` sale en español, por eso usa `LC_ALL=C`; usa un PID (no flock) porque los applets heredarían el candado.
 - **Lanzador:** `lanzador-bin` (Super + Espacio) calcula el ancho de rofi según el nombre de app visible más largo (8 px por carácter + 74). Otra vez Super + Espacio lo cierra.

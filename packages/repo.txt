@@ -13,7 +13,6 @@ cliphist
 efibootmgr
 eza
 fastfetch
-feishin
 ffmpeg
 ffmpegthumbnailer
 file-roller
@@ -24,6 +23,7 @@ fzf
 gamescope
 git
 github-cli
+gnome-keyring
 gpu-screen-recorder
 grim
 gvfs
@@ -46,8 +46,8 @@ man-pages-es
 matugen
 mesa
 nano
-networkmanager
 network-manager-applet
+networkmanager
 noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji

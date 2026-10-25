@@ -130,12 +130,12 @@ hl.gesture({
 ---------------------
 local mainMod = "SUPER"
 
--- Apps: Enter = terminal, Espacio = lanzador, Z = Zen, T = Thunar, F = Feishin (mostrar/esconder)
+-- Apps: Enter = terminal, Espacio = lanzador, Z = Zen, T = Thunar, G = gelly (mostrar/esconder)
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Space",  hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + Z",      hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + T",      hl.dsp.exec_cmd(fileManager))
-hl.bind(mainMod .. " + F",      hl.dsp.exec_cmd("~/.config/theme/musica-bin"))
+hl.bind(mainMod .. " + G",      hl.dsp.exec_cmd("~/.config/theme/musica-bin"))
 
 -- Ventanas: Q = cerrar, SHIFT + Q = forzar cierre, B = pantalla completa, SHIFT + B = maximizar
 hl.bind(mainMod .. " + Q",         hl.dsp.window.close())
@@ -275,12 +275,12 @@ hl.window_rule({
     idle_inhibit = "fullscreen",
 })
 
--- Feishin como mini reproductor: vive en el escritorio especial "musica" (Super + F)
+-- gelly como mini reproductor: vive en el escritorio especial "musica" (Super + G)
 hl.window_rule({
-    name      = "feishin-mini",
-    match     = { class = "^feishin$" },
+    name      = "gelly-mini",
+    match     = { class = "^io\\.m51\\.Gelly$" },
     workspace = "special:musica silent",
     float     = true,
-    size      = "960 560",
+    size      = "490 540",
     center    = true,
 })

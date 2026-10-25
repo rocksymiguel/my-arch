@@ -1,16 +1,16 @@
 #!/bin/bash
-# Feishin como mini reproductor en el escritorio especial "musica".
-#   musica           -> muestra / esconde Feishin (Super + F)
+# gelly como mini reproductor en el escritorio especial "musica".
+#   musica           -> muestra / esconde gelly (Super + G)
 #   musica mostrar   -> solo lo muestra (clic derecho en la isla de música)
-# Si Feishin no está abierto, lo abre y lo muestra.
+# Si gelly no está abierto, lo abre y lo muestra.
 
 alternar() { hyprctl dispatch 'hl.dsp.workspace.toggle_special("musica")' >/dev/null; }
 visible()  { hyprctl monitors | grep -q "special workspace: .*musica"; }
 
-if ! hyprctl clients | grep -q "class: feishin"; then
-    setsid -f feishin >/dev/null 2>&1
+if ! hyprctl clients | grep -q "class: io.m51.Gelly"; then
+    setsid -f gelly >/dev/null 2>&1
     for _ in $(seq 1 60); do
-        hyprctl clients | grep -q "class: feishin" && break
+        hyprctl clients | grep -q "class: io.m51.Gelly" && break
         sleep 0.25
     done
     visible || alternar
