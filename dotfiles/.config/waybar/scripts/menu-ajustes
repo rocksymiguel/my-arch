@@ -18,8 +18,8 @@ energia_es() { case "$1" in balanced) echo "equilibrado" ;; power-saver) echo "a
 menu_tema() {
     local act sel
     act="$("$T/tema" actual)"
-    sel="$(printf '%s\n' "$(marca "$act" oscuro Oscuro)" "$(marca "$act" claro Claro)" "$(marca "$act" dinamico Dinámico)" | menu "Tema " 3)" || return 0
-    case "$sel" in *Oscuro) "$T/tema" oscuro ;; *Claro) "$T/tema" claro ;; *Dinámico) "$T/tema" dinamico ;; esac >/dev/null
+    sel="$(printf '%s\n' "$(marca "$act" oscuro Oscuro)" "$(marca "$act" claro Claro)" | menu "Tema " 2)" || return 0
+    case "$sel" in *Oscuro) "$T/tema" oscuro ;; *Claro) "$T/tema" claro ;; esac >/dev/null
 }
 
 menu_vidrio() {
@@ -74,7 +74,7 @@ menu_fondo() {
             "$(marca "$rot" 0 "Rotar: apagado")" "$(marca "$rot" 5 "Rotar cada 5 min")" \
             "$(marca "$rot" 10 "Rotar cada 10 min")" "$(marca "$rot" 30 "Rotar cada 30 min")" | menu "Fondo " 6)" || return 0
         case "$sel" in
-            Elegir*)    setsid -f waypaper >/dev/null 2>&1; exit 0 ;;
+            Elegir*)    setsid -f "$T/fondos-bin" elegir >/dev/null 2>&1; exit 0 ;;
             Siguiente*) "$T/fondos-bin" siguiente ;;
             *apagado)   "$T/fondos-bin" rotar 0 ;;
             *"cada 5 min")  "$T/fondos-bin" rotar 5 ;;

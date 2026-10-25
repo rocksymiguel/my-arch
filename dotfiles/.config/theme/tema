@@ -1,10 +1,12 @@
 #!/bin/bash
 # Cambia el tema de todo el escritorio.
-#   tema            -> pasa al siguiente modo (oscuro -> claro -> dinamico -> oscuro)
+#   tema            -> pasa al otro modo (oscuro <-> claro)
 #   tema oscuro     -> Nord profundo
 #   tema claro      -> Nord claro
-#   tema dinamico   -> colores sacados del fondo actual con matugen
+#   tema acentos    -> vuelve a sacar los acentos del fondo actual (sin reiniciar la barra)
 #   tema actual     -> muestra el modo activo
+# El modo pone fondos, superficies, texto, GTK, iconos, cursor y carpetas; el fondo de
+# pantalla solo pone el acento (bordes de ventana, barra, lanzador...) con matugen.
 set -euo pipefail
 
 T="$HOME/.config/theme"
@@ -13,10 +15,14 @@ CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
 ESTADO="$CACHE/modo"
 mkdir -p "$CACHE"
 
-modo_actual() { cat "$ESTADO" 2>/dev/null || echo oscuro; }
+modo_actual() { [ "$(cat "$ESTADO" 2>/dev/null)" = claro ] && echo claro || echo oscuro; }
 
+# ¿Hay sesión gráfica a la que avisar?
+grafico() { [ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || ls /run/user/"$(id -u)"/hypr/* >/dev/null 2>&1; }
+
+# El fondo lo recuerda `fondos-bin poner`; si no hay, se le pregunta a awww
 fondo_actual() {
-    awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1
+    cat "$CACHE/fondo" 2>/dev/null || awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1
 }
 
 # Fondos por modo: en ~/Imágenes/Fondos, los que llevan "Dark Mode" en el nombre son
@@ -30,42 +36,40 @@ poner_fondo() {
     [[ "$(basename "$actual")" == *"$patron"* ]] && return 0
     nuevo="$(find "$FONDOS" -maxdepth 1 -type f -name "*$patron*" 2>/dev/null | sort | head -n 1)"
     [ -n "$nuevo" ] || return 0
-    awww img "$nuevo" --transition-type grow --transition-duration 1.5 --transition-fps 60 >/dev/null 2>&1 || return 0
-    sed -i "s|^wallpaper = .*|wallpaper = ${nuevo/#$HOME/\~}|" "$C/waypaper/config.ini" 2>/dev/null || true
+    "$T/fondos-bin" poner "$nuevo" || true
 }
 
-generar_dinamico() {
-    local img; img="$(fondo_actual)"
-    if [ -z "$img" ] || [ ! -f "$img" ]; then
-        echo "No encuentro el fondo actual. Elige uno con waypaper (Super + W)." >&2
-        return 1
+# Acentos del fondo actual, en la variante del modo (matugen --mode dark|light)
+generar_acentos() {
+    local img scheme
+    img="$(fondo_actual)"
+    [ "$1" = claro ] && scheme=light || scheme=dark
+    if [ -f "$img" ] && matugen image "$img" --json hex --dry-run --mode "$scheme" --prefer saturation \
+            | python3 "$T/matugen-a-colors.py" > "$CACHE/acentos.tmp"; then
+        mv "$CACHE/acentos.tmp" "$CACHE/acentos.colors"
+    else
+        rm -f "$CACHE/acentos.tmp" "$CACHE/acentos.colors"   # sin fondo o sin matugen: queda la paleta del modo
     fi
-    matugen image "$img" --json hex --dry-run --mode dark --prefer saturation \
-        | python3 "$T/matugen-a-colors.py" > "$CACHE/dinamico.colors"
-    echo "$CACHE/dinamico.colors"
 }
 
 renderizar() {
-    local colores="$1" plantilla="$2" destino="$3" tmp glass
+    local colores="$1" plantilla="$2" destino="$3" tmp glass acentos
     tmp="$(mktemp)"
     glass="$CACHE/glass"
     [ -f "$glass" ] || cp "$T/vidrio/oscurecer.glass" "$glass"
+    acentos="$CACHE/acentos.colors"
+    [ -f "$acentos" ] || acentos=/dev/null
     cp "$plantilla" "$tmp"
+    # Gana el primer valor de cada clave: primero los acentos del fondo, luego el modo
     while IFS='=' read -r k v; do
         [[ -z "$k" || "$k" == \#* ]] && continue
         sed -i "s|{{$k}}|$v|g" "$tmp"
-    done < <(cat "$colores" "$glass")
+    done < <(cat "$acentos" "$colores" "$glass")
     mv "$tmp" "$destino"
 }
 
-aplicar() {
-    local modo="$1" colores
-    case "$modo" in
-        oscuro|claro) colores="$T/themes/$modo.colors" ;;
-        dinamico)     colores="$(generar_dinamico)" || return 1 ;;
-        *) echo "Modo desconocido: $modo (usa oscuro, claro o dinamico)" >&2; exit 1 ;;
-    esac
-
+renderizar_todo() {
+    local colores="$1"
     renderizar "$colores" "$T/templates/hypr-colors.lua"     "$C/hypr/colors.lua"
     renderizar "$colores" "$T/templates/hyprlock-colors.conf" "$C/hypr/colors-hyprlock.conf"
     renderizar "$colores" "$T/templates/waybar-colors.css"   "$C/waybar/colors.css"
@@ -74,6 +78,18 @@ aplicar() {
     renderizar "$colores" "$T/templates/rofi-colors.rasi"    "$C/rofi/colors.rasi"
     mkdir -p "$C/swaync"
     renderizar "$colores" "$T/templates/swaync.css"          "$C/swaync/style.css"
+}
+
+aplicar() {
+    local modo="$1" colores
+    case "$modo" in
+        oscuro|claro) colores="$T/themes/$modo.colors" ;;
+        *) echo "Modo desconocido: $modo (usa oscuro o claro)" >&2; exit 1 ;;
+    esac
+
+    grafico && poner_fondo "$modo"
+    generar_acentos "$modo"
+    renderizar_todo "$colores"
 
     local scheme icons gtk
     scheme="$(sed -n 's/^scheme=//p' "$colores")"
@@ -93,8 +109,7 @@ aplicar() {
     echo "$modo" > "$ESTADO"
 
     # Recargar lo que esté abierto (si no hay sesión gráfica, no pasa nada)
-    if [ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || ls /run/user/"$(id -u)"/hypr/* >/dev/null 2>&1; then
-        poner_fondo "$modo"
+    if grafico; then
         hyprctl reload >/dev/null 2>&1 || true
         swaync-client -rs >/dev/null 2>&1 || true
         pkill -SIGUSR1 -x kitty 2>/dev/null || true
@@ -115,13 +130,23 @@ aplicar() {
     echo "Tema: $modo"
 }
 
+# Solo cambia el acento: no toca la barra ni la bandeja (se usa al cambiar de fondo, también al rotar)
+acentos() {
+    local modo; modo="$(modo_actual)"
+    generar_acentos "$modo"
+    renderizar_todo "$T/themes/$modo.colors"
+    if grafico; then
+        hyprctl reload >/dev/null 2>&1 || true
+        swaync-client -rs >/dev/null 2>&1 || true
+        pkill -SIGUSR1 -x kitty 2>/dev/null || true
+        # waybar recarga su estilo al ver el archivo escrito (reload_style_on_change); el contenido no cambia
+        : >> "$C/waybar/style.css"
+    fi
+}
+
 case "${1:-siguiente}" in
     actual)    modo_actual ;;
-    siguiente)
-        case "$(modo_actual)" in
-            oscuro) aplicar claro ;;
-            claro)  aplicar dinamico || aplicar oscuro ;;
-            *)      aplicar oscuro ;;
-        esac ;;
+    acentos)   acentos ;;
+    siguiente) [ "$(modo_actual)" = oscuro ] && aplicar claro || aplicar oscuro ;;
     *) aplicar "$1" ;;
 esac

@@ -8,3 +8,4 @@ dotfiles/.config/kitty/colors.conf
 dotfiles/.config/rofi/colors.rasi
 dotfiles/.config/swaync/style.css
 dotfiles/.config/hypr/hypridle.conf
+__pycache__/

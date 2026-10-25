@@ -148,7 +148,7 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 
 -- Bloquear, fondos y portapapeles
 hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("~/.config/theme/bloquear-bin"))
-hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("waypaper"))
+hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("~/.config/theme/fondos-bin elegir"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("~/.config/theme/grabar-bin")) -- grabar pantalla
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p Portapapeles | cliphist decode | wl-copy"))
 
@@ -224,7 +224,7 @@ hl.window_rule({
 -- Ventanas pequeñas que van mejor flotando
 hl.window_rule({
     name  = "float-tools",
-    match = { class = "^(org.pulseaudio.pavucontrol|blueman-manager|nm-connection-editor|waypaper)$" },
+    match = { class = "^(org.pulseaudio.pavucontrol|blueman-manager|nm-connection-editor)$" },
     float = true,
 })
 

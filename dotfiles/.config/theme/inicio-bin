@@ -39,12 +39,10 @@ for c in /proc/asound/card[0-9]*; do
     amixer -c "$n" sget 'Internal Mic Boost' >/dev/null 2>&1 && amixer -c "$n" sset 'Internal Mic Boost' 1
 done
 
-# Barra: arrancarla ya, por si `tema` fallara
-lanzar waybar
-
-# Fondo y tema (tema también reinicia la barra y la bandeja con los colores del modo)
+# Fondo y tema (tema también arranca la barra y la bandeja con los colores del modo;
+# así la barra se lanza una sola vez y no queda ningún cava huérfano)
 for _ in $(seq 1 20); do awww query >/dev/null 2>&1 && break; sleep 0.25; done
-waypaper --restore
+"$T/fondos-bin" restaurar
 TEMA_SIN_AVISO=1 "$T/tema" "$("$T/tema" actual)"
 sleep 2
 pgrep -x waybar >/dev/null || lanzar waybar

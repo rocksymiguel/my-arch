@@ -21,5 +21,8 @@ ascii_max_range = 7
 bar_delimiter = 59
 EOF
 
+# Si quedó un cava de antes (waybar se reinició y lo dejó huérfano), cerrarlo: solo puede haber uno
+pkill -f "cava -p $CONF" 2>/dev/null
+
 # 0..7 -> ▁..█ ; todo ceros = silencio = línea vacía
 exec cava -p "$CONF" | LC_ALL=C.UTF-8 sed -u -e 's/;//g' -e 's/^0*$//' -e 'y/01234567/▁▂▃▄▅▆▇█/'

@@ -6,7 +6,7 @@ Mi instalación de Arch Linux con Hyprland: listas de paquetes, dotfiles y guía
 
 | Carpeta | Qué hay |
 |---|---|
-| `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`, `waypaper`, `gtk-3.0`, `gtk-4.0`, cursor) |
+| `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`, `gtk-3.0`, `gtk-4.0`, cursor) |
 | `packages/repo.txt` | Paquetes de los repositorios oficiales instalados a mano |
 | `packages/aur.txt` | Paquetes del AUR |
 | `install/` | Guía de instalación manual (por ahora). Más adelante: `install.sh` único con módulos `iso`, `base`, `hardware/amd`, `hardware/nvidia`, `hyprland` |
@@ -39,11 +39,15 @@ pacman -Qqem > packages/aur.txt
 `~/.config/theme` define los colores de todo el escritorio:
 
 ```bash
-tema            # siguiente modo: oscuro -> claro -> dinamico
+tema            # cambia de modo: oscuro <-> claro
 tema oscuro     # Nord profundo (base)
 tema claro      # Nord claro (Snow Storm)
-tema dinamico   # colores del fondo actual con matugen
+tema acentos    # vuelve a sacar los acentos del fondo actual (sin reiniciar la barra)
 ```
+
+El **modo** pone fondos, superficies, texto, GTK, iconos, cursor y carpetas; el **fondo de pantalla**
+pone solo el acento (bordes de ventana, barra, lanzador, kitty, bloqueo) con matugen, en la variante
+del modo. Al cambiar de fondo, o al rotar, se actualiza sin reiniciar waybar.
 
 Los colores viven en `themes/*.colors` y las plantillas por programa en `templates/`.
 Los archivos que genera (`colors.lua`, `colors.css`, `rofi.ini`, `swaync/config`…) no se versionan:
@@ -65,6 +69,10 @@ En `~/Imágenes/Fondos` (no se versionan): los que llevan `Dark Mode` en el nomb
 son para `tema oscuro` y los que llevan `Light Mode`, para `tema claro`. Al cambiar de tema
 se pone uno de ese modo, salvo que el actual ya lo sea.
 
+Super + W abre el selector con miniaturas (rofi): empieza en el modo actual y Tab alterna entre
+oscuros y claros. Elegir un fondo del otro modo cambia también el modo. Las miniaturas se guardan
+en `~/.cache/theme/miniaturas`; el último fondo, en `~/.cache/theme/fondo`.
+
 ## Barra
 
 Islas: escritorios con iconos de apps, música (MPRIS, p. ej. Feishin), reloj y tiempo (wttr.in, Daule),
@@ -78,6 +86,7 @@ Desde el menú de ajustes () o con comandos:
 ```bash
 inactividad ver                 # valores actuales (minutos, 0 = nunca)
 inactividad atenuar 5           # atenuar, bloquear, apagar, suspender
+fondos elegir                   # selector con miniaturas (Super + W)
 fondos siguiente                # siguiente fondo del modo actual
 fondos rotar 10                 # rotar cada 10 min (0 = apagado)
 musica                          # Super + F: mostrar/esconder Feishin

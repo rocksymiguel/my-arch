@@ -1,45 +1,126 @@
 #!/bin/bash
-# Fondos por modo con rotación automática.
+# Fondos por modo, con selector de miniaturas en rofi y rotación automática.
+#   fondos elegir        -> selector con miniaturas (Super + W); Tab alterna oscuros / claros
 #   fondos siguiente     -> pone el siguiente fondo del modo actual
+#   fondos poner <ruta>  -> pone ese fondo y lo recuerda (sin tocar el tema)
+#   fondos restaurar     -> vuelve a poner el último fondo (al iniciar la sesión)
 #   fondos rotar <min>   -> cada cuántos minutos rotar (0 = apagado)
 #   fondos rotar         -> muestra el intervalo
 #   fondos demonio       -> bucle que rota (lo arranca Hyprland)
-# Modo oscuro: fondos con "Dark Mode" en el nombre; claro: "Light Mode"; dinámico: todos.
+# Modo oscuro: fondos con "Dark Mode" en el nombre; claro: "Light Mode".
+# Elegir un fondo del otro modo cambia también el modo; el acento sale siempre del fondo.
 set -euo pipefail
 
 T="$HOME/.config/theme"
 C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
 FONDOS="$HOME/Imágenes/Fondos"
 INTERVALO="$C/rotar"
+ULTIMO="$C/fondo"
+MINI="$C/miniaturas"
 mkdir -p "$C"
 
 lista() {
     local patron
-    case "$("$T/tema" actual)" in
+    case "${1:-$("$T/tema" actual)}" in
         oscuro) patron="*Dark Mode*" ;;
-        claro)  patron="*Light Mode*" ;;
-        *)      patron="*" ;;
+        *)      patron="*Light Mode*" ;;
     esac
     find "$FONDOS" -maxdepth 1 -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.webp" \) \
         -name "$patron" 2>/dev/null | sort
 }
 
+actual() { cat "$ULTIMO" 2>/dev/null || awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1; }
+
+poner() {
+    [ -f "${1:-}" ] || return 1
+    awww img "$1" --transition-type grow --transition-duration 1.5 --transition-fps 60 >/dev/null 2>&1 || return 1
+    echo "$1" > "$ULTIMO"
+}
+
+restaurar() {
+    local img
+    img="$(cat "$ULTIMO" 2>/dev/null || true)"
+    [ -f "$img" ] || img="$(lista | head -n 1)"
+    [ -f "$img" ] || return 0
+    awww img "$img" --transition-type none >/dev/null 2>&1 || return 0
+    echo "$img" > "$ULTIMO"
+}
+
 siguiente() {
-    local actual todos n i
-    actual="$(awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1)"
+    local act todos n i j
+    act="$(actual)"
     mapfile -t todos < <(lista)
     n=${#todos[@]}
     [ "$n" -gt 0 ] || return 0
     i=0
-    for j in "${!todos[@]}"; do [ "${todos[$j]}" = "$actual" ] && i=$(( (j + 1) % n )); done
-    awww img "${todos[$i]}" --transition-type grow --transition-duration 1.5 --transition-fps 60 >/dev/null 2>&1 || return 0
-    sed -i "s|^wallpaper = .*|wallpaper = ${todos[$i]/#$HOME/\~}|" "$HOME/.config/waypaper/config.ini" 2>/dev/null || true
-    [ "$("$T/tema" actual)" = dinamico ] && "$T/tema" dinamico >/dev/null
+    for j in "${!todos[@]}"; do [ "${todos[$j]}" = "$act" ] && i=$(( (j + 1) % n )); done
+    poner "${todos[$i]}" || return 0
+    "$T/tema" acentos >/dev/null
     return 0
 }
 
+# Miniaturas de 320x180 en caché: solo se hacen las que faltan (o cambiaron)
+miniaturas() {
+    local faltan=() f
+    mkdir -p "$MINI"
+    for f in "$@"; do [ "$MINI/$(basename "$f").png" -nt "$f" ] || faltan+=("$f"); done
+    [ ${#faltan[@]} -gt 0 ] || return 0
+    python3 -I - "$MINI" "${faltan[@]}" <<'EOF'
+import os
+import sys
+from PIL import Image, ImageOps
+
+destino, *archivos = sys.argv[1:]
+for a in archivos:
+    with Image.open(a) as im:
+        mini = ImageOps.fit(im.convert("RGB"), (320, 180), Image.LANCZOS)
+        mini.save(os.path.join(destino, os.path.basename(a) + ".png"))
+EOF
+}
+
+# 4 columnas x 3 filas de miniaturas; cabe en la pantalla de 1366x768 junto a la barra
+ESTILO='window { width: 720px; }
+entry { placeholder: ""; }
+listview { columns: 4; lines: 3; flow: horizontal; fixed-columns: true; spacing: 8px; }
+element { orientation: vertical; padding: 6px; spacing: 2px; }
+element-icon { size: 150px; horizontal-align: 0.5; }
+element-text { horizontal-align: 0.5; }'
+
+elegir() {
+    pkill -x rofi 2>/dev/null && return 0   # si ya estaba abierto, Super + W lo cierra
+    local cat act todos f n fila i sel rc p
+    cat="$("$T/tema" actual)"
+    act="$(actual)"
+    while true; do
+        mapfile -t todos < <(lista "$cat")
+        [ ${#todos[@]} -gt 0 ] || { notify-send -a fondos "No hay fondos para el modo $cat"; return 0; }
+        miniaturas "${todos[@]}"
+        fila=0
+        for i in "${!todos[@]}"; do [ "${todos[$i]}" = "$act" ] && fila=$i; done
+        [ "$cat" = oscuro ] && p="Fondos oscuros · Tab: ver claros" || p="Fondos claros · Tab: ver oscuros"
+        rc=0
+        sel="$(for f in "${todos[@]}"; do
+                n="$(basename "$f")"; n="${n%.*}"
+                n="$(sed -E 's/ ?- ?(Dark|Light) Mode//' <<< "$n")"
+                printf '%s\0icon\x1f%s\n' "$n" "$MINI/$(basename "$f").png"
+            done | rofi -dmenu -i -show-icons -no-custom -format i -selected-row "$fila" -p "$p" \
+                -kb-custom-1 "Tab" -kb-element-next "" -theme-str "$ESTILO")" || rc=$?
+        if [ "$rc" -eq 10 ]; then
+            [ "$cat" = oscuro ] && cat=claro || cat=oscuro
+            continue
+        fi
+        [ "$rc" -eq 0 ] || return 0
+        poner "${todos[$sel]}" || return 0
+        if [ "$cat" != "$("$T/tema" actual)" ]; then "$T/tema" "$cat" >/dev/null; else "$T/tema" acentos >/dev/null; fi
+        return 0
+    done
+}
+
 case "${1:-}" in
+    elegir) elegir ;;
     siguiente) siguiente ;;
+    poner) poner "${2:-}" ;;
+    restaurar) restaurar ;;
     rotar)
         if [ -z "${2:-}" ]; then echo "Rotar cada: $(cat "$INTERVALO" 2>/dev/null || echo 0) min (0 = apagado)"; exit 0; fi
         [[ "$2" =~ ^[0-9]+$ ]] || { echo "Uso: fondos rotar <minutos>" >&2; exit 1; }
@@ -56,5 +137,5 @@ case "${1:-}" in
             pasado=$((pasado + 30))
             if [ "$pasado" -ge $((min * 60)) ]; then pasado=0; siguiente || true; fi
         done ;;
-    *) sed -n '2,7p' "$0" | sed 's/^# //'; exit 1 ;;
+    *) sed -n '2,10p' "$0" | sed 's/^# //'; exit 1 ;;
 esac

@@ -7,5 +7,4 @@ papirus-folders
 paru
 plymouth-theme-connect-git
 vesktop-bin
-waypaper
 zen-browser-bin

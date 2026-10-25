@@ -38,10 +38,10 @@ Comandos propios (alias en scripts en `~/.config/theme/`):
 
 | Comando | Qué hace |
 |---|---|
-| `tema oscuro\|claro\|dinamico` | Paleta de todo el escritorio a partir de plantillas (`theme/templates`, `theme/themes/*.colors`). El dinámico usa matugen. También cambia el fondo según el modo y reinicia la barra y la bandeja |
+| `tema oscuro\|claro\|acentos` | Modo (paleta base Nord, GTK, iconos, cursor, carpetas) a partir de plantillas (`theme/templates`, `theme/themes/*.colors`). **Ya no hay modo dinámico:** el acento (bordes, barra, lanzador, kitty, bloqueo) sale siempre del fondo con matugen en la variante del modo. `tema acentos` lo actualiza sin reiniciar waybar (`reload_style_on_change`); cambiar de modo sí reinicia barra y bandeja |
 | `vidrio total\|oscurecer` | Opacidad y desenfoque (`theme/vidrio/*.glass`). Total: ventanas al 75 % activas y 10 % inactivas; kitty igual |
 | `inactividad [clave min]` | Genera `hypridle.conf` (atenuar, bloquear, apagar, suspender). Ahora: atenuar 10, lo demás nunca |
-| `fondos siguiente\|rotar N\|demonio` | Fondos de `~/Imágenes/Fondos` según el modo ("Dark Mode" / "Light Mode" en el nombre). Rotación cada N minutos |
+| `fondos elegir\|siguiente\|poner\|restaurar\|rotar N\|demonio` | Fondos de `~/Imágenes/Fondos` según el modo ("Dark Mode" / "Light Mode" en el nombre). `elegir` (Super + W) es el selector con miniaturas en rofi, Tab alterna oscuros/claros y elegir uno del otro modo cambia el modo; **waypaper se quitó**. awww pinta el fondo y `~/.cache/theme/fondo` recuerda el último. Rotación cada N minutos |
 | `musica` (Super + F) | Muestra o esconde Feishin en el escritorio especial `musica`, flotando a 960×560 |
 | `hypr` | Abre Hyprland desde la TTY |
 

@@ -1,6 +1,7 @@
 // Barra en islas para Hyprland (generada con iconos por código)
 {
     "layer": "top",
+    "reload_style_on_change": true, // `tema acentos` cambia el color sin reiniciar la barra
     "position": "top",
     "height": 28,
     "margin-top": 4,
@@ -35,8 +36,7 @@
             "class<thunar>": "󰉋",
             "class<feishin>": "󰝚",
             "class<org.pulseaudio.pavucontrol>": "󰕾",
-            "class<blueman-manager>": "󰂯",
-            "class<waypaper>": "󰸉"
+            "class<blueman-manager>": "󰂯"
         },
         "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
         "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
