@@ -7,10 +7,9 @@
 #   - modo-splash: muestra/oculta Plymouth al cambiar de modo (sudo sin contraseña solo para eso)
 #   - hyprlock desbloquea el llavero «login» de gnome-keyring con la misma contraseña
 #   - Steam (modo juego) puede cambiar el brillo: sudo sin contraseña solo para escribirlo
-#   - arranque más rápido: amdgpu ya no se carga en el initramfs (tardaba ~4,5 s y frenaba el
-#     disco); Plymouth arranca en la pantalla del firmware (plymouth.use-simpledrm en Limine) y
-#     pasa a amdgpu cuando este carga. Para volver atrás: MODULES=(amdgpu), «kms» en HOOKS y
-#     mkinitcpio -P
+#   - amdgpu en el initramfs (MODULES y hook kms): se probó a sacarlo para que no frenara el disco,
+#     pero fuera tardaba aún más (~9 s) y la pantalla se quedaba en negro entre Plymouth y el
+#     bloqueo, porque Plymouth pierde la pantalla del firmware cuando amdgpu la sustituye
 #   - Limine: silencio del kernel, sin consola en tty1 (fbcon=vc:2-6: la imagen de Plymouth se
 #     queda hasta que el modo dibuja; consola de emergencia en Ctrl+Alt+F2), cursor oculto y
 #     colores (lo hace limine.sh)
@@ -69,9 +68,9 @@ chmod 440 /etc/sudoers.d/brillo-steam.tmp
 visudo -cf /etc/sudoers.d/brillo-steam.tmp
 mv /etc/sudoers.d/brillo-steam.tmp /etc/sudoers.d/brillo-steam
 
-echo "==> Gráfica fuera del initramfs (se carga después, en paralelo)"
-sed -i -E 's/^MODULES=\((.*)\bamdgpu\b ?(.*)\)/MODULES=(\1\2)/; s/^MODULES=\((.*) \)/MODULES=(\1)/' /etc/mkinitcpio.conf
-sed -i -E '/^HOOKS=/ s/ kms\b//' /etc/mkinitcpio.conf
+echo "==> Gráfica en el initramfs (Plymouth la usa desde el principio y no se ve negro)"
+grep -qE '^MODULES=.*\bamdgpu\b' /etc/mkinitcpio.conf || sed -i -E 's/^MODULES=\((.*)\)/MODULES=(\1 amdgpu)/; s/^MODULES=\( /MODULES=(/' /etc/mkinitcpio.conf
+grep -qE '^HOOKS=.*\bkms\b' /etc/mkinitcpio.conf || sed -i -E '/^HOOKS=/ s/ modconf / modconf kms /' /etc/mkinitcpio.conf
 grep -E '^(MODULES|HOOKS)' /etc/mkinitcpio.conf
 mkinitcpio -P
 

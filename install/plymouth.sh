@@ -15,8 +15,7 @@ grep -qE '^HOOKS=.*\bplymouth\b' /etc/mkinitcpio.conf || \
     sed -i -E 's/^(HOOKS=\(base systemd)/\1 plymouth/' /etc/mkinitcpio.conf
 grep -E '^HOOKS' /etc/mkinitcpio.conf
 
-# La gráfica NO se carga en el initramfs (tardaba ~4,5 s y frenaba el disco): Plymouth empieza en la
-# pantalla del firmware con plymouth.use-simpledrm (cmdline de Limine). Ver arranque.sh.
+# La gráfica (amdgpu) se carga en el initramfs: lo asegura arranque.sh.
 
 echo "==> quiet splash en las entradas de systemd-boot"
 for e in /boot/loader/entries/arch*.conf; do

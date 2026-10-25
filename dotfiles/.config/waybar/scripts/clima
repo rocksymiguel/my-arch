@@ -1,7 +1,13 @@
 #!/bin/bash
 # El tiempo en Daule para waybar (JSON). Usa wttr.in; si no hay conexión, no muestra nada.
+# Al iniciar sesión el Wi-Fi aún no está conectado: reintenta durante 2 minutos antes de rendirse
+# (si no, la isla se queda vacía hasta la siguiente consulta, 30 minutos después).
 CIUDAD="Daule"
-corto="$(curl -sf --max-time 8 "https://wttr.in/${CIUDAD}?format=%c%t&lang=es" | tr -s ' ')"
+for _ in $(seq 1 12); do
+    corto="$(curl -sf --max-time 8 "https://wttr.in/${CIUDAD}?format=%c%t&lang=es" | tr -s ' ')"
+    [ -n "$corto" ] && break
+    sleep 10
+done
 largo="$(curl -sf --max-time 8 "https://wttr.in/${CIUDAD}?format=%C,+%t+(sensación+%f),+humedad+%h,+viento+%w&lang=es")"
 if [ "${1:-}" = "texto" ]; then echo "$corto"; exit 0; fi
 if [ -z "$corto" ]; then
