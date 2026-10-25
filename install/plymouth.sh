@@ -15,12 +15,8 @@ grep -qE '^HOOKS=.*\bplymouth\b' /etc/mkinitcpio.conf || \
     sed -i -E 's/^(HOOKS=\(base systemd)/\1 plymouth/' /etc/mkinitcpio.conf
 grep -E '^HOOKS' /etc/mkinitcpio.conf
 
-echo "==> Cargar el driver de la gráfica al principio (la animación aparece antes)"
-GPU="$(lspci -k 2>/dev/null | grep -A3 -iE 'vga|3d|display' | awk '/Kernel driver in use/ {print $5; exit}')"
-if [ -n "$GPU" ] && ! grep -qE "^MODULES=.*\b$GPU\b" /etc/mkinitcpio.conf; then
-    sed -i -E "s/^MODULES=\((.*)\)/MODULES=(\1 $GPU)/; s/^MODULES=\( /MODULES=(/" /etc/mkinitcpio.conf
-fi
-grep -E '^MODULES' /etc/mkinitcpio.conf
+# La gráfica NO se carga en el initramfs (tardaba ~4,5 s y frenaba el disco): Plymouth empieza en la
+# pantalla del firmware con plymouth.use-simpledrm (cmdline de Limine). Ver arranque.sh.
 
 echo "==> quiet splash en las entradas de systemd-boot"
 for e in /boot/loader/entries/arch*.conf; do

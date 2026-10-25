@@ -106,7 +106,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | K | Grabar pantalla | ✅ gpu-screen-recorder, Super+Shift+R, isla REC (`grabar-bin`) |
 | L | hyprpicker | ✅ Como app "Selector de color" en rofi (sin atajo) |
 | M–P | Terminal | ✅ fish (solo en kitty), eza, bat (cat), fzf, zoxide (z), yazi (y) |
-| Q | plymouth | ✅ amdgpu en MODULES (aparece antes), hook tras systemd, `quiet splash`. Colección adi1090x: **connect** (n.º 16). Cambiar: `sudo bash ~/my-arch/install/plymouth.sh <tema>` |
+| Q | plymouth | ✅ amdgpu **fuera** del initramfs (sin MODULES ni hook kms: cargarlo tardaba ~4,5 s y frenaba el disco) y `plymouth.use-simpledrm` para que la animación salga en la pantalla del firmware; hook tras systemd, `quiet splash`; sin Plymouth al apagar/reiniciar (servicios enmascarados). Limine espera 2 s. Colección adi1090x: **connect** (n.º 16). Cambiar: `sudo bash ~/my-arch/install/plymouth.sh <tema>` |
 | R | Gestor de arranque | ✅ Limine con tema Nord |
 | S | Pantalla de login | ❌ No hay: autologin + elección en Limine |
 | T–V | Apps | ✅ Vesktop (Discord; el tema Nord lo elige el usuario en Vencord) · Qt y Spotify no hacen falta |
