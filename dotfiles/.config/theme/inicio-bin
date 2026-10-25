@@ -33,6 +33,12 @@ gsettings set org.gnome.desktop.interface cursor-theme "$(cat "$C/cursor" 2>/dev
 gsettings set org.gnome.desktop.interface cursor-size 24
 gsettings set org.gnome.desktop.interface font-name 'JetBrainsMono Nerd Font 9'
 
+# Micrófono interno: el boost de fábrica (+30 dB) solo satura y amplifica ruido; con 1 (+10 dB) se oye la voz
+for c in /proc/asound/card[0-9]*; do
+    n="${c#/proc/asound/card}"
+    amixer -c "$n" sget 'Internal Mic Boost' >/dev/null 2>&1 && amixer -c "$n" sset 'Internal Mic Boost' 1
+done
+
 # Barra: arrancarla ya, por si `tema` fallara
 lanzar waybar
 
