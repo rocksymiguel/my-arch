@@ -17,10 +17,7 @@ efibootmgr --version | head -n 1
 echo "==> Limine en la partición EFI"
 mkdir -p /boot/EFI/limine /boot/limine
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/limine/BOOTX64.EFI
-cp "$D/limine-fondo.png" /boot/limine/fondo.png
-ROOTUUID="$(findmnt -no UUID /)"
-sed "s/__ROOTUUID__/$ROOTUUID/g" "$D/limine.conf" > /boot/EFI/limine/limine.conf
-grep -c "modo=" /boot/EFI/limine/limine.conf
+bash "$D/limine.sh"   # configuración y fondos al azar
 
 echo "==> Entrada de Limine en la UEFI (primera); systemd-boot se queda detrás"
 if ! efibootmgr | grep -q "Limine"; then

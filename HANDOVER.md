@@ -113,7 +113,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 
 ## Otros pendientes grandes
 
-- **Modo juego (hecho, 2026-10-24):** Limine (`/boot/EFI/limine/BOOTX64.EFI`, config `/boot/EFI/limine/limine.conf` generada desde `install/limine.conf`, fondo `install/limine-fondo.png`) con entradas Escritorio / Juego / LTS que pasan `modo=` en cmdline; systemd-boot sigue en la UEFI como respaldo (F12). Autologin en tty1 (getty override); fish llama a `modo-bin arrancar` en tty1, que abre `start-hyprland` (bloqueado al inicio: BLOQUEAR_AL_INICIO=1 → inicio-bin lanza bloquear-bin) o `gamescope-session-plus steam`, y al cerrarse abre el modo pedido en `~/.cache/theme/siguiente-modo`. Cambiar: ⏻ → Modo juego (`modo-bin juego`); en Steam, Cambiar a escritorio → `/usr/lib/os-session-select` → `modo-bin escritorio`. Instalación: `sudo bash ~/my-arch/install/modo-juego.sh`.
+- **Modo juego (hecho, 2026-10-24):** Limine (`/boot/EFI/limine/BOOTX64.EFI`, config `/boot/EFI/limine/limine.conf` generada desde `install/limine.conf` por `install/limine.sh`, que copia todos los fondos a `/boot/limine/fondos` para que salga uno al azar; hay que volver a ejecutarlo tras añadir fondos) con solo dos entradas, Escritorio y Juego (sin comentarios; la LTS se quitó del menú, el kernel sigue instalado), que pasan `modo=` en cmdline; systemd-boot sigue en la UEFI como respaldo (F12). Autologin en tty1 (getty override); fish llama a `modo-bin arrancar` en tty1, que abre `start-hyprland` (bloqueado al inicio: BLOQUEAR_AL_INICIO=1 → inicio-bin lanza bloquear-bin) o `gamescope-session-plus steam`, y al cerrarse abre el modo pedido en `~/.cache/theme/siguiente-modo`. Cambiar: ⏻ → Modo juego (`modo-bin juego`); en Steam, Cambiar a escritorio → `/usr/lib/os-session-select` → `modo-bin escritorio`. Instalación: `sudo bash ~/my-arch/install/modo-juego.sh`.
 - **Arranque y modo juego (decidido):** elegir "Arch – Escritorio" o "Arch – Juego" **en el menú de arranque**, con un gestor bonito (Limine o rEFInd con tema Nord) y entrada directa sin pantalla de login. Se hará cuando toque el modo juego.
 
 - **Modo juego** al estilo SteamOS: `gamescope-session-steam`, multilib, `lib32-mesa`, `lib32-vulkan-radeon`. Elegible desde **systemd-boot** con las entradas "Arch – Escritorio" y "Arch – Juego". El usuario prefiere una sola pantalla de selección.
@@ -125,7 +125,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 ## Siguiente paso sugerido
 
 La lista de personalización está terminada. Queda:
-- **Optimizar** con los 3,2 GB actuales: RAM en segundo plano y espacio en disco.
+- RAM: Steam ya no arranca con el escritorio (unos 900 MB), y zram con `swappiness` 180 (`install/zram.sh`). El disco va sobrado (14 GB de 937).
 - **Limine:** personalizar más su aspecto (`install/limine.conf`).
 - **`install.sh`** único y, cuando se arregle la RAM, **Quickshell**.
 - Esperando a terceros: el clic en los escritorios de waybar (arreglo sin publicar en 0.15) y hyprexpo oficial para Hyprland 0.56.
