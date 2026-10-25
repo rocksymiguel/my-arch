@@ -1,9 +1,16 @@
 #!/bin/bash
 # Bloquea la pantalla con hyprlock usando el fondo actual (desenfocado por hyprlock).
-# Lo llaman Super + L, el menú de apagado y la inactividad (lock_cmd de hypridle).
+# Lo llaman Super + L, el menú de apagado, la inactividad (lock_cmd de hypridle) y Hyprland al
+# iniciar sin contraseña: entonces awww aún no ha pintado nada, así que vale el último fondo recordado.
+# Si fondos-bin dejó la copia a tamaño de pantalla de ese fondo, se usa esa (carga al instante).
 pidof hyprlock >/dev/null && exit 0
 C="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
 mkdir -p "$C"
 fondo="$(awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1)"
-[ -f "$fondo" ] && ln -sf "$fondo" "$C/fondo-bloqueo"
+[ -f "$fondo" ] || fondo="$(cat "$C/fondo" 2>/dev/null)"
+if [ -f "$C/fondo-bloqueo.jpg" ] && [ "$(cat "$C/fondo-bloqueo.origen" 2>/dev/null)" = "$fondo" ]; then
+    ln -sf "$C/fondo-bloqueo.jpg" "$C/fondo-bloqueo"
+elif [ -f "$fondo" ]; then
+    ln -sf "$fondo" "$C/fondo-bloqueo"
+fi
 exec hyprlock

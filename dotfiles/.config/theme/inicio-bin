@@ -9,9 +9,7 @@ set -x
 date
 
 # Lanza un programa en segundo plano, salvo que ya esté funcionando (así se puede repetir sin duplicados)
-# Inicio automático sin contraseña: el escritorio se abre bloqueado
-[ "${BLOQUEAR_AL_INICIO:-0}" = 1 ] && setsid -f "$T/bloquear-bin" >/dev/null 2>&1
-
+# (el bloqueo del inicio sin contraseña lo lanza hyprland.lua antes que este script)
 lanzar() {
     pgrep -f -x "$*" >/dev/null && return 0
     setsid -f "$@" >/dev/null 2>&1

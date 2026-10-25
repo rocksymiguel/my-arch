@@ -25,6 +25,15 @@ escritorio() {
     BLOQUEAR_AL_INICIO="${1:-0}" XDG_SESSION_TYPE=wayland start-hyprland
 }
 
+# Animación de Plymouth entre un modo y otro, para no ver la consola. Plymouth tiene que soltar la
+# pantalla antes de abrir el modo, así que se cierra dejando su última imagen hasta que este dibuje.
+# Sin /usr/local/bin/modo-splash (install/arranque.sh) no hace nada.
+transicion() {
+    sudo -n /usr/local/bin/modo-splash mostrar >/dev/null 2>&1 || return 0
+    sleep 1.5
+    sudo -n /usr/local/bin/modo-splash ocultar >/dev/null 2>&1 || true
+}
+
 juego() {
     limpiar_entorno
     gamescope-session-plus steam
@@ -44,6 +53,7 @@ case "${1:-}" in
             modo="$(cat "$SIG" 2>/dev/null)"
             rm -f "$SIG"
             [ -n "$modo" ] || break      # se cerró sin pedir otro modo: volver a la terminal
+            transicion
         done ;;
     juego)
         echo juego > "$SIG"

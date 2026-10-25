@@ -24,6 +24,10 @@ local browser     = "zen-browser"
 ---- AUTOSTART ----
 -------------------
 hl.on("hyprland.start", function()
+    -- Inicio automático sin contraseña: el bloqueo va lo primero, para no ver el escritorio antes
+    if os.getenv("BLOQUEAR_AL_INICIO") == "1" then
+        hl.exec_cmd("~/.config/theme/bloquear-bin")
+    end
     -- Todo el arranque está en un script (con registro en ~/.cache/theme/inicio.log)
     hl.exec_cmd("~/.config/theme/inicio-bin")
 end)

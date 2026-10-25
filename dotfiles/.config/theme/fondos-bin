@@ -32,10 +32,20 @@ lista() {
 
 actual() { cat "$ULTIMO" 2>/dev/null || awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1; }
 
+# Copia del fondo a tamaño de pantalla para el bloqueo (hyprlock la carga al instante y la desenfoca)
+copia_bloqueo() {
+    local res
+    res="$(hyprctl monitors -j 2>/dev/null | python3 -c 'import json,sys; m=json.load(sys.stdin)[0]; print(m["width"], m["height"], sep=":")' 2>/dev/null || echo 1366:768)"
+    ( nice -n 19 ffmpeg -nostdin -v error -y -i "$1" -frames:v 1 -q:v 2 \
+        -vf "scale=$res:force_original_aspect_ratio=increase,crop=$res" "$C/fondo-bloqueo.tmp.jpg" \
+      && mv "$C/fondo-bloqueo.tmp.jpg" "$C/fondo-bloqueo.jpg" && echo "$1" > "$C/fondo-bloqueo.origen" ) >/dev/null 2>&1 &
+}
+
 poner() {
     [ -f "${1:-}" ] || return 1
     awww img "$1" --transition-type grow --transition-duration 1.5 --transition-fps 60 >/dev/null 2>&1 || return 1
     echo "$1" > "$ULTIMO"
+    copia_bloqueo "$1"
 }
 
 restaurar() {
@@ -45,6 +55,7 @@ restaurar() {
     [ -f "$img" ] || return 0
     awww img "$img" --transition-type none >/dev/null 2>&1 || return 0
     echo "$img" > "$ULTIMO"
+    [ "$(cat "$C/fondo-bloqueo.origen" 2>/dev/null)" = "$img" ] || copia_bloqueo "$img"
 }
 
 siguiente() {

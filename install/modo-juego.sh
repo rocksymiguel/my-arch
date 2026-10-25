@@ -48,7 +48,7 @@ mkdir -p /etc/systemd/system/getty@tty1.service.d
 cat > /etc/systemd/system/getty@tty1.service.d/autologin.conf <<EOF
 [Service]
 ExecStart=
-ExecStart=-/sbin/agetty -o '-p -f -- \\\\u' --noclear --autologin $U %I \$TERM
+ExecStart=-/sbin/agetty -o '-p -f -- \\\\u' --noclear --noissue --nohostname --nonewline --skip-login --autologin $U %I \$TERM
 EOF
 systemctl daemon-reload
 cat /etc/systemd/system/getty@tty1.service.d/autologin.conf
