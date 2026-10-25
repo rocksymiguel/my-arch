@@ -107,6 +107,7 @@ aplicar() {
         (papirus-folders -C "$carpetas" -t "$icons" -o >/dev/null 2>&1 &)
     fi
     echo "$modo" > "$ESTADO"
+    "$T/logo-bin" actualizar || true   # logo de fastfetch: personaje del fondo nuevo
 
     # Recargar lo que esté abierto (si no hay sesión gráfica, no pasa nada)
     if grafico; then
@@ -135,6 +136,7 @@ acentos() {
     local modo; modo="$(modo_actual)"
     generar_acentos "$modo"
     renderizar_todo "$T/themes/$modo.colors"
+    "$T/logo-bin" actualizar || true
     if grafico; then
         hyprctl reload >/dev/null 2>&1 || true
         swaync-client -rs >/dev/null 2>&1 || true

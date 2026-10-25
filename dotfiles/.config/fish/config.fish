@@ -12,6 +12,7 @@ alias vidrio     "~/.config/theme/vidrio-bin"
 alias inactividad "~/.config/theme/inactividad-bin"
 alias fondos     "~/.config/theme/fondos-bin"
 alias musica     "~/.config/theme/musica-bin"
+alias logo       "~/.config/theme/logo-bin"
 alias hypr       "start-hyprland"
 alias modo       "~/.config/theme/modo-bin"
 

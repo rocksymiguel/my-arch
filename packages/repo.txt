@@ -61,6 +61,7 @@ pipewire-pulse
 playerctl
 plymouth
 python-gobject
+python-pillow
 qt6-wayland
 reflector
 rofi

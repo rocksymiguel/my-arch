@@ -4,7 +4,7 @@
 #   fondos siguiente     -> pone el siguiente fondo del modo actual
 #   fondos poner <ruta>  -> pone ese fondo y lo recuerda (sin tocar el tema)
 #   fondos restaurar     -> vuelve a poner el último fondo (al iniciar la sesión)
-#   fondos preparar      -> crea las miniaturas que falten (al iniciar, en segundo plano)
+#   fondos preparar      -> crea las miniaturas y los logos de fastfetch que falten (al iniciar, en segundo plano)
 #   fondos rotar <min>   -> cada cuántos minutos rotar (0 = apagado)
 #   fondos rotar         -> muestra el intervalo
 #   fondos demonio       -> bucle que rota (lo arranca Hyprland)
@@ -118,7 +118,8 @@ case "${1:-}" in
     restaurar) restaurar ;;
     preparar)   # miniaturas de todos los fondos, para que el selector abra al instante
         mapfile -t todos < <(lista oscuro; lista claro)
-        miniaturas "${todos[@]}" ;;
+        miniaturas "${todos[@]}"
+        "$T/logo-bin" preparar || true ;;
     rotar)
         if [ -z "${2:-}" ]; then echo "Rotar cada: $(cat "$INTERVALO" 2>/dev/null || echo 0) min (0 = apagado)"; exit 0; fi
         [[ "$2" =~ ^[0-9]+$ ]] || { echo "Uso: fondos rotar <minutos>" >&2; exit 1; }

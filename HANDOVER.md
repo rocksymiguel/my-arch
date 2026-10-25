@@ -90,7 +90,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | 13 | Cursor | ✅ Ice en oscuro, Classic en claro |
 | 14 | Zen | ✅ Tema Nord |
 | 15 | Thunar | ✅ Comprimir/extraer, miniaturas de vídeo, "Abrir terminal aquí" |
-| 16 | fastfetch | ✅ Mightyena (logo.png generado con PIL) y datos esenciales, al abrir kitty |
+| 16 | fastfetch | ✅ Logo = personaje del fondo actual (`logo-bin`: recorta quitando el color liso del fondo, caché en `~/.cache/theme/logos`; colores originales o, si no contrasta con la terminal, dos tonos acento/texto). Lo actualiza `tema`; `fondos preparar` recorta los nuevos. Datos esenciales, al abrir kitty |
 | 17 | btop | ✅ Tema Nord |
 | 18 | Prompt | ✅ starship de una línea, con línea en blanco entre comandos |
 | A | matugen | ✅ Hecho (tema dinámico) |
