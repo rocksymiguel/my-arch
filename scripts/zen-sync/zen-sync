@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# zen-sync: mantiene la sesión de Zen (pestañas, espacios, essentials, carpetas) igual entre
+# equipos a través del NAS. Funciona abras Zen como lo abras: un vigilante en segundo plano
+# baja la sesión más nueva mientras Zen está cerrado y la sube cuando Zen se cierra.
+# Uso: zen-sync vigilar               (lo arranca el servicio de usuario zen-sync.service)
+#      zen-sync subir | bajar | estado
+set -u
+
+SYNC_DIR=${ZEN_SYNC_DIR:-/mnt/truenas/emulacion/Development/Tools/zen-sync}
+HOST=$(< /etc/hostname)
+STATE_DIR="$HOME/.local/state/zen-sync"
+INTERVALO=5        # cada cuánto se mira si Zen está abierto
+COMPROBAR_NAS=10   # cada cuánto se busca una sesión nueva en el NAS con Zen cerrado
+STALE=180          # segundos sin latido para dar por cerrado Zen en otro equipo
+KEEP=5             # versiones que se guardan en el NAS
+FILES=(zen-sessions.jsonlz4 sessionstore.jsonlz4 sessionstore-backups/recovery.jsonlz4
+       zen-live-folders.jsonlz4 zen-space-routing.jsonlz4 zen-themes.json
+       zen-keyboard-shortcuts.json containers.json chrome)
+
+mkdir -p "$STATE_DIR/backup"
+ahora() { date +%s; }
+log() { echo "$(date '+%F %T') $*" >> "$STATE_DIR/zen-sync.log"; }
+aviso() { log "$*"; notify-send -a zen-sync "Zen" "$*" 2>/dev/null || true; }
+
+# Perfil por defecto de Zen según su profiles.ini (vale para cualquier equipo)
+perfil() {
+  if [ -n "${ZEN_PROFILE:-}" ]; then echo "$ZEN_PROFILE"; return; fi
+  local d p=""
+  for d in "$HOME/.config/zen" "$HOME/.zen"; do [ -f "$d/profiles.ini" ] && break; done
+  [ -f "$d/profiles.ini" ] || return 1
+  p=$(awk -F= '/^\[Install/{f=1;next} /^\[/{f=0} f&&$1=="Default"{print $2; exit}' "$d/profiles.ini")
+  [ -n "$p" ] || p=$(awk -F= '/^\[/{path="";def=0} $1=="Path"{path=$2} $1=="Default"&&$2=="1"{def=1} def&&path!=""{print path; exit}' "$d/profiles.ini")
+  [ -n "$p" ] && echo "$d/$p"
+}
+PROFILE=$(perfil) || PROFILE=""
+
+zen_abierto() { pgrep -x zen-bin >/dev/null || pgrep -x zen >/dev/null; }
+nas_disponible() {
+  timeout 10 bash -c 'test -d "$1" && mkdir -p "$2"' _ "$(dirname "$SYNC_DIR")" "$SYNC_DIR" 2>/dev/null
+}
+seq_local() { cat "$STATE_DIR/seq" 2>/dev/null || echo 0; }
+marca() { cat "$STATE_DIR/marca" 2>/dev/null || echo 0; }
+mtime() { stat -c %Y "$PROFILE/zen-sessions.jsonlz4" 2>/dev/null || echo 0; }
+
+leer_meta() {
+  RSEQ=0; RHOST=""; RTIME=0
+  [ -f "$SYNC_DIR/meta.txt" ] && read -r RSEQ RHOST RTIME < "$SYNC_DIR/meta.txt"
+  RSEQ=${RSEQ:-0}; RTIME=${RTIME:-0}
+}
+leer_candado() {
+  LHOST=""; LTIME=0
+  [ -f "$SYNC_DIR/lock.txt" ] && read -r LHOST LTIME < "$SYNC_DIR/lock.txt"
+  LTIME=${LTIME:-0}
+}
+escribir_candado() {
+  echo "$HOST $(ahora)" > "$SYNC_DIR/lock.txt.$HOST" 2>/dev/null &&
+    mv -f "$SYNC_DIR/lock.txt.$HOST" "$SYNC_DIR/lock.txt"
+}
+liberar_candado() { leer_candado; [ "$LHOST" = "$HOST" ] && rm -f "$SYNC_DIR/lock.txt"; return 0; }
+
+existentes() { EX=(); for f in "${FILES[@]}"; do [ -e "$PROFILE/$f" ] && EX+=("$f"); done; }
+
+respaldar_local() {
+  existentes
+  tar -czf "$STATE_DIR/backup/$(ahora).tar.gz" -C "$PROFILE" "${EX[@]}" 2>/dev/null
+  ls -1t "$STATE_DIR"/backup/*.tar.gz 2>/dev/null | tail -n +4 | xargs -r rm -f
+}
+
+bajar_sesion() {
+  leer_meta
+  [ -f "$SYNC_DIR/session.tar" ] && [ "$RSEQ" -gt 0 ] || return 0
+  tar -tf "$SYNC_DIR/session.tar" >/dev/null 2>&1 || { log "la sesión del NAS está dañada; no la bajo"; return 1; }
+  respaldar_local
+  zen_abierto && return 1
+  rm -f "$PROFILE"/sessionstore-backups/{recovery.jsonlz4,recovery.baklz4,previous.jsonlz4}
+  if tar -xf "$SYNC_DIR/session.tar" -C "$PROFILE" --warning=no-unknown-keyword; then
+    echo "$RSEQ" > "$STATE_DIR/seq"; mtime > "$STATE_DIR/marca"
+    log "bajada versión $RSEQ de $RHOST"; aviso "Sesión traída de $RHOST"
+  else
+    aviso "Error al extraer la sesión del NAS"; return 1
+  fi
+}
+
+subir_sesion() {
+  local tam; tam=$(stat -c %s "$PROFILE/zen-sessions.jsonlz4" 2>/dev/null || echo 0)
+  [ "$tam" -gt 500 ] || { log "sesión vacía, no la subo"; return 1; }
+  existentes
+  local tmp="$SYNC_DIR/session.tar.$HOST.tmp" m; m=$(mtime)
+  tar -cf "$tmp" -C "$PROFILE" "${EX[@]}" || { rm -f "$tmp"; aviso "No pude empaquetar la sesión"; return 1; }
+  leer_meta
+  local lseq; lseq=$(seq_local)
+  local nueva=$(( (RSEQ > lseq ? RSEQ : lseq) + 1 ))
+  mkdir -p "$SYNC_DIR/history"
+  [ -f "$SYNC_DIR/session.tar" ] && cp -f "$SYNC_DIR/session.tar" "$SYNC_DIR/history/$RSEQ-${RHOST:-x}.tar"
+  mv -f "$tmp" "$SYNC_DIR/session.tar"
+  echo "$nueva $HOST $(ahora)" > "$SYNC_DIR/meta.txt.$HOST" && mv -f "$SYNC_DIR/meta.txt.$HOST" "$SYNC_DIR/meta.txt"
+  echo "$nueva" > "$STATE_DIR/seq"; echo "$m" > "$STATE_DIR/marca"
+  ls -1t "$SYNC_DIR"/history/*.tar 2>/dev/null | tail -n +$((KEEP + 1)) | xargs -r rm -f
+  log "subida versión $nueva"; aviso "Sesión guardada en el NAS"
+}
+
+# Con Zen cerrado: baja la sesión del NAS si es más nueva, o sube la local si cambió sin subirse
+sincronizar_inactivo() {
+  nas_disponible || return 0
+  leer_meta
+  local m mk; m=$(mtime); mk=$(marca)
+  if [ "$RSEQ" -gt "$(seq_local)" ]; then
+    if [ "$m" != "$mk" ] && [ "$m" -gt "$RTIME" ]; then
+      log "la sesión local es más nueva que la del NAS ($RHOST)"; subir_sesion
+    else
+      bajar_sesion
+    fi
+  elif [ "$m" != "$mk" ] && [ "$m" -gt 0 ]; then
+    subir_sesion
+  fi
+}
+
+vigilar() {
+  exec 9>"$STATE_DIR/vigilar.lock"
+  flock -n 9 || { echo "Ya hay un vigilante en marcha."; exit 0; }
+  log "vigilante iniciado en $HOST (perfil: $PROFILE)"
+  local antes=0 abierto ult_nas=0 ult_lat=0
+  while true; do
+    if zen_abierto; then abierto=1; else abierto=0; fi
+    if [ $abierto = 1 ] && [ $antes = 0 ]; then
+      log "Zen abierto"
+      if nas_disponible; then
+        leer_candado
+        if [ -n "$LHOST" ] && [ "$LHOST" != "$HOST" ] && [ $(( $(ahora) - LTIME )) -lt $STALE ]; then
+          aviso "Zen también está abierto en $LHOST. Se guardará la sesión del último que cierre."
+        fi
+        escribir_candado
+      fi
+      ult_lat=$(ahora)
+    elif [ $abierto = 1 ]; then
+      if [ $(( $(ahora) - ult_lat )) -ge 60 ]; then nas_disponible && escribir_candado; ult_lat=$(ahora); fi
+    elif [ $antes = 1 ]; then
+      log "Zen cerrado"; sleep 2
+      if nas_disponible; then subir_sesion; liberar_candado
+      else aviso "NAS no disponible: la sesión se subirá cuando vuelva"; fi
+      ult_nas=$(ahora)
+    elif [ $(( $(ahora) - ult_nas )) -ge $COMPROBAR_NAS ]; then
+      sincronizar_inactivo; ult_nas=$(ahora)
+    fi
+    antes=$abierto
+    sleep $INTERVALO
+  done
+}
+
+[ -n "$PROFILE" ] && [ -d "$PROFILE" ] || { log "no encuentro el perfil de Zen"; echo "No encuentro el perfil de Zen."; exit 1; }
+
+case "${1:-vigilar}" in
+  vigilar) vigilar ;;
+  subir|bajar)
+    zen_abierto && { echo "Cierra Zen primero."; exit 1; }
+    nas_disponible || { echo "NAS no disponible."; exit 1; }
+    if [ "$1" = bajar ]; then bajar_sesion; else subir_sesion; fi ;;
+  estado)
+    leer_meta; leer_candado
+    echo "equipo: $HOST | perfil: $PROFILE"
+    echo "local: versión $(seq_local), sesión modificada $(date -d @"$(mtime)" '+%F %T'), cambios sin subir: $([ "$(mtime)" != "$(marca)" ] && echo sí || echo no)"
+    echo "NAS:   versión $RSEQ de ${RHOST:-nadie} ($( [ "$RTIME" -gt 0 ] && date -d @"$RTIME" '+%F %T'))"
+    echo "candado: ${LHOST:-libre}" ;;
+  *) echo "Uso: zen-sync [vigilar|subir|bajar|estado]"; exit 1 ;;
+esac
