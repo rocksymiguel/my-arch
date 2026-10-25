@@ -1,5 +1,5 @@
 #!/bin/bash
-# Menú de ajustes en rofi: tema, vidrio, inactividad, fondo y energía.
+# Menú de ajustes en rofi: tema, vidrio, inactividad y fondo.
 # Navegación: al elegir algo se vuelve al menú anterior; Esc vuelve atrás
 # (y en el menú principal, cierra).
 T="$HOME/.config/theme"
@@ -13,7 +13,6 @@ marca() { [ "$1" = "$2" ] && echo "● $3" || echo "  $3"; }
 mins() { [ "$1" -eq 0 ] && echo "nunca" || echo "$1 min"; }
 limpiar() { local s="${1#● }"; echo "${s#  }"; }
 v() { sed -n "s/^$1=//p" "$C/inactividad"; }
-energia_es() { case "$1" in balanced) echo "equilibrado" ;; power-saver) echo "ahorro" ;; performance) echo "rendimiento" ;; *) echo "$1" ;; esac; }
 
 menu_tema() {
     local act sel
@@ -84,13 +83,6 @@ menu_fondo() {
     done
 }
 
-menu_energia() {
-    local act sel
-    act="$(powerprofilesctl get 2>/dev/null)"
-    sel="$(printf '%s\n' "$(marca "$act" balanced Equilibrado)" "$(marca "$act" power-saver Ahorro)" | menu "Energía " 2)" || return 0
-    case "$sel" in *Equilibrado) powerprofilesctl set balanced ;; *Ahorro) powerprofilesctl set power-saver ;; esac
-}
-
 while true; do
     pgrep -x hypridle >/dev/null && inact="activa" || inact="pausada"
     op="$(printf '%s\n' \
@@ -98,13 +90,11 @@ while true; do
         "󰂵  Vidrio: $(sed -n 's/^glass=//p' "$C/glass" 2>/dev/null)" \
         "󰅶  Inactividad: $inact" \
         "󰸉  Fondo de pantalla" \
-        "󰓅  Energía: $(energia_es "$(powerprofilesctl get 2>/dev/null)")" \
-        | menu "󰒓  " 5)" || exit 0
+        | menu "󰒓  " 4)" || exit 0
     case "$op" in
         *Tema:*)        menu_tema ;;
         *Vidrio:*)      menu_vidrio ;;
         *Inactividad:*) menu_inactividad ;;
         *Fondo*)        menu_fondo ;;
-        *Energía:*)     menu_energia ;;
     esac
 done

@@ -60,7 +60,6 @@ pipewire-alsa
 pipewire-pulse
 playerctl
 plymouth
-power-profiles-daemon
 python-gobject
 qt6-wayland
 reflector
@@ -73,6 +72,7 @@ sudo
 swaync
 thunar
 thunar-archive-plugin
+tlp
 ttf-jetbrains-mono-nerd
 ttf-liberation
 tumbler

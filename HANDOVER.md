@@ -54,7 +54,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 - **Atajos:** Super + Enter kitty · Espacio rofi · Z Zen · T Thunar · F Feishin · W waypaper · L bloquear · Q cerrar · Shift + Q forzar cierre · B pantalla completa · Shift + B maximizar · M salir · V flotar · P pseudo · J división · S y Shift + S scratchpad · Shift + V portapapeles · Impr y Shift + Impr capturas · 1…0 escritorios · teclas Fn.
 - **Waybar en islas:** escritorios **1-3 fijos** con iconos de apps · música (MPRIS; clic pausa, clic derecho muestra Feishin) · reloj con fecha · tiempo de Daule (wttr.in) · CPU, RAM y temperatura (clic: btop) · bandeja (Wi-Fi y BT de nm-applet y blueman) · brillo y volumen · batería · 🔔 notificaciones (swaync: clic abre el panel, clic derecho "No molestar") · ⚙ ajustes · ⏻ apagado. La config se genera con iconos por código.
 - **Lanzador rofi** minimalista (`rofi/config.rasi` + `colors.rasi` generado por tema). Clic fuera lo cierra. Apps que no usa escondidas con `.desktop` NoDisplay en `dotfiles/.local/share/applications`.
-- **Menú de ajustes** (rofi, `waybar/scripts/menu-ajustes`): Tema, Vidrio, Inactividad (submenús de minutos y pausa), Fondo (elegir, siguiente, rotar), Energía (equilibrado o ahorro) y Cursor. Al elegir vuelve atrás, Esc vuelve atrás, y antes de abrir cierra cualquier rofi atascado.
+- **Menú de ajustes** (rofi, `waybar/scripts/menu-ajustes`): Tema, Vidrio, Inactividad (submenús de minutos y pausa), Fondo (elegir, siguiente, rotar) y Cursor. Al elegir vuelve atrás, Esc vuelve atrás, y antes de abrir cierra cualquier rofi atascado.
 - **Menú de apagado:** bloquear, cerrar sesión, reiniciar y apagar, con confirmación.
 - **Notificaciones swaync** (arriba a la derecha, panel con No molestar, música, volumen y brillo). **Avisos (OSD)** con `osd-bin` como notificaciones de swaync: volumen y brillo solo con barra; micrófono, Bloq Mayús y Bloq Num con texto. No van al historial. Bloq Num activado al iniciar.
 - **Bloqueo** con `bloquear-bin` y hyprlock estilo completo: hora, fecha y tiempo, batería, música, aviso de Bloq Mayús (borde naranja = Mayús) y el fondo actual desenfocado. La rotación de fondos se congela mientras está bloqueado.
@@ -66,8 +66,9 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 
 ## Problemas conocidos o decisiones
 
+- **Energía: TLP en lugar de power-profiles-daemon** (el PPD era un "placeholder": no aplicaba nada con esta CPU). Se instala con `sudo bash ~/my-arch/install/energia.sh` (configuración en `install/tlp.conf`: turbo apagado en batería, sin límite de carga porque la batería está al ~68 % de su capacidad). El menú de ajustes ya no tiene Energía.
+
 - **El clic en los escritorios de waybar no funciona:** waybar 0.15 manda `dispatch workspace N` y Hyprland en Lua lo rechaza (Waybar #5008, arreglado pero sin publicar). El usuario **decidió no instalar waybar-git** y esperar a la versión oficial. Mientras tanto, usa Super + número.
-- **Sin modo rendimiento:** la CPU no lo soporta y el usuario usa "ahorro". Se descartó `tuned-ppd`.
 - Solo hay **un fondo "Dark Mode"** (Mightyena). En claro están Lucario y Snorlax.
 
 ## Lista de personalización: estado
@@ -77,7 +78,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | 1 | Tema central | ✅ Hecho |
 | 2 | Hyprland | ✅ Hecho (el usuario no quiere atajos extra para el scrolling) |
 | 3 | waybar | ✅ Islas, escritorios con números (descartados flotante y japonés) |
-| 4 | Módulos de waybar | ✅ Hecho (ventana activa y perfil de energía quitados; la energía va en ajustes) |
+| 4 | Módulos de waybar | ✅ Hecho (ventana activa y perfil de energía quitados) |
 | 5 | Lanzador | ✅ rofi minimalista |
 | 6 | Notificaciones | ✅ swaync |
 | 7 | hyprlock | ✅ Estilo completo |
