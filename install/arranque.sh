@@ -2,6 +2,7 @@
 # Arranque limpio: de la animación de Plymouth se pasa directo a Hyprland (o a Gamescope) sin ver
 # la consola, también al cambiar de modo, y la contraseña del bloqueo desbloquea el llavero.
 #   - Plymouth se cierra dejando su última imagen en pantalla hasta que el modo dibuje
+#   - sin Plymouth al apagar o reiniciar (solo sale al encender y al cambiar de modo)
 #   - el inicio de sesión automático en tty1 no escribe nada
 #   - modo-splash: muestra/oculta Plymouth al cambiar de modo (sudo sin contraseña solo para eso)
 #   - hyprlock desbloquea el llavero «login» de gnome-keyring con la misma contraseña
@@ -22,6 +23,9 @@ cat > /etc/systemd/system/plymouth-quit.service.d/conservar.conf <<'EOF'
 ExecStart=
 ExecStart=-/usr/bin/plymouth quit --retain-splash
 EOF
+
+echo "==> Sin Plymouth al apagar ni al reiniciar"
+systemctl mask plymouth-halt.service plymouth-poweroff.service plymouth-reboot.service plymouth-kexec.service
 
 echo "==> Inicio de sesión automático en tty1 sin texto"
 mkdir -p /etc/systemd/system/getty@tty1.service.d
