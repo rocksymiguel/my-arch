@@ -5,7 +5,10 @@
 #   - el inicio de sesión automático en tty1 no escribe nada
 #   - modo-splash: muestra/oculta Plymouth al cambiar de modo (sudo sin contraseña solo para eso)
 #   - hyprlock desbloquea el llavero «login» de gnome-keyring con la misma contraseña
-#   - Limine: silencio del kernel, cursor oculto y colores (lo hace limine.sh)
+#   - Steam (modo juego) puede cambiar el brillo: sudo sin contraseña solo para escribirlo
+#   - Limine: silencio del kernel, sin consola en tty1 (fbcon=vc:2-6: la imagen de Plymouth se
+#     queda hasta que el modo dibuja; consola de emergencia en Ctrl+Alt+F2), cursor oculto y
+#     colores (lo hace limine.sh)
 # Ejecutar con: sudo bash ~/my-arch/install/arranque.sh
 set -euo pipefail
 [ "$(id -u)" -eq 0 ] && [ -n "${SUDO_USER:-}" ] || { echo "Ejecuta con: sudo bash ~/my-arch/install/arranque.sh"; exit 1; }
@@ -48,6 +51,15 @@ mv /etc/sudoers.d/modo-splash.tmp /etc/sudoers.d/modo-splash
 echo "==> hyprlock desbloquea el llavero"
 grep -q pam_gnome_keyring /etc/pam.d/hyprlock || echo "auth        optional    pam_gnome_keyring.so" >> /etc/pam.d/hyprlock
 cat /etc/pam.d/hyprlock
+
+echo "==> Brillo desde Steam (gamescope-session usa: sudo tee /sys/class/backlight/<pantalla>/brightness)"
+: > /etc/sudoers.d/brillo-steam.tmp
+for b in /sys/class/backlight/*/brightness; do
+    echo "$U ALL=(root) NOPASSWD: /usr/bin/tee $b" >> /etc/sudoers.d/brillo-steam.tmp
+done
+chmod 440 /etc/sudoers.d/brillo-steam.tmp
+visudo -cf /etc/sudoers.d/brillo-steam.tmp
+mv /etc/sudoers.d/brillo-steam.tmp /etc/sudoers.d/brillo-steam
 
 echo "==> Limine (colores y arranque silencioso)"
 bash "$D/limine.sh"
