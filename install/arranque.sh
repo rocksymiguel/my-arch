@@ -7,10 +7,11 @@
 #   - modo-splash: muestra/oculta Plymouth al cambiar de modo (sudo sin contraseña solo para eso)
 #   - hyprlock desbloquea el llavero «login» de gnome-keyring con la misma contraseña
 #   - Steam (modo juego) puede cambiar el brillo: sudo sin contraseña solo para escribirlo
-#   - Plymouth sale al instante en la pantalla del firmware (plymouth.use-simpledrm en Limine) y
-#     pasa a amdgpu, que se carga en el initramfs (MODULES y hook kms) mientras la animación sigue.
-#     Sacar amdgpu del initramfs se probó y fue peor: tardaba ~9 s y llegaba con Plymouth ya
-#     cerrado, así que se perdía la imagen fija y quedaban ~6 s en negro
+#   - amdgpu en el initramfs (MODULES y hook kms): Plymouth espera a la gráfica (~5 s en negro tras
+#     Limine) y su última imagen se queda hasta el bloqueo. Probado y descartado:
+#     · sacar amdgpu del initramfs: tardaba ~9 s y quedaban ~6 s en negro antes del bloqueo
+#     · plymouth.use-simpledrm: la animación sale al instante en la pantalla del firmware, pero al
+#       llegar amdgpu baja el brillo, la animación empieza otra vez y se pierde la imagen fija
 #   - Limine: silencio del kernel, sin consola en tty1 (fbcon=vc:2-6: la imagen de Plymouth se
 #     queda hasta que el modo dibuja; consola de emergencia en Ctrl+Alt+F2), cursor oculto y
 #     colores (lo hace limine.sh)
