@@ -1,6 +1,6 @@
 # Traspaso: personalización de Arch + Hyprland en la Lenovo
 
-Fecha: 2026-10-23. Para continuar en una conversación nueva.
+Fecha: 2026-10-23 (actualizado el 2026-10-25). Para continuar en una conversación nueva.
 
 **Responde siempre en español.** El usuario personaliza su Arch con Hyprland en la Lenovo, paso a paso, desde este PC con Windows por SSH.
 
@@ -83,7 +83,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | 6 | Notificaciones | ✅ swaync |
 | 7 | hyprlock | ✅ Estilo completo |
 | 8 | hypridle | ✅ Hecho (menú de inactividad) |
-| 9 | Fondos | ✅ Por modo y con rotación · ⏳ selector con miniaturas en rofi (opcional) |
+| 9 | Fondos | ✅ Por modo, con rotación y selector con miniaturas en rofi (Super + W) |
 | 10 | kitty | ✅ Cursor y pestañas |
 | 11 | Apariencia GTK | ✅ Nordic / Nordic-Polar |
 | 12 | Papirus | ✅ Carpetas por tema |
@@ -119,8 +119,13 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 - **Modo juego** al estilo SteamOS: `gamescope-session-steam`, multilib, `lib32-mesa`, `lib32-vulkan-radeon`. Elegible desde **systemd-boot** con las entradas "Arch – Escritorio" y "Arch – Juego". El usuario prefiere una sola pantalla de selección.
 - **Quickshell** (cuando arregle la RAM): migrar pieza por pieza, en una rama `quickshell`. Ir llevando una **lista de deseos** de lo que waybar no puede hacer (panel de ajustes con interruptores, por ejemplo).
 - **`install.sh` único** con módulos (iso, base, hardware/amd o nvidia, hyprland) en `my-arch`, para reinstalar en otro equipo. El PC con Windows tiene NVIDIA.
-- Probar el **micrófono interno**.
+- **Módulo de RAM de la ranura:** revisar los contactos o cambiarlo (hoy solo hay 3,2 GB de 8). Es lo que bloquea Quickshell y obliga a compilar con pocos hilos (`CARGO_BUILD_JOBS=2`).
+- ~~Probar el micrófono interno~~ ✅ Probado, funciona.
 
 ## Siguiente paso sugerido
 
-Seguir con lo que queda: 15–18 (Thunar, fastfetch, btop, prompt), la terminal (M–P), capturas (J–L) y, más adelante, el modo juego, Quickshell y el `install.sh`.
+La lista de personalización está terminada. Queda:
+- **Optimizar** con los 3,2 GB actuales: RAM en segundo plano y espacio en disco.
+- **Limine:** personalizar más su aspecto (`install/limine.conf`).
+- **`install.sh`** único y, cuando se arregle la RAM, **Quickshell**.
+- Esperando a terceros: el clic en los escritorios de waybar (arreglo sin publicar en 0.15) y hyprexpo oficial para Hyprland 0.56.
