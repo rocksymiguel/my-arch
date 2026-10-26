@@ -18,7 +18,6 @@ window#waybar {
 #clock,
 #custom-clima,
 #sistema,
-#conexion,
 #controles,
 #battery,
 #custom-notificaciones,
@@ -26,6 +25,17 @@ window#waybar {
 #custom-apagado {
     background: @bar_bg;
     border-radius: {{e:10}}px;
+    padding: 0 {{e:10}}px;
+}
+
+/* Isla de conexión (avión y bandeja): el relleno lo llevan sus módulos y no el grupo. Si no hay
+   ninguno visible (bandeja sin iconos, sin modo avión), el grupo no ocupa nada y no queda una
+   isla vacía; waybar no esconde un grupo cuyos módulos están todos escondidos */
+#conexion {
+    background: @bar_bg;
+    border-radius: {{e:10}}px;
+}
+#tray {
     padding: 0 {{e:10}}px;
 }
 
@@ -108,7 +118,7 @@ window#waybar {
 
 #custom-avion {
     color: @warn;
-    padding: 0 {{e:4}}px;
+    padding: 0 {{e:14}}px;
 }
 #custom-avion.off {
     padding: 0;
