@@ -45,6 +45,14 @@ hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
+-- En máquina virtual (VMware…) Hyprland rechaza los búferes de la gráfica de los programas y los
+-- cierra (kitty se abría y se cerraba): que dibujen por software
+do
+    local p = io.popen("systemd-detect-virt 2>/dev/null")
+    local virt = p and p:read("*l") or "none"
+    if p then p:close() end
+    if virt ~= "none" then hl.env("LIBGL_ALWAYS_SOFTWARE", "1") end
+end
 
 -----------------------
 ---- LOOK AND FEEL ----
