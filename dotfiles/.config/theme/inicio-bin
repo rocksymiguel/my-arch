@@ -40,7 +40,9 @@ lanzar "$T/avion-bin" vigilar          # iconos de Wi-Fi/Bluetooth o avión
 # MemorySwapMax=0 es necesario: MemoryMax solo cuenta la RAM y sin esto el exceso se iba a zram,
 # que al no comprimirse devolvía la presión a la RAM de todos (probado: de 4 GB a 1 GB libres).
 # Un juego lanzado desde este Steam comparte el tope: los grandes, mejor en modo juego (sin tope).
-if command -v steam >/dev/null; then
+# Solo con más de 5 GB de RAM total (con 8 GB el sistema ve ~5,9: el BIOS aparta 2 GB a la gráfica).
+# Con 3,2 GB (módulo de la ranura sin detectarse) Steam + el escritorio dejan ~800 MB y se llena.
+if command -v steam >/dev/null && [ "$(awk '/MemTotal/ {print $2}' /proc/meminfo)" -gt 5242880 ]; then
     ( while pidof hyprlock >/dev/null; do sleep 1; done; sleep 20
       pgrep -x steam >/dev/null || setsid -f systemd-run --user --scope --quiet \
           -p MemoryHigh=1800M -p MemoryMax=2200M -p MemorySwapMax=0 nice -n 10 steam -silent >/dev/null 2>&1 ) &
