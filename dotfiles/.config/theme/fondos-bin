@@ -30,7 +30,7 @@ lista() {
         -name "$patron" 2>/dev/null | sort
 }
 
-actual() { cat "$ULTIMO" 2>/dev/null || awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1; }
+actual() { cat "$ULTIMO" 2>/dev/null || awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1 || true; }
 
 # Copia del fondo a tamaño de pantalla para el bloqueo (hyprlock la carga al instante y la desenfoca)
 copia_bloqueo() {

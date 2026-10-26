@@ -22,7 +22,7 @@ grafico() { [ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || ls /run/user/"$(id -u)"
 
 # El fondo lo recuerda `fondos-bin poner`; si no hay, se le pregunta a awww
 fondo_actual() {
-    cat "$CACHE/fondo" 2>/dev/null || awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1
+    cat "$CACHE/fondo" 2>/dev/null || awww query 2>/dev/null | sed -n 's/.*image: *//p' | head -n 1 || true   # equipo nuevo: sin fondo guardado ni awww
 }
 
 # Fondos por modo: en ~/Imágenes/Fondos, los que llevan "Dark Mode" en el nombre son
