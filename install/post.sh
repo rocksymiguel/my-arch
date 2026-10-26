@@ -32,6 +32,8 @@ paso "Comprobaciones"
 [ "$R" = "$HOME/my-arch" ] || error "el repositorio tiene que estar en ~/my-arch (está en $R)"
 ping -c 1 -W 3 archlinux.org >/dev/null 2>&1 || error "sin internet. Wi-Fi: nmcli device wifi connect <red> --ask"
 sudo -v
+# Instalaciones hechas con un base.sh anterior: la regla de wheel pisaba las de sin contraseña
+if sudo test -f /etc/sudoers.d/wheel; then sudo mv /etc/sudoers.d/wheel /etc/sudoers.d/00-wheel; fi
 sudo pacman -S --needed --noconfirm pciutils >/dev/null   # lspci, para detectar la gráfica
 
 # shellcheck source=detectar.sh
@@ -133,6 +135,19 @@ sudo bash "$D/modo-juego.sh"    # Limine e inicio automático (la entrada Juego,
 sudo bash "$D/plymouth.sh" connect
 sudo bash "$D/arranque.sh"      # gráfica en el initramfs, Plymouth limpio y Limine
 [ "$NAS" = si ] && sudo bash "$D/nas.sh"
+
+# ---------------------------------------------------------------------------
+paso "Limpieza: restos de compilar y descargas"
+# Paquetes de depuración que deja makepkg (paru-debug…)
+DEBUG=($(pacman -Qq | grep -- '-debug$' || true))
+[ ${#DEBUG[@]} -gt 0 ] && sudo pacman -Rns --noconfirm "${DEBUG[@]}"
+# Huérfanos (Rust, meson… que solo servían para compilar el AUR), coredumps y registros
+sudo bash "$D/limpiar.sh"
+# Nada en la caché de pacman: todo está recién instalado
+sudo paccache -rk0 >/dev/null || true
+# Compilaciones del AUR y caché de Rust
+rm -rf "$HOME/.cache/paru/clone" "$HOME/.cargo/registry" "$HOME/.cargo/git"
+df -h / | awk 'NR == 2 {print "Disco usado: " $3 " de " $2}'
 
 # ---------------------------------------------------------------------------
 paso "LISTO"

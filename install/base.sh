@@ -169,9 +169,11 @@ arch-chroot "$MNT" /bin/bash -e <<EOF
 hwclock --systohc
 locale-gen >/dev/null
 useradd -m -G wheel -s /bin/bash "$USUARIO"
-echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/wheel
-chmod 440 /etc/sudoers.d/wheel
-visudo -cf /etc/sudoers.d/wheel >/dev/null
+# 00-: sudoers.d se lee en orden y gana la última regla; las de sin contraseña (limpiar-sistema,
+# modo-splash…) tienen que ir después de esta
+echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/00-wheel
+chmod 440 /etc/sudoers.d/00-wheel
+visudo -cf /etc/sudoers.d/00-wheel >/dev/null
 systemctl enable NetworkManager sshd systemd-timesyncd fstrim.timer
 EOF
 printf '%s:%s\nroot:%s\n' "$USUARIO" "$CLAVE_USUARIO" "$CLAVE_ROOT" | arch-chroot "$MNT" chpasswd
