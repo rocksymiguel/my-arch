@@ -11,7 +11,7 @@
     "spacing": {{e:6}},
     "modules-left": [
         "hyprland/workspaces",
-        "mpris"
+        "custom/musica"
     ],
     "modules-center": [
         "clock",
@@ -44,23 +44,16 @@
             "*": 3
         }
     },
-    "mpris": {
-        "format": "{player_icon} {artist} · {title}",
-        "format-paused": "{status_icon} {artist} · {title}",
-        "player-icons": {
-            "default": "󰝚",
-            "io.m51.Gelly": "󰝚",
-            "firefox": "󰈹",
-            "zen": "󰈹"
-        },
-        "status-icons": {
-            "paused": "󰏤"
-        },
+    "custom/musica": {
+        // Lo que suena (o está en pausa); sin nada, sin isla (waybar/scripts/musica)
+        "exec": "~/.config/waybar/scripts/musica",
+        "return-type": "json",
+        "escape": true,
         "max-length": 40,
-        "on-click": "playerctl play-pause",
+        "on-click": "playerctl -p \"$(cat $XDG_RUNTIME_DIR/musica-reproductor)\" play-pause",
         "on-click-right": "~/.config/theme/musica-bin mostrar",
-        "on-scroll-up": "playerctl next",
-        "on-scroll-down": "playerctl previous"
+        "on-scroll-up": "playerctl -p \"$(cat $XDG_RUNTIME_DIR/musica-reproductor)\" next",
+        "on-scroll-down": "playerctl -p \"$(cat $XDG_RUNTIME_DIR/musica-reproductor)\" previous"
     },
     "clock": {
         "format": "{:%H:%M · %a %d}",

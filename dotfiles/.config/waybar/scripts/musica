@@ -1,0 +1,40 @@
+#!/bin/bash
+# Isla de música para waybar (en lugar del módulo mpris, que con un reproductor parado no se
+# actualiza y deja la isla vacía). Muestra lo que suena; si nada suena, lo que está en pausa;
+# si solo hay reproductores parados sin nada cargado (gelly en segundo plano) o ninguno, nada,
+# y waybar esconde la isla. No pregunta cada poco: espera a que playerctl avise de un cambio.
+trap 'kill 0' EXIT
+
+json() { local s="${1//\\/\\\\}"; s="${s//\"/\\\"}"; printf '%s' "$s"; }
+
+icono() {
+    case "$1" in
+        firefox*|zen*) echo "󰈹" ;;
+        mpv*)          echo "󰕧" ;;
+        *)             echo "󰝚" ;;
+    esac
+}
+
+pintar() {
+    local p st titulo artista elegido="" estado="" texto
+    while read -r p; do
+        [ -n "$p" ] || continue
+        st="$(playerctl -p "$p" status 2>/dev/null)"
+        titulo="$(playerctl -p "$p" metadata title 2>/dev/null)"
+        [ -n "$titulo" ] || continue
+        if [ "$st" = Playing ]; then elegido="$p"; estado=playing; break; fi
+        if [ "$st" = Paused ] && [ -z "$elegido" ]; then elegido="$p"; estado=paused; fi
+    done < <(playerctl -l 2>/dev/null)
+    if [ -z "$elegido" ]; then echo '{"text": ""}'; return; fi
+    titulo="$(playerctl -p "$elegido" metadata title 2>/dev/null)"
+    artista="$(playerctl -p "$elegido" metadata artist 2>/dev/null)"
+    texto="${artista:+$artista · }$titulo"
+    [ "$estado" = paused ] && texto="󰏤 $texto" || texto="$(icono "$elegido") $texto"
+    printf '{"text": "%s", "tooltip": "%s", "class": "%s"}\n' \
+        "$(json "$texto")" "$(json "$elegido: $texto")" "$estado"
+    echo "$elegido" > "${XDG_RUNTIME_DIR:-/tmp}/musica-reproductor"   # para los clics
+}
+
+pintar
+{ playerctl -a -F status 2>/dev/null & playerctl -a -F metadata title 2>/dev/null & wait; } |
+    while read -r _; do pintar; done

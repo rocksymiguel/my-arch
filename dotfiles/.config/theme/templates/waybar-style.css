@@ -14,7 +14,7 @@ window#waybar {
 }
 
 #workspaces,
-#mpris,
+#custom-musica,
 #clock,
 #custom-clima,
 #sistema,
@@ -58,10 +58,10 @@ window#waybar {
     background: alpha(@text, 0.1);
 }
 
-#mpris {
+#custom-musica {
     color: @muted;
 }
-#mpris.playing {
+#custom-musica.playing {
     color: @accent;
 }
 
