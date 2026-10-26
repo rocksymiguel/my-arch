@@ -89,7 +89,7 @@ Los modos están en `dotfiles/.config/theme/vidrio/*.glass`. Si no hay ninguno e
 
 ## Fondos
 
-En `~/Imágenes/Fondos` (no se versionan): los que llevan `Dark Mode` en el nombre
+En `~/Imágenes/Fondos` (copiados de `fondos/` del repositorio por `post.sh`): los que llevan `Dark Mode` en el nombre
 son para `tema oscuro` y los que llevan `Light Mode`, para `tema claro`. Al cambiar de tema
 se pone uno de ese modo, salvo que el actual ya lo sea.
 
