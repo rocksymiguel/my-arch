@@ -1,5 +1,6 @@
 #!/bin/bash
-# Menú de ajustes en rofi: tema, vidrio, inactividad y fondo.
+# Menú de ajustes en rofi: tema, vidrio, inactividad, fondo y sistema (limpiar, actualizar,
+# fondos de arranque).
 # Navegación: al elegir algo se vuelve al menú anterior; Esc vuelve atrás
 # (y en el menú principal, cierra).
 T="$HOME/.config/theme"
@@ -83,6 +84,35 @@ menu_fondo() {
     done
 }
 
+# Terminal flotante para lo que pide contraseña o conviene ver (hyprland.lua: clase ajustes-terminal)
+en_terminal() {
+    setsid -f kitty --class ajustes-terminal --title "$1" -e bash -c "$2; echo; read -rp 'Listo. Pulsa Enter para cerrar.'" >/dev/null 2>&1
+}
+
+# Limpiar: en segundo plano y sin contraseña (sudoers solo para /usr/local/bin/limpiar-sistema,
+# una copia de install/limpiar.sh que instala install/sistema.sh); avisa al terminar
+limpiar_sistema() {
+    if [ ! -x /usr/local/bin/limpiar-sistema ]; then
+        en_terminal "Limpiar" "sudo bash ~/my-arch/install/limpiar.sh"
+        return
+    fi
+    notify-send -a ajustes "Limpiando el sistema…"
+    ( r="$(sudo -n /usr/local/bin/limpiar-sistema 2>&1 | tail -n 1)"
+      notify-send -a ajustes "Limpieza terminada" "${r#==> LISTO: }" ) >/dev/null 2>&1 &
+}
+
+menu_sistema() {
+    local sel
+    sel="$(printf '%s
+'         "󰃢  Limpiar (huérfanos, cachés, registros)"         "󰚰  Actualizar (pacman y AUR)"         "󰋩  Fondos de arranque (copiar a Limine)" | menu "Sistema " 3)" || return 0
+    case "$sel" in
+        *Limpiar*)    limpiar_sistema ;;
+        *Actualizar*) en_terminal "Actualizar" "paru -Syu" ;;
+        *Fondos*)     en_terminal "Fondos de arranque" "sudo bash ~/my-arch/install/limine.sh" ;;
+    esac
+    exit 0
+}
+
 while true; do
     pgrep -x hypridle >/dev/null && inact="activa" || inact="pausada"
     op="$(printf '%s\n' \
@@ -90,11 +120,13 @@ while true; do
         "󰂵  Vidrio: $(sed -n 's/^glass=//p' "$C/glass" 2>/dev/null)" \
         "󰅶  Inactividad: $inact" \
         "󰸉  Fondo de pantalla" \
-        | menu "󰒓  " 4)" || exit 0
+        "󰒋  Sistema" \
+        | menu "󰒓  " 5)" || exit 0
     case "$op" in
         *Tema:*)        menu_tema ;;
         *Vidrio:*)      menu_vidrio ;;
         *Inactividad:*) menu_inactividad ;;
         *Fondo*)        menu_fondo ;;
+        *Sistema)       menu_sistema ;;
     esac
 done

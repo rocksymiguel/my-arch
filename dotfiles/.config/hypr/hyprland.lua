@@ -225,6 +225,15 @@ hl.window_rule({
     no_focus = true,
 })
 
+-- Terminal de los ajustes (actualizar, fondos de arranque): flotando y centrada
+hl.window_rule({
+    name   = "ajustes-terminal",
+    match  = { class = "^ajustes-terminal$" },
+    float  = true,
+    size   = "900 560",
+    center = true,
+})
+
 -- Ventanas pequeñas que van mejor flotando
 hl.window_rule({
     name  = "float-tools",
