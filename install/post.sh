@@ -70,14 +70,18 @@ sudo pacman -S --needed --noconfirm "${PAQ[@]}"
 
 # ---------------------------------------------------------------------------
 paso "paru y paquetes del AUR"
-if ! command -v paru >/dev/null; then
+# Con poca RAM, compilar en Rust con muchos hilos la agota (paru, gelly)
+[ "$(awk '/MemTotal/ {print $2}' /proc/meminfo)" -lt 6000000 ] && export CARGO_BUILD_JOBS=2
+# paru se compila (paru-bin se queda atrás de pacman y no arranca: falta libalpm.so.N)
+if ! paru --version >/dev/null 2>&1; then
+    for v in paru-bin paru-bin-debug; do
+        pacman -Qq "$v" >/dev/null 2>&1 && sudo pacman -Rns --noconfirm "$v"
+    done
     tmp="$(mktemp -d)"
-    git clone --depth 1 https://aur.archlinux.org/paru-bin.git "$tmp/paru-bin"
-    (cd "$tmp/paru-bin" && makepkg -si --noconfirm)
+    git clone --depth 1 https://aur.archlinux.org/paru.git "$tmp/paru"
+    (cd "$tmp/paru" && makepkg -si --noconfirm)
     rm -rf "$tmp"
 fi
-# Con poca RAM, compilar en Rust con muchos hilos la agota (gelly)
-[ "$(awk '/MemTotal/ {print $2}' /proc/meminfo)" -lt 6000000 ] && export CARGO_BUILD_JOBS=2
 AUR=($(lista aur.txt))
 [ "$JUEGO" = si ] && AUR+=($(lista aur-juego.txt))
 paru -S --needed --noconfirm --sudoloop "${AUR[@]}"
