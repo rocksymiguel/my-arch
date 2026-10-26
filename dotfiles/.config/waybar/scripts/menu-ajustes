@@ -23,10 +23,16 @@ menu_tema() {
 }
 
 menu_vidrio() {
-    local act sel
+    local act sel medios
     act="$(sed -n 's/^glass=//p' "$C/glass" 2>/dev/null)"
-    sel="$(printf '%s\n' "$(marca "$act" total Total)" "$(marca "$act" oscurecer Oscurecer)" | menu "Vidrio " 2)" || return 0
-    case "$sel" in *Total) "$T/vidrio-bin" total ;; *Oscurecer) "$T/vidrio-bin" oscurecer ;; esac >/dev/null
+    medios="$(cat "$C/media-opaca" 2>/dev/null || echo si)"
+    sel="$(printf '%s\n' "$(marca "$act" total Total)" "$(marca "$act" oscurecer Oscurecer)" \
+        "  Vídeo e imágenes opacos: $medios" | menu "Vidrio " 3)" || return 0
+    case "$sel" in
+        *Total)    "$T/vidrio-bin" total ;;
+        *Oscurecer) "$T/vidrio-bin" oscurecer ;;
+        *opacos*)  "$T/vidrio-bin" medios "$([ "$medios" = no ] && echo si || echo no)" ;;
+    esac >/dev/null
 }
 
 # Tamaño de la interfaz: al elegir se aplica y el menú sigue abierto, para comparar

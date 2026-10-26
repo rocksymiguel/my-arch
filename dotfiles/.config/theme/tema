@@ -72,6 +72,8 @@ disposicion() {
     echo "osd_margen=$(esc "$margen")"
     echo "backlight=$(ls /sys/class/backlight 2>/dev/null | head -n 1)"
     echo "escala=$TAM"
+    # Vídeo e imágenes opacos aunque el vidrio sea «total» (lo cambia `vidrio medios si|no`)
+    [ "$(cat "$CACHE/media-opaca" 2>/dev/null)" = no ] && echo "media_opaca=false" || echo "media_opaca=true"
 }
 
 renderizar() {

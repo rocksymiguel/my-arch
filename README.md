@@ -102,6 +102,14 @@ vidrio oscurecer  # las inactivas se oscurecen un 35 %, como desactivadas
 
 Los modos están en `dotfiles/.config/theme/vidrio/*.glass`. Si no hay ninguno elegido, se usa `oscurecer`.
 
+```bash
+vidrio medios si|no   # vídeo e imágenes opacos aunque el vidrio sea «total» (por defecto, sí)
+```
+
+Con el vidrio «total» las ventanas son translúcidas (75 % con foco, 10 % sin él) y los vídeos se veían lavados.
+`mpv`, `imv` y Zen **con una pestaña de vídeo o de imagen** (se decide por el título: YouTube, Twitch,
+Netflix…; la lista está en `hyprland.lua`) se dejan al 100 % con o sin foco. También está en ⚙ → Vidrio.
+
 ## Fondos
 
 En `~/Imágenes/Fondos` (copiados de `fondos/` del repositorio por `post.sh`): los que llevan `Dark Mode` en el nombre

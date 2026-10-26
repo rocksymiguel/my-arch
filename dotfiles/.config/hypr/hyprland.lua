@@ -266,6 +266,25 @@ hl.window_rule({
     opacity = theme.kitty_active .. " " .. theme.kitty_inactive,
 })
 
+-- Vídeo e imágenes siempre opacos, con o sin foco: con el vidrio «total» (75 % / 10 %) se mezclaban
+-- con el fondo de pantalla y los colores salían lavados. Se apaga con ⚙ → Vidrio o `vidrio medios no`.
+if theme.media_opaca then
+    hl.window_rule({
+        name   = "media-opaca",
+        match  = { class = "^(mpv|imv)$" },
+        opaque = true,
+    })
+    -- Zen: solo con pestañas de vídeo o imagen, por el título (Hyprland vuelve a mirarlo al cambiar).
+    -- Para añadir un sitio, se añade a esta lista.
+    local sitios = "YouTube|Twitch|Netflix|Vimeo|Prime Video|Disney\\+|Crunchyroll|Dailymotion|Jellyfin|Plex|Kick|TikTok"
+        .. "|\\d+ [×x] \\d+ (pixels|píxeles)"   -- una imagen abierta sola en una pestaña
+    hl.window_rule({
+        name   = "zen-media-opaca",
+        match  = { class = "^zen$", title = "^.*(" .. sitios .. ").*$" },
+        opaque = true,
+    })
+end
+
 -- Ventanas de "Abrir", "Guardar" y "Seleccionar": flotando y centradas
 hl.window_rule({
     name   = "dialogos-centrados",

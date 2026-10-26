@@ -2,14 +2,25 @@
 # Cambia la transparencia y el desenfoque del escritorio.
 #   vidrio            -> muestra el modo activo y los disponibles
 #   vidrio <modo>     -> sutil | fuerte | inactivas | total | oscurecer
+#   vidrio medios si|no -> vídeo e imágenes (mpv, imv, Zen con pestañas de vídeo) opacos aunque el
+#                       vidrio sea «total»; por defecto sí
 set -euo pipefail
 
 T="$HOME/.config/theme"
 CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
 mkdir -p "$CACHE"
 
+if [ "${1:-}" = medios ]; then
+    [[ "${2:-}" =~ ^(si|no)$ ]] || { echo "Uso: vidrio medios si|no" >&2; exit 1; }
+    echo "$2" > "$CACHE/media-opaca"
+    TEMA_SIN_AVISO=1 "$T/tema" acentos >/dev/null   # regenera y recarga Hyprland
+    echo "Vídeo e imágenes opacos: $2"
+    exit 0
+fi
+
 if [ $# -eq 0 ]; then
     echo "Activo: $(sed -n 's/^glass=//p' "$CACHE/glass" 2>/dev/null || echo sutil)"
+    echo "Vídeo e imágenes opacos: $(cat "$CACHE/media-opaca" 2>/dev/null || echo si)"
     echo "Modos:  $(ls "$T/vidrio" | sed 's/\.glass$//' | tr '\n' ' ')"
     exit 0
 fi
