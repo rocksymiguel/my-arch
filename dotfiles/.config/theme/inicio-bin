@@ -32,11 +32,18 @@ lanzar "$T/avion-bin" vigilar          # iconos de Wi-Fi/Bluetooth o avión
 # llavero, y este solo se abre al desbloquear (con la contraseña de hyprlock)
 ( while pidof hyprlock >/dev/null; do sleep 1; done; lanzar gelly ) &
 # Steam escondido en la bandeja (-silent): tras el bloqueo y con el escritorio ya armado, porque
-# tarda y gasta ~900 MB y no debe competir con el arranque. Solo si está instalado. modo-bin lo
+# tarda y gasta ~1,1 GB y no debe competir con el arranque. Solo si está instalado. modo-bin lo
 # cierra antes de pasar al modo juego.
+# Con tope de memoria (su propio cgroup): a 1,8 GB el kernel lo frena y a 2,2 GB solo se cierran
+# procesos de Steam. Sin tope, el 2026-10-25 su parte web (steamwebhelper) agotó la RAM, el kernel
+# la mató 8 veces, Steam la relanzaba y el escritorio se colgó.
+# MemorySwapMax=0 es necesario: MemoryMax solo cuenta la RAM y sin esto el exceso se iba a zram,
+# que al no comprimirse devolvía la presión a la RAM de todos (probado: de 4 GB a 1 GB libres).
+# Un juego lanzado desde este Steam comparte el tope: los grandes, mejor en modo juego (sin tope).
 if command -v steam >/dev/null; then
     ( while pidof hyprlock >/dev/null; do sleep 1; done; sleep 20
-      pgrep -x steam >/dev/null || setsid -f nice -n 10 steam -silent >/dev/null 2>&1 ) &
+      pgrep -x steam >/dev/null || setsid -f systemd-run --user --scope --quiet \
+          -p MemoryHigh=1800M -p MemoryMax=2200M -p MemorySwapMax=0 nice -n 10 steam -silent >/dev/null 2>&1 ) &
 fi
 lanzar wl-paste --type text --watch cliphist store
 lanzar wl-paste --type image --watch cliphist store
