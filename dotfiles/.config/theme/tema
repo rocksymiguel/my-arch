@@ -141,6 +141,7 @@ aplicar() {
         (papirus-folders -C "$carpetas" -t "$icons" -o >/dev/null 2>&1 &)
     fi
     echo "$modo" > "$ESTADO"
+    "$T/icono-steam" "$modo" 2>/dev/null || true   # el icono de Steam en la barra, legible en este modo
     "$T/logo-bin" actualizar || true   # logo de fastfetch: personaje del fondo nuevo
 
     # Recargar lo que esté abierto (si no hay sesión gráfica, no pasa nada)

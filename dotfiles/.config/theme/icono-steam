@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+# El icono de bandeja de Steam es un PNG claro (steam_tray_mono.png, en la carpeta de iconos que
+# Steam manda a la barra y que waybar usa antes que el tema de iconos), así que en modo claro no
+# se ve. Se repinta del color del texto del modo conservando la forma (canal alfa), como el resto
+# de iconos de la barra. Lo llama `tema` al cambiar de modo y al iniciar, antes de lanzar Steam
+# (que puede rehacer el archivo al actualizarse).
+#   icono-steam            -> según el modo actual
+#   icono-steam claro|oscuro
+import os, sys, tempfile
+
+HOME = os.path.expanduser("~")
+ICONO = os.path.join(HOME, ".local/share/Steam/public/steam_tray_mono.png")
+CACHE = os.path.join(os.environ.get("XDG_CACHE_HOME", os.path.join(HOME, ".cache")), "theme")
+
+def leer(ruta, defecto=""):
+    try:
+        return open(ruta).read().strip()
+    except OSError:
+        return defecto
+
+modo = sys.argv[1] if len(sys.argv) > 1 else leer(os.path.join(CACHE, "modo"), "oscuro")
+if modo not in ("claro", "oscuro"):
+    sys.exit("Uso: icono-steam [claro|oscuro]")
+if not os.path.isfile(ICONO):
+    sys.exit(0)   # Steam no está instalado o aún no ha creado su carpeta
+
+color = "2e3440" if modo == "claro" else "eceff4"
+for l in leer(os.path.join(HOME, ".config/theme/themes", f"{modo}.colors")).splitlines():
+    if l.startswith("text="):
+        color = l.split("=", 1)[1].strip()
+
+from PIL import Image
+original = Image.open(ICONO).convert("RGBA")
+nuevo = Image.new("RGBA", original.size, tuple(int(color[i:i + 2], 16) for i in (0, 2, 4)) + (255,))
+nuevo.putalpha(original.getchannel("A"))
+
+# Solo se reescribe si cambia (y de forma atómica: Steam o waybar pueden estar leyéndolo)
+if list(nuevo.getdata()) != list(original.getdata()):
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(ICONO), suffix=".png")
+    os.close(fd)
+    nuevo.save(tmp)
+    os.chmod(tmp, os.stat(ICONO).st_mode & 0o777)
+    os.replace(tmp, ICONO)
+    print(f"Icono de Steam: {modo} (#{color})")
