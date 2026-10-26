@@ -52,6 +52,15 @@ generar_acentos() {
     fi
 }
 
+# Medidas que dependen del equipo (se calculan cada vez): el aviso de volumen y brillo de swaync
+# va bajo su isla de waybar, contando desde el borde derecho. Con batería hay una isla más a la
+# derecha (61 px con su separación); sin ella, la isla de brillo y volumen se corre esos 61 px.
+disposicion() {
+    local margen=151
+    ls /sys/class/power_supply/BAT* >/dev/null 2>&1 || margen=$((margen - 61))
+    echo "osd_margen=$margen"
+}
+
 renderizar() {
     local colores="$1" plantilla="$2" destino="$3" tmp glass acentos
     tmp="$(mktemp)"
@@ -64,7 +73,7 @@ renderizar() {
     while IFS='=' read -r k v; do
         [[ -z "$k" || "$k" == \#* ]] && continue
         sed -i "s|{{$k}}|$v|g" "$tmp"
-    done < <(cat "$acentos" "$colores" "$glass")
+    done < <(cat "$acentos" "$colores" "$glass"; disposicion)
     mv "$tmp" "$destino"
 }
 

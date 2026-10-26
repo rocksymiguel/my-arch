@@ -96,8 +96,8 @@ slider { background: @text; border-radius: 99px; min-width: 12px; min-height: 12
 .notification .time { font-size: 9px; margin-right: 24px; }
 
 /* Avisos de volumen y brillo (urgencia baja): solo la barra, centrada bajo la isla
-   de brillo y volumen (pantalla de 1366 px: la isla va de x=1055 a x=1170) */
-.notification.low { margin: 4px 151px 4px 4px; }
+   de brillo y volumen. El hueco a la derecha lo calcula `tema` (con o sin batería) */
+.notification.low { margin: 4px {{osd_margen}}px 4px 4px; }
 .notification.low .notification-content { padding: 0 10px 9px; }
 .notification.low .text-box, .notification.low .summary, .notification.low .body,
 .notification.low .time {
