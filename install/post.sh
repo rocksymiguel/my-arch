@@ -23,6 +23,7 @@ preguntar() {   # preguntar VARIABLE "Texto" si|no
     r="${r:-$def}"
     [[ "$r" =~ ^[sS] ]] && printf -v "$var" si || printf -v "$var" no
 }
+trap 'printf "\e[1;31mFalló la línea %s de %s: %s\e[0m\n" "$LINENO" "$(basename "$0")" "$BASH_COMMAND" >&2' ERR
 lista() { grep -v '^\s*#' "$P/$1" | grep . ; }   # paquetes de packages/<archivo>
 
 # ---------------------------------------------------------------------------
@@ -31,6 +32,7 @@ paso "Comprobaciones"
 [ "$R" = "$HOME/my-arch" ] || error "el repositorio tiene que estar en ~/my-arch (está en $R)"
 ping -c 1 -W 3 archlinux.org >/dev/null 2>&1 || error "sin internet. Wi-Fi: nmcli device wifi connect <red> --ask"
 sudo -v
+sudo pacman -S --needed --noconfirm pciutils >/dev/null   # lspci, para detectar la gráfica
 
 # shellcheck source=detectar.sh
 source "$D/detectar.sh"

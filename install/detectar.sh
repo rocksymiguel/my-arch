@@ -17,7 +17,8 @@ while read -r id; do
         8086:*) GPUS+=" intel" ;;
     esac
 done < <( { lspci -n -d ::0300; lspci -n -d ::0302; lspci -n -d ::0380; } 2>/dev/null | awk '{print $3}')
-GPUS="$(echo "$GPUS" | tr ' ' '\n' | grep . | sort -u | paste -sd' ')"
+GPUS="$(echo "$GPUS" | tr ' ' '\n' | sort -u | paste -sd' ')"
+GPUS="${GPUS# }"
 
 VIRT="$(systemd-detect-virt 2>/dev/null || true)"
 VIRT="${VIRT:-none}"

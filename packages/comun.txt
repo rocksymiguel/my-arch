@@ -51,6 +51,7 @@ openssh
 pacman-contrib
 papirus-icon-theme
 pavucontrol
+pciutils
 pipewire
 pipewire-alsa
 pipewire-pulse

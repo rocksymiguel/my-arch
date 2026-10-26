@@ -14,6 +14,7 @@ set -euo pipefail
 R="$(cd "$(dirname "$0")/.." && pwd)"   # raíz del repositorio
 MNT=/mnt
 
+trap 'printf "\e[1;31mFalló la línea %s: %s\e[0m\n" "$LINENO" "$BASH_COMMAND" >&2' ERR
 paso() { printf '\n\e[1;34m==> %s\e[0m\n' "$*"; }
 error() { printf '\e[1;31mError: %s\e[0m\n' "$*" >&2; exit 1; }
 preguntar() {   # preguntar VARIABLE "Texto" "valor por defecto"
@@ -102,7 +103,7 @@ paso "Sistema base (pacstrap)"
 sed -i 's/^#\?ParallelDownloads.*/ParallelDownloads = 5/' /etc/pacman.conf
 # shellcheck disable=SC2206  # $UCODE sin comillas: si está vacío, no se añade
 PAQUETES=(base linux linux-firmware $UCODE base-devel sudo nano man-db man-pages git
-          networkmanager openssh zram-generator efibootmgr)
+          networkmanager openssh zram-generator efibootmgr pciutils)
 pacstrap -K "$MNT" "${PAQUETES[@]}"
 genfstab -U "$MNT" >> "$MNT/etc/fstab"
 
