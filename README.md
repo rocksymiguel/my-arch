@@ -6,7 +6,7 @@ Mi instalación de Arch Linux con Hyprland: listas de paquetes, dotfiles y guía
 
 | Carpeta | Qué hay |
 |---|---|
-| `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`, `gtk-3.0`, `gtk-4.0`, cursor) |
+| `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`) · GTK y cursor los genera `tema` |
 | `packages/repo.txt` | Paquetes de los repositorios oficiales instalados a mano |
 | `packages/aur.txt` | Paquetes del AUR |
 | `install/` | `base.sh` (fase 1, desde el USB), scripts del sistema y la guía manual de la Lenovo. Pendiente: la fase 2 (Hyprland y el tema, según el hardware) |

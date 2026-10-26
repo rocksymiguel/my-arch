@@ -9,3 +9,6 @@ dotfiles/.config/rofi/colors.rasi
 dotfiles/.config/swaync/style.css
 dotfiles/.config/hypr/hypridle.conf
 __pycache__/
+dotfiles/.config/gtk-3.0/
+dotfiles/.config/gtk-4.0/
+dotfiles/.icons/

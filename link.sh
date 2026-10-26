@@ -20,7 +20,7 @@ enlazar() {
 for d in "$R"/dotfiles/.config/*; do
     enlazar "$d" "$HOME/.config/$(basename "$d")"
 done
-enlazar "$R/dotfiles/.icons/default/index.theme" "$HOME/.icons/default/index.theme"
+# GTK (gtk-3.0, gtk-4.0) y el cursor (~/.icons/default) los escribe `tema`: no se enlazan
 
 # Apps escondidas del lanzador (NoDisplay)
 for f in "$R"/dotfiles/.local/share/applications/*.desktop; do

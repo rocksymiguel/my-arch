@@ -99,6 +99,7 @@ aplicar() {
     local cursor; cursor="$(sed -n 's/^cursor=//p' "$colores")"
     if [ -n "$cursor" ]; then
         echo "$cursor" > "$CACHE/cursor"
+        mkdir -p "$HOME/.icons/default"
         printf '[Icon Theme]\nInherits=%s\n' "$cursor" > "$(readlink -f "$HOME/.icons/default/index.theme")"
     fi
     # Color de carpetas en la copia personal de Papirus (~/.local/share/icons): sin contraseña
@@ -126,8 +127,20 @@ aplicar() {
         (sleep 0.5; setsid -f waybar >/dev/null 2>&1; sleep 1; ~/.config/theme/avion-bin bandeja) &
         [ -n "${TEMA_SIN_AVISO:-}" ] || notify-send -a tema "Tema: $modo" 2>/dev/null || true
     fi
-    sed -i "s/^gtk-application-prefer-dark-theme=.*/gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)/; s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$icons/; s/^gtk-theme-name=.*/gtk-theme-name=$gtk/; s/^gtk-cursor-theme-name=.*/gtk-cursor-theme-name=$cursor/" \
-        "$C/gtk-3.0/settings.ini" "$C/gtk-4.0/settings.ini"
+    # GTK: se escribe entero (no se versiona; en un equipo nuevo no existe hasta aquí)
+    local g
+    for g in gtk-3.0 gtk-4.0; do
+        mkdir -p "$C/$g"
+        cat > "$C/$g/settings.ini" <<EOF
+[Settings]
+gtk-theme-name=$gtk
+gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)
+gtk-icon-theme-name=$icons
+gtk-cursor-theme-name=$cursor
+gtk-cursor-theme-size=24
+gtk-font-name=JetBrainsMono Nerd Font 9
+EOF
+    done
     echo "Tema: $modo"
 }
 
