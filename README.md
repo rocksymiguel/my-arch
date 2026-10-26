@@ -9,8 +9,23 @@ Mi instalación de Arch Linux con Hyprland: listas de paquetes, dotfiles y guía
 | `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`, `gtk-3.0`, `gtk-4.0`, cursor) |
 | `packages/repo.txt` | Paquetes de los repositorios oficiales instalados a mano |
 | `packages/aur.txt` | Paquetes del AUR |
-| `install/` | Guía de instalación manual (por ahora). Más adelante: `install.sh` único con módulos `iso`, `base`, `hardware/amd`, `hardware/nvidia`, `hyprland` |
+| `install/` | `base.sh` (fase 1, desde el USB), scripts del sistema y la guía manual de la Lenovo. Pendiente: la fase 2 (Hyprland y el tema, según el hardware) |
 | `link.sh` | Enlaza `dotfiles/` en `$HOME` |
+
+## Instalar desde cero (fase 1)
+
+Desde el USB de Arch, en modo UEFI y con internet (cable, o Wi-Fi con `iwctl`):
+
+```bash
+git clone https://github.com/rocksymiguel/my-arch.git   # o copiarlo en otro USB
+bash my-arch/install/base.sh
+```
+
+Pregunta el disco (**lo borra entero**), el nombre del equipo, el usuario, la zona, el idioma y las contraseñas.
+Instala un Arch mínimo: EFI de 1 GB + ext4, systemd-boot, NetworkManager, SSH, zram, sudo y multilib,
+con el microcódigo de la CPU. Las redes Wi-Fi de `iwctl` pasan a NetworkManager y el repositorio se copia a
+`~/my-arch` del usuario nuevo. Para la VM se pueden dar los datos por variables:
+`DISCO=/dev/sda USUARIO=yo bash my-arch/install/base.sh`.
 
 ## Uso en un equipo con Arch ya instalado
 
