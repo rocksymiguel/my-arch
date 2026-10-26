@@ -78,7 +78,7 @@
         "modules": [
             "cpu",
             "memory",
-            "temperature"
+            "custom/temperatura"
         ]
     },
     "cpu": {
@@ -93,13 +93,11 @@
         "tooltip-format": "{used:0.1f} de {total:0.1f} GiB",
         "on-click": "kitty -e btop"
     },
-    "temperature": {
-        "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
-        "input-filename": "temp1_input",
-        "critical-threshold": 85,
-        "format": "󰔏 {temperatureC}°",
-        "on-click": "kitty -e btop",
-        "tooltip-format": "Procesador: {temperatureC} °C"
+    "custom/temperatura": {
+        "exec": "~/.config/waybar/scripts/temperatura",
+        "return-type": "json",
+        "interval": 5,
+        "on-click": "kitty -e btop"
     },
     "tray": {
         "spacing": 8

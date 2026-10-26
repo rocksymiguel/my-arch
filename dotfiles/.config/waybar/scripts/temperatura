@@ -1,0 +1,15 @@
+#!/bin/bash
+# Temperatura del procesador para waybar, en cualquier equipo: busca el sensor de la CPU
+# (k10temp o zenpower en AMD, coretemp en Intel, cpu_thermal en ARM). Si no hay ninguno
+# (máquina virtual), no escribe nada y waybar esconde el módulo.
+s=""
+for h in /sys/class/hwmon/hwmon*; do
+    case "$(cat "$h/name" 2>/dev/null)" in
+        k10temp|zenpower|coretemp|cpu_thermal) s="$h/temp1_input"; break ;;
+    esac
+done
+[ -r "$s" ] || exit 0
+t=$(( $(cat "$s") / 1000 ))
+clase=""
+[ "$t" -ge 85 ] && clase=critical
+printf '{"text": "󰔏 %s°", "tooltip": "Procesador: %s °C", "class": "%s"}\n' "$t" "$t" "$clase"

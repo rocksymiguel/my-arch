@@ -65,11 +65,11 @@ window#waybar {
     color: @accent;
 }
 
-#cpu, #memory, #temperature,
+#cpu, #memory, #custom-temperatura,
 #backlight, #pulseaudio {
     padding: 0 6px;
 }
-#temperature.critical {
+#custom-temperatura.critical {
     color: @err;
 }
 
