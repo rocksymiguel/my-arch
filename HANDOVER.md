@@ -101,7 +101,7 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 | F | Dock | ❌ Descartado (ya hay lanzador e iconos en los escritorios) |
 | G | Plugins de Hyprland | ⏳ Solo hyprexpo, **cuando la versión oficial sea compatible** con su Hyprland (el usuario no quiere la versión no oficial de sandwichfarm). hyprbars, hyprtrails y hyprfocus descartados |
 | H | Fondos animados | ❌ Desaconsejado (RAM) |
-| I | cava | ✅ Barritas pegadas a la isla de música (`cava-bin`; el waybar de Arch no trae el módulo cava) |
+| I | cava | ❌ Quitado el 2026-10-25 (las barritas de música no gustaron y gastaban CPU sin parar) |
 | J | Editar capturas | ✅ satty en Impr |
 | K | Grabar pantalla | ✅ gpu-screen-recorder, Super+Shift+R, isla REC (`grabar-bin`) |
 | L | hyprpicker | ✅ Como app "Selector de color" en rofi (sin atajo) |

@@ -128,11 +128,3 @@ window#waybar {
     margin: 0;
     min-width: 0;
 }
-
-/* cava: barritas en su propia isla junto a la de música (sin esquinas que cambian) */
-#custom-cava {
-    background: @bar_bg;
-    color: @accent;
-    border-radius: 10px;
-    padding: 0 10px;
-}

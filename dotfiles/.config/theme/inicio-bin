@@ -46,7 +46,7 @@ for c in /proc/asound/card[0-9]*; do
 done
 
 # Fondo y tema (tema también arranca la barra y la bandeja con los colores del modo;
-# así la barra se lanza una sola vez y no queda ningún cava huérfano)
+# así la barra se lanza una sola vez)
 for _ in $(seq 1 20); do awww query >/dev/null 2>&1 && break; sleep 0.25; done
 "$T/fondos-bin" restaurar
 TEMA_SIN_AVISO=1 "$T/tema" "$("$T/tema" actual)"

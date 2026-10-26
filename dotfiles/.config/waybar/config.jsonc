@@ -10,8 +10,7 @@
     "spacing": 6,
     "modules-left": [
         "hyprland/workspaces",
-        "mpris",
-        "custom/cava"
+        "mpris"
     ],
     "modules-center": [
         "clock",
@@ -210,11 +209,5 @@
         "interval": "once",
         "signal": 10,
         "on-click": "~/.config/theme/grabar-bin"
-    },
-    "custom/cava": {
-        "exec": "~/.config/theme/cava-bin",
-        "format": "{}",
-        "tooltip": false,
-        "on-click": "~/.config/theme/musica-bin mostrar"
     }
 }

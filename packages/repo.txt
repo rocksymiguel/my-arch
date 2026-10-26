@@ -9,7 +9,6 @@ bluez
 bluez-utils
 brightnessctl
 btop
-cava
 cifs-utils
 cliphist
 efibootmgr
