@@ -4,7 +4,7 @@
 #   bash ~/my-arch/install/post.sh
 # Detecta la gráfica (AMD, NVIDIA, Intel o máquina virtual) y si es portátil, instala los
 # paquetes que tocan, paru y el AUR, enlaza los dotfiles y aplica los scripts del sistema.
-# sudo pedirá tu contraseña (alguna vez más si tarda mucho).
+# sudo pide tu contraseña una sola vez, al principio.
 #
 # Opcionales: se preguntan, o se dan por variables (si/no):
 #   JUEGO=si NAS=no TAILSCALE=no bash ~/my-arch/install/post.sh
@@ -32,6 +32,9 @@ paso "Comprobaciones"
 [ "$R" = "$HOME/my-arch" ] || error "el repositorio tiene que estar en ~/my-arch (está en $R)"
 ping -c 1 -W 3 archlinux.org >/dev/null 2>&1 || error "sin internet. Wi-Fi: nmcli device wifi connect <red> --ask"
 sudo -v
+# Contraseña una sola vez: renovar sudo cada minuto mientras dure el script
+( while kill -0 "$$" 2>/dev/null; do sudo -n -v 2>/dev/null; sleep 60; done ) &
+trap 'kill $! 2>/dev/null' EXIT
 # Instalaciones hechas con un base.sh anterior: la regla de wheel pisaba las de sin contraseña
 if sudo test -f /etc/sudoers.d/wheel; then sudo mv /etc/sudoers.d/wheel /etc/sudoers.d/00-wheel; fi
 sudo pacman -S --needed --noconfirm pciutils >/dev/null   # lspci, para detectar la gráfica
