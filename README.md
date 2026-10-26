@@ -7,9 +7,8 @@ Mi instalación de Arch Linux con Hyprland: listas de paquetes, dotfiles y guía
 | Carpeta | Qué hay |
 |---|---|
 | `dotfiles/` | Configuraciones (`~/.config/hypr`, `waybar`, `kitty`, `rofi`, `swaync`) · GTK y cursor los genera `tema` |
-| `packages/repo.txt` | Paquetes de los repositorios oficiales instalados a mano |
-| `packages/aur.txt` | Paquetes del AUR |
-| `install/` | `base.sh` (fase 1, desde el USB), scripts del sistema y la guía manual de la Lenovo. Pendiente: la fase 2 (Hyprland y el tema, según el hardware) |
+| `packages/` | `comun.txt` (todos), por gráfica `amd`/`nvidia`/`intel.txt`, `portatil.txt`, opcionales `juego`/`nas`/`tailscale.txt`; AUR en `aur.txt` y `aur-juego.txt` |
+| `install/` | `base.sh` (fase 1, desde el USB), `post.sh` (fase 2), `detectar.sh` (hardware), scripts del sistema y la guía manual de la Lenovo |
 | `link.sh` | Enlaza `dotfiles/` en `$HOME` |
 
 ## Instalar desde cero (fase 1)
@@ -27,22 +26,32 @@ con el microcódigo de la CPU. Las redes Wi-Fi de `iwctl` pasan a NetworkManager
 `~/my-arch` del usuario nuevo. Para la VM se pueden dar los datos por variables:
 `DISCO=/dev/sda USUARIO=yo bash my-arch/install/base.sh`.
 
-## Uso en un equipo con Arch ya instalado
+## Instalar Hyprland y el tema (fase 2)
+
+Después de reiniciar, entra con tu usuario (sin sudo):
 
 ```bash
-git clone https://github.com/<usuario>/my-arch.git ~/my-arch
-cd ~/my-arch
-sudo pacman -S --needed - < packages/repo.txt
-paru -S --needed - < packages/aur.txt
-./link.sh
+bash ~/my-arch/install/post.sh
 ```
 
-## Actualizar las listas de paquetes
+`detectar.sh` mira el equipo y `post.sh` decide qué instalar:
 
-```bash
-pacman -Qqen > packages/repo.txt
-pacman -Qqem > packages/aur.txt
-```
+| Detecta | Instala |
+|---|---|
+| Gráfica AMD / NVIDIA / Intel (o varias) | `packages/amd.txt` / `nvidia.txt` / `intel.txt`; con NVIDIA, sus módulos en el initramfs y variables para Hyprland |
+| Batería (portátil) | TLP (`portatil.txt`, `energia.sh`) |
+| Máquina virtual | open-vm-tools, VirtualBox guest o qemu-guest-agent, sin drivers de gráfica |
+| Resolución | Fondos de Limine a ese tamaño |
+
+Pregunta el modo juego (Steam + Gamescope y la entrada «Juego» en Limine), el NAS y Tailscale
+(o `JUEGO=si NAS=no TAILSCALE=no bash ~/my-arch/install/post.sh`). Luego instala paru y el AUR,
+pone fish, enlaza los dotfiles, aplica `tema oscuro` y ejecuta zram, sistema, energía, Limine,
+Plymouth y el arranque limpio. Los fondos se copian de `~/my-arch/fondos/` si existe.
+
+## Añadir paquetes
+
+Al instalar algo nuevo a mano, añádelo a la lista que toque: `packages/comun.txt` si va en todos
+los equipos, o a la de su gráfica u opcional.
 
 ## Notas
 

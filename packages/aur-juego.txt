@@ -1,0 +1,2 @@
+gamescope-session-git
+gamescope-session-steam-git

@@ -1,11 +1,8 @@
 bibata-cursor-theme-bin
-gamescope-session-git
-gamescope-session-steam-git
 gelly
 nordic-polar-theme
 nordic-theme
 papirus-folders
-paru
 plymouth-theme-connect-git
 vesktop-bin
 zen-browser-bin

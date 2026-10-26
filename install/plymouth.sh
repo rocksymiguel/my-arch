@@ -12,7 +12,7 @@ fi
 
 echo "==> Hook de plymouth en el arranque (después de systemd)"
 grep -qE '^HOOKS=.*\bplymouth\b' /etc/mkinitcpio.conf || \
-    sed -i -E 's/^(HOOKS=\(base systemd)/\1 plymouth/' /etc/mkinitcpio.conf
+    sed -i -E "s/^(HOOKS=\\(base (systemd|udev))/\\1 plymouth/" /etc/mkinitcpio.conf
 grep -E '^HOOKS' /etc/mkinitcpio.conf
 
 # La gráfica (amdgpu) se carga en el initramfs: lo asegura arranque.sh.

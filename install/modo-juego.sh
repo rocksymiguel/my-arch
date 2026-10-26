@@ -8,6 +8,7 @@ set -euo pipefail
 U="$SUDO_USER"
 H="$(getent passwd "$U" | cut -d: -f6)"
 D="$H/my-arch/install"
+source "$D/detectar.sh"
 export LC_ALL=C
 
 echo "==> Herramientas necesarias"
@@ -21,7 +22,7 @@ bash "$D/limine.sh"   # configuración y fondos al azar
 
 echo "==> Entrada de Limine en la UEFI (primera); systemd-boot se queda detrás"
 if ! efibootmgr | grep -q "Limine"; then
-    efibootmgr --create --disk /dev/nvme0n1 --part 1 --label "Limine" --loader '\EFI\limine\BOOTX64.EFI' >/dev/null
+    efibootmgr --create --disk "$EFI_DISCO" --part "$EFI_PART" --label "Limine" --loader '\EFI\limine\BOOTX64.EFI' >/dev/null
 fi
 LIM="$(efibootmgr | sed -n 's/^Boot\([0-9A-F]\{4\}\)\* Limine.*/\1/p' | head -n 1)"
 RESTO="$(efibootmgr | sed -n 's/^BootOrder: //p' | tr ',' '\n' | grep -v "^$LIM$" | paste -sd,)"

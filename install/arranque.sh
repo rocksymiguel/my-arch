@@ -7,7 +7,7 @@
 #   - modo-splash: muestra/oculta Plymouth al cambiar de modo (sudo sin contraseña solo para eso)
 #   - hyprlock desbloquea el llavero «login» de gnome-keyring con la misma contraseña
 #   - Steam (modo juego) puede cambiar el brillo: sudo sin contraseña solo para escribirlo
-#   - amdgpu en el initramfs (MODULES y hook kms): Plymouth espera a la gráfica (~5 s en negro tras
+#   - la gráfica en el initramfs (MODULES y hook kms; en la Lenovo, amdgpu): Plymouth espera a la gráfica (~5 s en negro tras
 #     Limine) y su última imagen se queda hasta el bloqueo. Probado y descartado:
 #     · sacar amdgpu del initramfs: tardaba ~9 s y quedaban ~6 s en negro antes del bloqueo
 #     · plymouth.use-simpledrm: la animación sale al instante en la pantalla del firmware, pero al
@@ -20,6 +20,7 @@ set -euo pipefail
 [ "$(id -u)" -eq 0 ] && [ -n "${SUDO_USER:-}" ] || { echo "Ejecuta con: sudo bash ~/my-arch/install/arranque.sh"; exit 1; }
 U="$SUDO_USER"
 D="$(getent passwd "$U" | cut -d: -f6)/my-arch/install"
+source "$D/detectar.sh"
 
 echo "==> Plymouth deja su última imagen al terminar el arranque"
 mkdir -p /etc/systemd/system/plymouth-quit.service.d
@@ -71,8 +72,14 @@ visudo -cf /etc/sudoers.d/brillo-steam.tmp
 mv /etc/sudoers.d/brillo-steam.tmp /etc/sudoers.d/brillo-steam
 
 echo "==> Gráfica en el initramfs (Plymouth la usa desde el principio y no se ve negro)"
-grep -qE '^MODULES=.*\bamdgpu\b' /etc/mkinitcpio.conf || sed -i -E 's/^MODULES=\((.*)\)/MODULES=(\1 amdgpu)/; s/^MODULES=\( /MODULES=(/' /etc/mkinitcpio.conf
-grep -qE '^HOOKS=.*\bkms\b' /etc/mkinitcpio.conf || sed -i -E '/^HOOKS=/ s/ modconf / modconf kms /' /etc/mkinitcpio.conf
+for m in $KMS; do
+    grep -qE "^MODULES=.*\b$m\b" /etc/mkinitcpio.conf || sed -i -E "s/^MODULES=\((.*)\)/MODULES=(\1 $m)/; s/^MODULES=\( /MODULES=(/" /etc/mkinitcpio.conf
+done
+if [[ " $GPUS " == *" nvidia "* ]]; then
+    sed -i -E '/^HOOKS=/ s/ kms / /' /etc/mkinitcpio.conf   # NVIDIA: el hook kms metería nouveau
+else
+    grep -qE '^HOOKS=.*\bkms\b' /etc/mkinitcpio.conf || sed -i -E '/^HOOKS=/ s/ modconf / modconf kms /' /etc/mkinitcpio.conf
+fi
 grep -E '^(MODULES|HOOKS)' /etc/mkinitcpio.conf
 mkinitcpio -P
 

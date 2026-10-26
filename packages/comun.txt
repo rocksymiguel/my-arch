@@ -1,5 +1,4 @@
 alsa-utils
-amd-ucode
 awww
 base
 base-devel
@@ -9,7 +8,6 @@ bluez
 bluez-utils
 brightnessctl
 btop
-cifs-utils
 cliphist
 efibootmgr
 eza
@@ -21,7 +19,6 @@ fish
 fontconfig
 fwupd
 fzf
-gamescope
 git
 github-cli
 gnome-keyring
@@ -34,8 +31,6 @@ hyprlock
 hyprpicker
 hyprpolkitagent
 kitty
-lib32-mesa
-lib32-vulkan-radeon
 libnotify
 limine
 linux
@@ -61,7 +56,6 @@ pipewire-alsa
 pipewire-pulse
 playerctl
 plymouth
-powertop
 python-gobject
 python-pillow
 qt6-wayland
@@ -70,19 +64,15 @@ rofi
 satty
 slurp
 starship
-steam
 sudo
 swaync
-tailscale
 thunar
 thunar-archive-plugin
-tlp
 ttf-jetbrains-mono-nerd
 ttf-liberation
 tumbler
 unzip
 upower
-vulkan-radeon
 waybar
 wireplumber
 wl-clipboard

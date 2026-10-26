@@ -9,10 +9,10 @@ R="$(cd "$(dirname "$0")" && pwd)"
 
 # 1. Quitar power-profiles-daemon (choca con TLP)
 systemctl disable --now power-profiles-daemon.service 2>/dev/null || true
-pacman -Rns power-profiles-daemon
+pacman -Qq power-profiles-daemon >/dev/null 2>&1 && pacman -Rns --noconfirm power-profiles-daemon
 
 # 2. Instalar TLP y dejarle la configuración del repositorio
-pacman -S --needed tlp
+pacman -S --needed --noconfirm tlp
 install -Dm644 "$R/tlp.conf" /etc/tlp.d/10-lenovo.conf
 
 # 3. Activarlo ahora y en cada arranque
