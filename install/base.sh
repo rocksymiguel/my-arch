@@ -103,7 +103,7 @@ paso "Sistema base (pacstrap)"
 sed -i 's/^#\?ParallelDownloads.*/ParallelDownloads = 5/' /etc/pacman.conf
 # shellcheck disable=SC2206  # $UCODE sin comillas: si está vacío, no se añade
 PAQUETES=(base linux linux-firmware $UCODE base-devel sudo nano man-db man-pages git
-          networkmanager openssh zram-generator efibootmgr pciutils)
+          networkmanager openssh zram-generator efibootmgr pciutils dosfstools)
 pacstrap -K "$MNT" "${PAQUETES[@]}"
 genfstab -U "$MNT" >> "$MNT/etc/fstab"
 

@@ -35,7 +35,16 @@ transicion() {
     sudo -n /usr/local/bin/modo-splash ocultar >/dev/null 2>&1 || true
 }
 
+# Steam abierto en el escritorio (escondido en la bandeja) chocaría con el del modo juego: se cierra antes
+cerrar_steam() {
+    pgrep -x steam >/dev/null || return 0
+    steam -shutdown >/dev/null 2>&1
+    for _ in $(seq 1 40); do pgrep -x steam >/dev/null || return 0; sleep 0.5; done
+    pkill -x steam
+}
+
 juego() {
+    cerrar_steam
     limpiar_entorno
     gamescope-session-plus steam
 }

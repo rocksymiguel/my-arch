@@ -31,6 +31,13 @@ lanzar "$T/avion-bin" vigilar          # iconos de Wi-Fi/Bluetooth o avión
 # gelly, escondido en special:musica (Super + G), cuando no hay bloqueo: pide sus credenciales al
 # llavero, y este solo se abre al desbloquear (con la contraseña de hyprlock)
 ( while pidof hyprlock >/dev/null; do sleep 1; done; lanzar gelly ) &
+# Steam escondido en la bandeja (-silent): tras el bloqueo y con el escritorio ya armado, porque
+# tarda y gasta ~900 MB y no debe competir con el arranque. Solo si está instalado. modo-bin lo
+# cierra antes de pasar al modo juego.
+if command -v steam >/dev/null; then
+    ( while pidof hyprlock >/dev/null; do sleep 1; done; sleep 20
+      pgrep -x steam >/dev/null || setsid -f nice -n 10 steam -silent >/dev/null 2>&1 ) &
+fi
 lanzar wl-paste --type text --watch cliphist store
 lanzar wl-paste --type image --watch cliphist store
 

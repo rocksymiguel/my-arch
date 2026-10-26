@@ -9,6 +9,7 @@ bluez-utils
 brightnessctl
 btop
 cliphist
+dosfstools
 efibootmgr
 eza
 fastfetch
