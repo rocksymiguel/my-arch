@@ -1,5 +1,5 @@
 #!/bin/bash
-# Menú de ajustes en rofi: tema, vidrio, inactividad, fondo y sistema (limpiar, actualizar,
+# Menú de ajustes en rofi: tema, vidrio, tamaño, inactividad, fondo y sistema (limpiar, actualizar,
 # fondos de arranque).
 # Navegación: al elegir algo se vuelve al menú anterior; Esc vuelve atrás
 # (y en el menú principal, cierra).
@@ -27,6 +27,17 @@ menu_vidrio() {
     act="$(sed -n 's/^glass=//p' "$C/glass" 2>/dev/null)"
     sel="$(printf '%s\n' "$(marca "$act" total Total)" "$(marca "$act" oscurecer Oscurecer)" | menu "Vidrio " 2)" || return 0
     case "$sel" in *Total) "$T/vidrio-bin" total ;; *Oscurecer) "$T/vidrio-bin" oscurecer ;; esac >/dev/null
+}
+
+# Tamaño de la interfaz: al elegir se aplica y el menú sigue abierto, para comparar
+menu_tamano() {
+    local act sel
+    while true; do
+        act="$(cat "$C/tamano" 2>/dev/null || echo 100)"
+        sel="$(for t in 50 75 90 100 110 125 150 175 200; do marca "$act" "$t" "$t %"; done | menu "Tamaño " 9)" || return 0
+        sel="$(limpiar "$sel")"
+        "$T/tamano-bin" "${sel% %}" >/dev/null
+    done
 }
 
 elegir_minutos() {
@@ -118,13 +129,15 @@ while true; do
     op="$(printf '%s\n' \
         "󰏘  Tema: $("$T/tema" actual)" \
         "󰂵  Vidrio: $(sed -n 's/^glass=//p' "$C/glass" 2>/dev/null)" \
+        "󰁌  Tamaño: $(cat "$C/tamano" 2>/dev/null || echo 100) %" \
         "󰅶  Inactividad: $inact" \
         "󰸉  Fondo de pantalla" \
         "󰒋  Sistema" \
-        | menu "󰒓  " 5)" || exit 0
+        | menu "󰒓  " 6)" || exit 0
     case "$op" in
         *Tema:*)        menu_tema ;;
         *Vidrio:*)      menu_vidrio ;;
+        *Tamaño:*)      menu_tamano ;;
         *Inactividad:*) menu_inactividad ;;
         *Fondo*)        menu_fondo ;;
         *Sistema)       menu_sistema ;;

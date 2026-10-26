@@ -1,10 +1,11 @@
 /* rofi minimalista: una lista centrada con buscador.
+ * Plantilla: `tema` genera ~/.config/rofi/config.rasi con el tamaño elegido ({{e:N}} = N px a 100 %).
  * Los colores salen del tema activo (colors.rasi lo genera `tema`). */
 configuration {
     modi: "drun,calc,run";
     show-icons: true;
     icon-theme: "Papirus-Dark";
-    font: "JetBrainsMono Nerd Font 10";
+    font: "JetBrainsMono Nerd Font {{d:10}}";
     terminal: "kitty";
     drun-display-format: "{name}";
     display-drun: "󰍉";
@@ -28,22 +29,22 @@ configuration {
 
 window {
     location: center;
-    width: 330px;
-    border: 2px;
+    width: {{e:330}}px;
+    border: {{e:2}}px;
     border-color: @acento;
-    border-radius: 10px;
+    border-radius: {{e:10}}px;
     background-color: @fondo;
-    padding: 10px;
+    padding: {{e:10}}px;
 }
 
 mainbox {
     children: [ inputbar, message, listview ];
-    spacing: 8px;
+    spacing: {{e:8}}px;
 }
 
 /* Resultado de la calculadora (rofi-calc); en los demás modos no hay mensaje y no se ve */
 message {
-    padding: 2px 6px;
+    padding: {{e:2}}px {{e:6}}px;
     border: 0;
 }
 textbox {
@@ -52,8 +53,8 @@ textbox {
 
 inputbar {
     children: [ prompt, entry ];
-    spacing: 8px;
-    padding: 4px 6px;
+    spacing: {{e:8}}px;
+    padding: {{e:4}}px {{e:6}}px;
 }
 
 prompt {
@@ -71,13 +72,13 @@ listview {
     lines: 10;
     fixed-height: false;
     scrollbar: false;
-    spacing: 2px;
+    spacing: {{e:2}}px;
 }
 
 element {
-    padding: 4px 8px;
-    border-radius: 6px;
-    spacing: 8px;
+    padding: {{e:4}}px {{e:8}}px;
+    border-radius: {{e:6}}px;
+    spacing: {{e:8}}px;
 }
 
 element selected {

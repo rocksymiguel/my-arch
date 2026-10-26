@@ -52,13 +52,26 @@ generar_acentos() {
     fi
 }
 
-# Medidas que dependen del equipo (se calculan cada vez): el aviso de volumen y brillo de swaync
-# va bajo su isla de waybar, contando desde el borde derecho. Con batería hay una isla más a la
-# derecha (61 px con su separación); sin ella, la isla de brillo y volumen se corre esos 61 px.
+# Tamaño de la interfaz en % (lo cambia `tamano`; 100 = la Lenovo). Las plantillas marcan cada
+# medida como {{e:N}} (N px a 100 %, redondeado) o {{d:N}} (con un decimal, para las letras).
+tamano() {
+    local t; t="$(cat "$CACHE/tamano" 2>/dev/null)"
+    [[ "$t" =~ ^[0-9]+$ ]] && [ "$t" -ge 50 ] && [ "$t" -le 200 ] && echo "$t" || echo 100
+}
+TAM="$(tamano)"
+esc() { echo $(( ($1 * TAM + 50) / 100 )); }   # esc 24 -> 24 px al tamaño actual
+
+# Medidas que dependen del equipo (se calculan cada vez):
+#   - el aviso de volumen y brillo de swaync va bajo su isla de waybar, contando desde el borde
+#     derecho. Con batería hay una isla más a la derecha (61 px con su separación); sin ella, la
+#     isla de brillo y volumen se corre esos 61 px
+#   - la pantalla cuyo brillo muestra swaync (amdgpu_bl1 en la Lenovo, intel_backlight…)
 disposicion() {
     local margen=151
     ls /sys/class/power_supply/BAT* >/dev/null 2>&1 || margen=$((margen - 61))
-    echo "osd_margen=$margen"
+    echo "osd_margen=$(esc "$margen")"
+    echo "backlight=$(ls /sys/class/backlight 2>/dev/null | head -n 1)"
+    echo "escala=$TAM"
 }
 
 renderizar() {
@@ -74,19 +87,29 @@ renderizar() {
         [[ -z "$k" || "$k" == \#* ]] && continue
         sed -i "s|{{$k}}|$v|g" "$tmp"
     done < <(cat "$acentos" "$colores" "$glass"; disposicion)
-    mv "$tmp" "$destino"
+    # Medidas al tamaño elegido (una medida que no es 0 nunca queda en 0)
+    perl -pi -e 'BEGIN { $t = shift }
+        s/\{\{e:(-?\d+)\}\}/ my $v = $1 * $t \/ 100; my $r = int(abs($v) + 0.5) || ($1 ? 1 : 0); $v < 0 ? -$r : $r /ge;
+        s/\{\{d:(\d+(?:\.\d+)?)\}\}/ sprintf("%.1f", $1 * $t \/ 100) /ge' "$TAM" "$tmp"
+    # Se reescribe en el mismo archivo (no mv): waybar vigila style.css para recargarlo
+    cat "$tmp" > "$destino"
+    rm -f "$tmp"
 }
 
 renderizar_todo() {
     local colores="$1"
-    renderizar "$colores" "$T/templates/hypr-colors.lua"     "$C/hypr/colors.lua"
+    mkdir -p "$C/hypr" "$C/waybar" "$C/kitty" "$C/rofi" "$C/swaync"
+    renderizar "$colores" "$T/templates/hypr-colors.lua"      "$C/hypr/colors.lua"
     renderizar "$colores" "$T/templates/hyprlock-colors.conf" "$C/hypr/colors-hyprlock.conf"
-    renderizar "$colores" "$T/templates/waybar-colors.css"   "$C/waybar/colors.css"
-    renderizar "$colores" "$T/templates/kitty-colors.conf"   "$C/kitty/colors.conf"
-    mkdir -p "$C/rofi"
-    renderizar "$colores" "$T/templates/rofi-colors.rasi"    "$C/rofi/colors.rasi"
-    mkdir -p "$C/swaync"
-    renderizar "$colores" "$T/templates/swaync.css"          "$C/swaync/style.css"
+    renderizar "$colores" "$T/templates/hyprlock.conf"        "$C/hypr/hyprlock.conf"
+    renderizar "$colores" "$T/templates/waybar-colors.css"    "$C/waybar/colors.css"
+    renderizar "$colores" "$T/templates/waybar-style.css"     "$C/waybar/style.css"
+    renderizar "$colores" "$T/templates/waybar-config.jsonc"  "$C/waybar/config.jsonc"
+    renderizar "$colores" "$T/templates/kitty-colors.conf"    "$C/kitty/colors.conf"
+    renderizar "$colores" "$T/templates/rofi-colors.rasi"     "$C/rofi/colors.rasi"
+    renderizar "$colores" "$T/templates/rofi-config.rasi"     "$C/rofi/config.rasi"
+    renderizar "$colores" "$T/templates/swaync.css"           "$C/swaync/style.css"
+    renderizar "$colores" "$T/templates/swaync-config.json"   "$C/swaync/config.json"
 }
 
 aplicar() {
@@ -98,6 +121,7 @@ aplicar() {
 
     grafico && poner_fondo "$modo"
     generar_acentos "$modo"
+    local swaync_antes; swaync_antes="$(cat "$C/swaync/config.json" 2>/dev/null)"
     renderizar_todo "$colores"
 
     local scheme icons gtk
@@ -122,13 +146,21 @@ aplicar() {
     # Recargar lo que esté abierto (si no hay sesión gráfica, no pasa nada)
     if grafico; then
         hyprctl reload >/dev/null 2>&1 || true
-        swaync-client -rs >/dev/null 2>&1 || true
+        if [ "$(cat "$C/swaync/config.json")" != "$swaync_antes" ]; then
+            # Otro tamaño: swaync se reinicia (recargando no cambia el ancho; se pierde el historial)
+            pkill -x swaync 2>/dev/null || true
+            setsid -f swaync >/dev/null 2>&1
+        else
+            swaync-client -rs >/dev/null 2>&1 || true
+        fi
         pkill -SIGUSR1 -x kitty 2>/dev/null || true
         gsettings set org.gnome.desktop.interface color-scheme "prefer-$scheme" 2>/dev/null || true
         gsettings set org.gnome.desktop.interface icon-theme "$icons" 2>/dev/null || true
         gsettings set org.gnome.desktop.interface gtk-theme "$gtk" 2>/dev/null || true
-        hyprctl setcursor "$cursor" 24 >/dev/null 2>&1 || true
+        hyprctl setcursor "$cursor" "$(esc 24)" >/dev/null 2>&1 || true
         gsettings set org.gnome.desktop.interface cursor-theme "$cursor" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface cursor-size "$(esc 24)" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface font-name "JetBrainsMono Nerd Font $(esc 9)" 2>/dev/null || true
         # Iconos de la bandeja (Wi-Fi, Bluetooth) con los iconos del modo nuevo
         pkill -x nm-applet 2>/dev/null || true
         pkill -f blueman-applet 2>/dev/null || true
@@ -146,8 +178,8 @@ gtk-theme-name=$gtk
 gtk-application-prefer-dark-theme=$([ "$scheme" = dark ] && echo 1 || echo 0)
 gtk-icon-theme-name=$icons
 gtk-cursor-theme-name=$cursor
-gtk-cursor-theme-size=24
-gtk-font-name=JetBrainsMono Nerd Font 9
+gtk-cursor-theme-size=$(esc 24)
+gtk-font-name=JetBrainsMono Nerd Font $(esc 9)
 EOF
     done
     echo "Tema: $modo"

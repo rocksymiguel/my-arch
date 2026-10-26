@@ -1,0 +1,22 @@
+#!/bin/bash
+# Tamaño de la interfaz: barra, lanzador y menús, notificaciones, terminal, bloqueo, ventanas
+# (separación, borde, redondeo), apps GTK y cursor. 100 % es el tamaño de la Lenovo.
+#   tamano        -> muestra el actual
+#   tamano <N>    -> lo pone a N % (de 50 a 200) y lo aplica
+set -euo pipefail
+
+T="$HOME/.config/theme"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/theme"
+mkdir -p "$CACHE"
+
+if [ $# -eq 0 ]; then
+    echo "Tamaño: $(cat "$CACHE/tamano" 2>/dev/null || echo 100) %"
+    exit 0
+fi
+
+n="${1%\%}"
+[[ "$n" =~ ^[0-9]+$ ]] && [ "$n" -ge 50 ] && [ "$n" -le 200 ] \
+    || { echo "Uso: tamano <50-200>" >&2; exit 1; }
+echo "$n" > "$CACHE/tamano"
+TEMA_SIN_AVISO=1 "$T/tema" "$("$T/tema" actual)" >/dev/null
+echo "Tamaño: $n %"

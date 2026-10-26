@@ -130,6 +130,9 @@ xdg-mime default mpv.desktop video/mp4 video/x-matroska video/webm video/quickti
 # ---------------------------------------------------------------------------
 paso "Dotfiles y tema"
 bash "$R/link.sh"
+# Tamaño de la interfaz según la pantalla (si ya había uno elegido, se respeta)
+mkdir -p "$HOME/.cache/theme"
+[ -f "$HOME/.cache/theme/tamano" ] || echo "$TAMANO" > "$HOME/.cache/theme/tamano"
 "$HOME/.config/theme/tema" oscuro
 "$HOME/.config/theme/inactividad-bin"
 "$HOME/.config/theme/fondos-bin" preparar 2>/dev/null || true   # logos de fastfetch

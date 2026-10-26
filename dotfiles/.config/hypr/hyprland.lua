@@ -4,6 +4,8 @@
 
 -- Colores del tema activo; los genera `tema` en ~/.config/hypr/colors.lua
 local theme = dofile(os.getenv("HOME") .. "/.config/hypr/colors.lua")
+-- Tamaño de la interfaz (`tamano`): e(N) son N px a 100 %
+local function e(n) return math.floor(n * (theme.escala or 100) / 100 + 0.5) end
 
 ------------------
 ---- MONITORS ----
@@ -41,8 +43,8 @@ do
     if f then cursor_elegido = f:read("*l") or cursor_elegido; f:close() end
 end
 hl.env("XCURSOR_THEME", cursor_elegido)
-hl.env("XCURSOR_SIZE", "24")
-hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("XCURSOR_SIZE", tostring(e(24)))
+hl.env("HYPRCURSOR_SIZE", tostring(e(24)))
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
 -- En máquina virtual (VMware…) Hyprland rechaza los búferes de la gráfica de los programas y los
@@ -60,9 +62,9 @@ end
 -- Separación compacta, borde de 2 con degradado del tema y efecto vidrio.
 hl.config({
     general = {
-        gaps_in  = 3,
-        gaps_out = 6,
-        border_size = 2,
+        gaps_in  = e(3),
+        gaps_out = e(6),
+        border_size = math.max(1, e(2)),
         col = {
             active_border   = { colors = { theme.accent, theme.accent2 }, angle = 45 },
             inactive_border = theme.border_off,
@@ -72,7 +74,7 @@ hl.config({
         layout = "scrolling", -- columnas que se desplazan de lado, al estilo Niri
     },
     decoration = {
-        rounding       = 10,
+        rounding       = e(10),
         rounding_power = 2,
         active_opacity   = theme.win_active,
         inactive_opacity = theme.win_inactive,
@@ -81,7 +83,7 @@ hl.config({
         dim_strength     = theme.dim_strength,
         shadow = {
             enabled      = true,
-            range        = 4,
+            range        = e(4),
             render_power = 3,
             color        = 0xee1a1a1a,
         },
@@ -238,7 +240,7 @@ hl.window_rule({
     name   = "ajustes-terminal",
     match  = { class = "^ajustes-terminal$" },
     float  = true,
-    size   = "900 560",
+    size   = e(900) .. " " .. e(560),
     center = true,
 })
 
@@ -285,8 +287,8 @@ hl.window_rule({
     match = { title = "^(Picture-in-Picture|Imagen en imagen)$" },
     float = true,
     pin   = true,
-    size  = "480 270",
-    move  = "monitor_w-490 monitor_h-280",
+    size  = e(480) .. " " .. e(270),
+    move  = "monitor_w-" .. e(490) .. " monitor_h-" .. e(280),
 })
 
 -- No bajar el brillo ni bloquear mientras haya algo a pantalla completa (vídeos)
@@ -302,6 +304,6 @@ hl.window_rule({
     match     = { class = "^io\\.m51\\.Gelly$" },
     workspace = "special:musica silent",
     float     = true,
-    size      = "490 540",
+    size      = e(490) .. " " .. e(540),
     center    = true,
 })

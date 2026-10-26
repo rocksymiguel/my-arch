@@ -74,8 +74,23 @@ pone solo el acento (bordes de ventana, barra, lanzador, kitty, bloqueo) con mat
 del modo. Al cambiar de fondo, o al rotar, se actualiza sin reiniciar waybar.
 
 Los colores viven en `themes/*.colors` y las plantillas por programa en `templates/`.
-Los archivos que genera (`colors.lua`, `colors.css`, `rofi.ini`, `swaync/config`…) no se versionan:
+Los archivos que genera (`colors.lua`, `colors.css`, la barra, rofi, swaync, `hyprlock.conf`…) no se versionan:
 en un equipo nuevo, después de `./link.sh`, ejecuta `tema oscuro`.
+
+## Tamaño
+
+⚙ → Tamaño, o con un comando:
+
+```bash
+tamano          # muestra el actual
+tamano 125      # de 50 a 200 %; 100 es el de la Lenovo
+```
+
+Cambia la barra, el lanzador y los menús, las notificaciones y los avisos (siguen bajo su isla), kitty,
+el bloqueo, la separación, el borde y el redondeo de las ventanas, la letra de GTK y el cursor. Las
+plantillas de `theme/templates` marcan cada medida como `{{e:N}}` (N px a 100 %) o `{{d:N}}` (letras,
+con decimal) y `tema` las genera al tamaño elegido. Al instalar, `post.sh` elige uno según la densidad
+de la pantalla (la Lenovo, ~102 ppp, es el 100 %; los monitores de escritorio, +10 %).
 
 ## Vidrio
 

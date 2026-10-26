@@ -6,6 +6,7 @@
 #   VIRT       none en un equipo real; vmware, oracle, kvm, microsoft… en una máquina virtual
 #   PORTATIL   si / no (si tiene batería)
 #   RES        resolución de la pantalla principal, p. ej. 1366x768 (1920x1080 si no se sabe)
+#   TAMANO     tamaño de la interfaz que le va (% del menú Tamaño), según la densidad de la pantalla
 #   KMS        módulos de la gráfica para el initramfs, p. ej. "amdgpu"
 #   EFI_DISCO, EFI_PART   disco y número de partición de /boot (para efibootmgr)
 
@@ -27,13 +28,25 @@ PORTATIL=no
 ls /sys/class/power_supply/BAT* >/dev/null 2>&1 && PORTATIL=si
 
 # Primer modo (el preferido) de la primera pantalla conectada
-RES=""
+RES=""; CM=0
 for c in /sys/class/drm/card*-*; do
     [ "$(cat "$c/status" 2>/dev/null)" = connected ] || continue
     RES="$(head -n1 "$c/modes" 2>/dev/null)"
+    CM="$(od -An -tu1 -j21 -N1 "$c/edid" 2>/dev/null | tr -d ' ')"   # ancho físico en cm (EDID)
     [ -n "$RES" ] && break
 done
 RES="${RES:-1920x1080}"
+
+# Tamaño de la interfaz: la Lenovo (1366 px en 34 cm, ~102 ppp) es el 100 %. Un monitor de
+# escritorio se mira de más lejos: +10 %. Se redondea al valor del menú más cercano.
+TAMANO=100
+if [ "${CM:-0}" -gt 0 ] 2>/dev/null; then
+    t=$(( ${RES%x*} * 254 / CM * 100 / 102 / 100 ))   # ppp relativo a 102, en %
+    [ "$PORTATIL" = no ] && t=$(( t * 110 / 100 ))
+    for v in 50 75 90 100 110 125 150 175 200; do
+        [ $(( (v - t) * (v - t) )) -lt $(( (TAMANO - t) * (TAMANO - t) )) ] && TAMANO=$v
+    done
+fi
 
 KMS=""
 [ "$VIRT" = none ] && for g in $GPUS; do
@@ -53,7 +66,7 @@ resumen_hardware() {
     echo "Gráfica:   ${GPUS:-ninguna detectada}"
     echo "Virtual:   $VIRT"
     echo "Portátil:  $PORTATIL"
-    echo "Pantalla:  $RES"
+    echo "Pantalla:  $RES · tamaño de la interfaz: $TAMANO %"
     echo "initramfs: ${KMS:-(nada)}"
     echo "EFI:       $EFI_DISCO partición $EFI_PART"
 }

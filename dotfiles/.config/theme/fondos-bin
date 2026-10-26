@@ -84,13 +84,19 @@ miniaturas() {
     done
 }
 
-# 4 columnas x 3 filas de miniaturas; cabe en la pantalla de 1366x768 junto a la barra
-ESTILO='window { width: 720px; }
-entry { placeholder: ""; }
-listview { columns: 4; lines: 3; flow: horizontal; fixed-columns: true; spacing: 8px; }
-element { orientation: vertical; padding: 6px; spacing: 2px; }
-element-icon { size: 150px; horizontal-align: 0.5; }
-element-text { horizontal-align: 0.5; }'
+# 4 columnas x 3 filas de miniaturas; a 100 % cabe en la pantalla de 1366x768 junto a la barra.
+# Crece con el tamaño de la interfaz (`tamano`), pero nunca más que la pantalla.
+estilo() {
+    local t alto
+    t="$(cat "$C/tamano" 2>/dev/null || echo 100)"
+    alto="$(hyprctl monitors -j 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin)[0]["height"])' 2>/dev/null || echo 768)"
+    [ $(( 600 * t / 100 )) -le $(( alto * 90 / 100 )) ] || t=$(( alto * 90 / 600 ))   # 600 px de alto a 100 %
+    e() { echo $(( ($1 * t + 50) / 100 )); }
+    printf '%s\n' "window { width: $(e 720)px; }" 'entry { placeholder: ""; }' \
+        "listview { columns: 4; lines: 3; flow: horizontal; fixed-columns: true; spacing: $(e 8)px; }" \
+        "element { orientation: vertical; padding: $(e 6)px; spacing: $(e 2)px; }" \
+        "element-icon { size: $(e 150)px; horizontal-align: 0.5; }" 'element-text { horizontal-align: 0.5; }'
+}
 
 elegir() {
     pkill -x rofi 2>/dev/null && return 0   # si ya estaba abierto, Super + W lo cierra
@@ -110,7 +116,7 @@ elegir() {
                 n="$(sed -E 's/ ?- ?(Dark|Light) Mode//' <<< "$n")"
                 printf '%s\0icon\x1f%s\n' "$n" "$MINI/$(basename "$f").png"
             done | rofi -dmenu -i -show-icons -no-custom -format i -selected-row "$fila" -p "$p" \
-                -kb-custom-1 "Tab" -kb-element-next "" -theme-str "$ESTILO")" || rc=$?
+                -kb-custom-1 "Tab" -kb-element-next "" -theme-str "$(estilo)")" || rc=$?
         if [ "$rc" -eq 10 ]; then
             [ "$cat" = oscuro ] && cat=claro || cat=oscuro
             continue

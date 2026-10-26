@@ -12,3 +12,9 @@ __pycache__/
 dotfiles/.config/gtk-3.0/
 dotfiles/.config/gtk-4.0/
 dotfiles/.icons/
+# Generados por `tema` con el tamaño de la interfaz (plantillas en theme/templates)
+dotfiles/.config/waybar/style.css
+dotfiles/.config/waybar/config.jsonc
+dotfiles/.config/rofi/config.rasi
+dotfiles/.config/swaync/config.json
+dotfiles/.config/hypr/hyprlock.conf

@@ -3,7 +3,7 @@
 
 * {
     font-family: "JetBrainsMono Nerd Font";
-    font-size: 12px;
+    font-size: {{e:12}}px;
     min-height: 0;
 }
 
@@ -25,30 +25,30 @@ window#waybar {
 #custom-ajustes,
 #custom-apagado {
     background: @bar_bg;
-    border-radius: 10px;
-    padding: 0 10px;
+    border-radius: {{e:10}}px;
+    padding: 0 {{e:10}}px;
 }
 
 /* Reloj y tiempo forman una sola isla en el centro */
 #clock {
     font-weight: bold;
-    border-radius: 10px 0 0 10px;
-    padding-right: 6px;
+    border-radius: {{e:10}}px 0 0 {{e:10}}px;
+    padding-right: {{e:6}}px;
 }
 #custom-clima {
-    border-radius: 0 10px 10px 0;
-    padding-left: 6px;
+    border-radius: 0 {{e:10}}px {{e:10}}px 0;
+    padding-left: {{e:6}}px;
     color: @muted;
 }
 
 #workspaces {
-    padding: 0 4px;
+    padding: 0 {{e:4}}px;
 }
 #workspaces button {
-    padding: 0 7px;
-    margin: 3px 1px;
+    padding: 0 {{e:7}}px;
+    margin: {{e:3}}px {{e:1}}px;
     color: @muted;
-    border-radius: 7px;
+    border-radius: {{e:7}}px;
 }
 #workspaces button.active {
     color: @bg;
@@ -67,7 +67,7 @@ window#waybar {
 
 #cpu, #memory, #custom-temperatura,
 #backlight, #pulseaudio {
-    padding: 0 6px;
+    padding: 0 {{e:6}}px;
 }
 #custom-temperatura.critical {
     color: @err;
@@ -85,15 +85,15 @@ window#waybar {
 }
 
 #custom-ajustes, #custom-apagado {
-    font-size: 13px;
-    padding: 0 11px;
+    font-size: {{e:13}}px;
+    padding: 0 {{e:11}}px;
 }
 #custom-apagado {
     color: @err;
     font-weight: 900;
-    font-size: 15px;
-    padding: 0 9px;
-    text-shadow: 0 0 1px @err, 0 0 1px @err, 0 0 1px @err;
+    font-size: {{e:15}}px;
+    padding: 0 {{e:9}}px;
+    text-shadow: 0 0 {{e:1}}px @err, 0 0 {{e:1}}px @err, 0 0 {{e:1}}px @err;
 }
 #custom-ajustes:hover, #custom-apagado:hover {
     background: alpha(@accent, 0.25);
@@ -108,7 +108,7 @@ window#waybar {
 
 #custom-avion {
     color: @warn;
-    padding: 0 4px;
+    padding: 0 {{e:4}}px;
 }
 #custom-avion.off {
     padding: 0;
@@ -119,8 +119,8 @@ window#waybar {
 #custom-grabando.rec {
     background: @err;
     color: @bg;
-    border-radius: 10px;
-    padding: 0 10px;
+    border-radius: {{e:10}}px;
+    padding: 0 {{e:10}}px;
     font-weight: bold;
 }
 #custom-grabando.off {

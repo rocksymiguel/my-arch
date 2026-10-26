@@ -10,7 +10,7 @@
 
 * {
     font-family: "JetBrainsMono Nerd Font";
-    font-size: 11px;
+    font-size: {{e:11}}px;
 }
 
 /* Cada notificación (sin el cuadro rectangular de fondo) */
@@ -19,89 +19,89 @@
     background: transparent;
     box-shadow: none;
 }
-progressbar trough { background: @surface_hi; border-radius: 99px; min-height: 6px; }
-progressbar progress { background: @accent; border-radius: 99px; min-height: 6px; }
+progressbar trough { background: @surface_hi; border-radius: {{e:99}}px; min-height: {{e:6}}px; }
+progressbar progress { background: @accent; border-radius: {{e:99}}px; min-height: {{e:6}}px; }
 .notification-row { outline: none; }
 .notification {
     background: alpha(@bg, {{bar_alpha}});
-    border: 2px solid @accent;
-    border-radius: 10px;
-    margin: 4px 4px;
+    border: {{e:2}}px solid @accent;
+    border-radius: {{e:10}}px;
+    margin: {{e:4}}px {{e:4}}px;
     padding: 0;
 }
 .notification.critical { border-color: @err; }
-.notification-content { padding: 8px; }
-.summary { color: @text; font-weight: bold; font-size: 12px; }
+.notification-content { padding: {{e:8}}px; }
+.summary { color: @text; font-weight: bold; font-size: {{e:12}}px; }
 .time { color: @muted; }
 .body { color: @text; }
 .notification-default-action, .notification-action {
     background: transparent;
     color: @text;
     border: none;
-    border-radius: 10px;
+    border-radius: {{e:10}}px;
 }
 .notification-default-action:hover, .notification-action:hover { background: alpha(@text, 0.08); }
 .close-button {
     background: @surface_hi;
     color: @text;
-    border-radius: 99px;
-    margin: 6px;
-    min-width: 20px;
-    min-height: 20px;
+    border-radius: {{e:99}}px;
+    margin: {{e:6}}px;
+    min-width: {{e:20}}px;
+    min-height: {{e:20}}px;
 }
 .close-button:hover { background: @err; color: @bg; }
 
 /* Centro de notificaciones */
 .control-center {
     background: alpha(@bg, {{bar_alpha}});
-    border: 2px solid @accent;
-    border-radius: 12px;
+    border: {{e:2}}px solid @accent;
+    border-radius: {{e:12}}px;
     color: @text;
 }
 .control-center-list { background: transparent; }
-.widget-title { margin: 8px 10px 4px; font-size: 14px; color: @text; }
+.widget-title { margin: {{e:8}}px {{e:10}}px {{e:4}}px; font-size: {{e:14}}px; color: @text; }
 .widget-title > button {
     background: @surface_hi;
     color: @text;
     border: none;
-    border-radius: 8px;
-    padding: 2px 10px;
+    border-radius: {{e:8}}px;
+    padding: {{e:2}}px {{e:10}}px;
 }
 .widget-title > button:hover { background: @err; color: @bg; }
-.widget-dnd { margin: 4px 10px; color: @text; }
-.widget-dnd > switch { background: @surface_hi; border-radius: 99px; }
+.widget-dnd { margin: {{e:4}}px {{e:10}}px; color: @text; }
+.widget-dnd > switch { background: @surface_hi; border-radius: {{e:99}}px; }
 .widget-dnd > switch:checked { background: @accent; }
-.widget-dnd > switch slider { background: @text; border-radius: 99px; }
-.widget-mpris { margin: 4px 10px; }
+.widget-dnd > switch slider { background: @text; border-radius: {{e:99}}px; }
+.widget-mpris { margin: {{e:4}}px {{e:10}}px; }
 .widget-mpris-player {
     background: alpha(@surface, 0.8);
-    border-radius: 10px;
-    padding: 8px;
+    border-radius: {{e:10}}px;
+    padding: {{e:8}}px;
 }
 .widget-mpris-title { color: @text; font-weight: bold; }
 .widget-mpris-subtitle { color: @muted; }
 .widget-volume, .widget-backlight {
-    margin: 2px 10px;
-    padding: 4px 8px;
+    margin: {{e:2}}px {{e:10}}px;
+    padding: {{e:4}}px {{e:8}}px;
     background: alpha(@surface, 0.8);
-    border-radius: 10px;
+    border-radius: {{e:10}}px;
     color: @accent;
 }
-trough { background: @surface_hi; border-radius: 99px; min-height: 6px; }
-highlight { background: @accent; border-radius: 99px; }
-slider { background: @text; border-radius: 99px; min-width: 12px; min-height: 12px; }
+trough { background: @surface_hi; border-radius: {{e:99}}px; min-height: {{e:6}}px; }
+highlight { background: @accent; border-radius: {{e:99}}px; }
+slider { background: @text; border-radius: {{e:99}}px; min-width: {{e:12}}px; min-height: {{e:12}}px; }
 
 /* Notificaciones y avisos de texto: compactos */
-.notification .notification-content { padding: 6px 10px; }
-.notification .time { font-size: 9px; margin-right: 24px; }
+.notification .notification-content { padding: {{e:6}}px {{e:10}}px; }
+.notification .time { font-size: {{e:9}}px; margin-right: {{e:24}}px; }
 
 /* Avisos de volumen y brillo (urgencia baja): solo la barra, centrada bajo la isla
    de brillo y volumen. El hueco a la derecha lo calcula `tema` (con o sin batería) */
-.notification.low { margin: 4px {{osd_margen}}px 4px 4px; }
-.notification.low .notification-content { padding: 0 10px 9px; }
+.notification.low { margin: {{e:4}}px {{osd_margen}}px {{e:4}}px {{e:4}}px; }
+.notification.low .notification-content { padding: 0 {{e:10}}px {{e:9}}px; }
 .notification.low .text-box, .notification.low .summary, .notification.low .body,
 .notification.low .time {
-    min-height: 0; min-width: 0; margin: 0; padding: 0; font-size: 1px;
+    min-height: 0; min-width: 0; margin: 0; padding: 0; font-size: {{e:1}}px;
 }
-.notification.low progressbar { margin: 0; min-width: 96px; }
+.notification.low progressbar { margin: 0; min-width: {{e:96}}px; }
 .notification.low .close-button { min-width: 0; min-height: 0; margin: 0; padding: 0; opacity: 0; }

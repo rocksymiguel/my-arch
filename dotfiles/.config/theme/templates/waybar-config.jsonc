@@ -1,13 +1,14 @@
-// Barra en islas para Hyprland (generada con iconos por código)
+// Barra en islas para Hyprland. Plantilla: `tema` genera ~/.config/waybar/config.jsonc
+// con el tamaño elegido ({{e:N}} = N px a 100 %)
 {
     "layer": "top",
     "reload_style_on_change": true, // `tema acentos` cambia el color sin reiniciar la barra
     "position": "top",
-    "height": 28,
-    "margin-top": 4,
-    "margin-left": 6,
-    "margin-right": 6,
-    "spacing": 6,
+    "height": {{e:28}},
+    "margin-top": {{e:4}},
+    "margin-left": {{e:6}},
+    "margin-right": {{e:6}},
+    "spacing": {{e:6}},
     "modules-left": [
         "hyprland/workspaces",
         "mpris"
@@ -100,7 +101,8 @@
         "on-click": "kitty -e btop"
     },
     "tray": {
-        "spacing": 8
+        "icon-size": {{e:16}},
+        "spacing": {{e:8}}
     },
     "group/controles": {
         "orientation": "horizontal",

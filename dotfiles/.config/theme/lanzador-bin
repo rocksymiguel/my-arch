@@ -3,9 +3,10 @@
 # (Super + Espacio). Cuenta las apps visibles: las de /usr/share/applications y
 # ~/.local/share/applications, sin las escondidas (NoDisplay o Hidden).
 # Ctrl + Tab pasa a la calculadora (rofi-calc): Enter copia el resultado.
-CHAR=8      # píxeles por carácter (JetBrains Mono Nerd 10)
-EXTRA=74    # icono, márgenes, borde y relleno
-MIN=220
+TAM="$(cat "${XDG_CACHE_HOME:-$HOME/.cache}/theme/tamano" 2>/dev/null || echo 100)"   # `tamano`, en %
+CHAR=$(( 8 * TAM / 100 ))      # píxeles por carácter (JetBrains Mono Nerd 10 a 100 %)
+EXTRA=$(( 74 * TAM / 100 ))    # icono, márgenes, borde y relleno
+MIN=$(( 220 * TAM / 100 ))
 
 declare -A vistas
 for dir in /usr/share/applications "$HOME/.local/share/applications"; do
