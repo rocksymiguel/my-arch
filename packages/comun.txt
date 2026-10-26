@@ -19,6 +19,7 @@ fish
 fontconfig
 fwupd
 fzf
+gdu
 git
 github-cli
 gnome-keyring
@@ -30,6 +31,7 @@ hyprland
 hyprlock
 hyprpicker
 hyprpolkitagent
+imv
 kitty
 libnotify
 limine
@@ -41,6 +43,7 @@ man-pages
 man-pages-es
 matugen
 mesa
+mpv
 nano
 network-manager-applet
 networkmanager
@@ -62,6 +65,7 @@ python-pillow
 qt6-wayland
 reflector
 rofi
+rofi-calc
 satty
 slurp
 starship

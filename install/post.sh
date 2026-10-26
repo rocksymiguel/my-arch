@@ -123,6 +123,11 @@ for i in Papirus Papirus-Dark Papirus-Light; do
 done
 
 # ---------------------------------------------------------------------------
+paso "Apps por defecto: imv para imágenes (con las de la carpeta) y mpv para vídeo"
+xdg-mime default imv-dir.desktop image/png image/jpeg image/gif image/webp image/bmp image/tiff image/avif
+xdg-mime default mpv.desktop video/mp4 video/x-matroska video/webm video/quicktime video/x-msvideo video/mpeg video/ogg
+
+# ---------------------------------------------------------------------------
 paso "Dotfiles y tema"
 bash "$R/link.sh"
 "$HOME/.config/theme/tema" oscuro
