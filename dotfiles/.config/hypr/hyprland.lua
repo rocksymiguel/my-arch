@@ -160,8 +160,9 @@ hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 
--- Bloquear, fondos y portapapeles
+-- Bloquear, menú de apagado (Escape), fondos y portapapeles
 hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("~/.config/theme/bloquear-bin"))
+hl.bind(mainMod .. " + Escape",    hl.dsp.exec_cmd("~/.config/waybar/scripts/menu-apagado")) -- el menú del botón rojo de la barra
 hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("~/.config/theme/fondos-bin elegir"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("~/.config/theme/grabar-bin")) -- grabar pantalla
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p Portapapeles | cliphist decode | wl-copy"))

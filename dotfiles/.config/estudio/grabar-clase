@@ -1,0 +1,39 @@
+#!/bin/bash
+# Graba el micrófono durante una clase y guarda el audio en la carpeta Grabaciones del vault de
+# Obsidian (Syncthing la sincroniza con el NAS). Para terminar: Ctrl+C. Al terminar lo comprime a
+# Opus: unos 11 MB por hora, frente a los ~115 MB del WAV.
+#   grabar-clase [nombre]        p. ej.: grabar-clase primeros-auxilios
+# Después: transcribir <audio>
+set -euo pipefail
+
+VAULT="${VAULT_ESTUDIO:-$HOME/Documentos/obsidian-vault/rocksymiguel}"
+DEST="$VAULT/Grabaciones"
+mkdir -p "$DEST"
+base="$(date +%F_%H%M)${1:+_$1}"
+wav="$DEST/$base.wav"
+opus="$DEST/$base.opus"
+aviso() { notify-send -a grabar-clase "$@" 2>/dev/null || true; }
+
+terminar() {
+    trap - INT TERM
+    echo; echo "Guardando…"
+    kill -INT "$PID" 2>/dev/null || true       # pw-record cierra bien el WAV al recibir SIGINT
+    wait "$PID" 2>/dev/null || true
+    if [ -s "$wav" ] && ffmpeg -v error -y -i "$wav" -c:a libopus -b:a 24k -application voip "$opus"; then
+        rm -f "$wav"
+        echo "Guardado: $opus ($(du -h "$opus" | cut -f1))"
+        aviso "Grabación guardada" "$(basename "$opus")"
+    else
+        echo "No pude comprimirlo; queda el WAV: $wav"
+        aviso "Grabación guardada (WAV)" "$(basename "$wav")"
+    fi
+    exit 0
+}
+
+pw-record --rate 16000 --channels 1 --format s16 "$wav" &
+PID=$!
+trap terminar INT TERM
+echo "Grabando en $wav  ·  Ctrl+C para terminar"
+aviso "Grabando clase" "$base"
+wait "$PID" || true
+terminar

@@ -6,6 +6,9 @@ set -gx VISUAL nano
 set -gx BAT_THEME ansi                        # bat usa los colores del tema de kitty
 set -gx FZF_DEFAULT_OPTS "--color=16 --height=40% --layout=reverse --border=rounded"
 
+# ~/.local/bin: donde se instalan el CLI de Claude (claude) y zen-sync
+fish_add_path --global --move $HOME/.local/bin
+
 # Comandos propios del escritorio
 alias tema       "~/.config/theme/tema"
 alias vidrio     "~/.config/theme/vidrio-bin"
@@ -16,6 +19,8 @@ alias musica     "~/.config/theme/musica-bin"
 alias logo       "~/.config/theme/logo-bin"
 alias hypr       "start-hyprland"
 alias modo       "~/.config/theme/modo-bin"
+alias grabar-clase "~/.config/estudio/grabar-clase"
+alias transcribir "~/.config/estudio/transcribir"
 
 # Herramientas modernas
 alias ls  "eza --icons --group-directories-first"

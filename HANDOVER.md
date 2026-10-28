@@ -72,6 +72,16 @@ Estado actual: tema **claro**, vidrio **total**, rotación cada **5 min**.
 - **Icono de Steam en la barra (2026-10-26):** Steam manda su propia carpeta de iconos (`IconThemePath`, `~/.local/share/Steam/public/steam_tray_mono.png`, claro) y waybar la usa antes que Papirus, así que en modo claro no se veía. `theme/icono-steam` lo repinta con el color del texto del modo conservando el canal alfa; lo llama `tema` al cambiar de modo y al iniciar (antes de lanzar Steam, que puede rehacer el archivo al actualizarse). En una instalación nueva, el primer arranque de Steam sale con el icono original.
 - **Isla de conexión sin vacíos (2026-10-26):** waybar no esconde un grupo cuyos módulos están todos escondidos; el relleno de `#conexion` (avión + bandeja) pasa a sus módulos (`#tray`, `#custom-avion`) para que sin iconos no quede una cápsula vacía.
 
+## Estudio: curso de bomberos voluntarios (2026-10-28)
+
+El usuario empieza un curso de bomberos voluntarios el 2026-11-01 y quiere la Lenovo como herramienta de estudio, **sin el módulo de RAM de la ranura** (el zócalo falla: ver «Equipo»). Todo va en `post.sh` (`bash ~/my-arch/install/post.sh estudio` lo aplica en esta Lenovo con una contraseña); `packages/estudio.txt` (Obsidian, Syncthing), `install/estudio-syncthing.sh`, `dotfiles/.config/estudio/` y las entradas `claude*.desktop`. Detalle en el README.
+
+- **Hecho y probado sin sudo:** CLI de Claude 2.1.312 instalado (el instalador oficial no toca el shell; `~/.local/bin` no estaba en el PATH y ahora lo añade `fish/config.fish`), ajustes `language: spanish` y `voice` (tap) en `~/.claude/settings.json`, lanzador «Claude» (abre kitty en el vault), Super + Escape (menú de apagado, que ahora pide confirmar solo para Modo juego), `nas.sh` (probado sobre una copia del `fstab`), grabar con el micrófono (4 s → Opus) y transcribir (faster-whisper en un venv; `av<19` porque la 19 rompe su lector de audio con Python 3.14). La configuración de Syncthing se probó completa contra un Syncthing aislado (descargado y verificado con el SHA-256 de `extra.db`).
+- **Pendiente de la contraseña del usuario:** instalar `obsidian` y `syncthing`, y apuntar el `fstab` a Tailscale (`post.sh estudio`).
+- **Pendiente en el TrueNAS (no hay acceso desde la Lenovo: SSH apagado y sin clave de API):** instalar la app Syncthing del tren **Stable** (Enterprise es para equipos con licencia) apuntada a `obsidian-vault` de Emulacion, ejecutándola con el usuario dueño de los archivos para no tocar ACL; puerto de sincronización 22000. Luego `bash install/estudio-syncthing.sh <ID-del-NAS>` empareja y comparte `obsidian-vault`.
+- **Vault:** `Emulacion/obsidian-vault/rocksymiguel` (384 MB, 96 notas, 344 adjuntos; carpetas BCBD Wiki, First Call, Pomodoro; sin complementos: el usuario activa Excalidraw él mismo). `workspace.json` no se sincroniza (`.stignore`).
+- **TrueNAS en Tailscale:** `truenas-scale`, 100.100.4.8, SMB abierto. Las conversaciones del CLI quedan en `~/.claude/projects/<carpeta>/` (por carpeta, 30 días).
+
 ## Instalador para cualquier equipo (2026-10-25/26)
 
 Objetivo: reinstalar el rice en **cualquier PC** (escritorio o portátil; AMD, NVIDIA o Intel), no solo en la Lenovo. Dos fases, probadas de principio a fin en una VM de VMware (en el PC con Windows):

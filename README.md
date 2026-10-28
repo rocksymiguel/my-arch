@@ -48,6 +48,32 @@ Pregunta el modo juego (Steam + Gamescope y la entrada «Juego» en Limine), el 
 pone fish, enlaza los dotfiles, aplica `tema oscuro` y ejecuta zram, sistema, energía, Limine,
 Plymouth y el arranque limpio. Los fondos se copian de `~/my-arch/fondos/` si existe.
 
+## Estudio (Obsidian, Syncthing, Claude Code por voz, clases)
+
+`post.sh` lo pregunta (`ESTUDIO=si`), o en un equipo ya instalado, con una sola contraseña:
+
+```bash
+bash ~/my-arch/install/post.sh estudio
+```
+
+Instala Obsidian y Syncthing (`packages/estudio.txt`), apunta los montajes del NAS a Tailscale (`nas.sh`: el
+NAS se llama `truenas-scale` y sirve en casa y fuera; las líneas que ya existían solo cambian de dirección),
+el CLI de Claude Code (instalador oficial, `~/.local/bin/claude`) con el español y el dictado `/voice` ya
+puestos en `~/.claude/settings.json`, y un entorno de voz a texto local (`~/.local/share/estudio/venv`, con
+faster-whisper).
+
+- **Claude:** en el lanzador (Super + Espacio) salen «Claude» y «Claude · continuar»: abren kitty con Claude en
+  la carpeta del vault. Dentro: `/voice` (tocar Espacio para empezar y otra vez para enviar; solo funciona en una
+  terminal de la propia laptop, no por SSH), `claude --resume` para elegir una conversación anterior, `/rename`
+  para ponerle nombre y `/export` para guardarla como texto. Se borran a los 30 días.
+- **Vault:** `~/Documentos/obsidian-vault` se sincroniza con el NAS (`Emulacion/obsidian-vault`) con Syncthing,
+  solo por Tailscale o la red de casa (`install/estudio-syncthing.sh`; sin el ID del Syncthing del NAS solo deja
+  listo este lado y enseña el ID de esta laptop). La nota se abre en Obsidian desde `rocksymiguel/`.
+- **Clases:** `grabar-clase [nombre]` (Ctrl+C para terminar; guarda un Opus en `Grabaciones/` del vault) y
+  `transcribir <audio> [tiny|base|small|medium]` (apunte en Markdown en `Transcripciones/`). Medido en la
+  Lenovo con 2 min 30 s de español: «base» 6,8× el tiempo real y 0,5 GB de RAM; «small» 2,3× y 1,1 GB.
+- **Menú de apagado:** Super + Escape lo abre; solo «Modo juego» pide confirmar.
+
 ## Añadir paquetes
 
 Al instalar algo nuevo a mano, añádelo a la lista que toque: `packages/comun.txt` si va en todos

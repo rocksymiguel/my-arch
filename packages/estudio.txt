@@ -1,0 +1,4 @@
+# Estudio: apuntes y sincronización del vault. El CLI de Claude, la voz a texto (faster-whisper) y el
+# lanzador los instala post.sh por su cuenta (no son paquetes de pacman).
+obsidian
+syncthing

@@ -1,0 +1,6 @@
+#!/bin/bash
+# Transcribe un audio de clase a un apunte en Markdown (en local). Ver transcribir.py.
+#   transcribir <audio> [tiny|base|small|medium]
+V="$HOME/.local/share/estudio/venv/bin/python"
+[ -x "$V" ] || { echo "Falta el entorno de voz. Ejecuta: bash ~/my-arch/install/post.sh estudio" >&2; exit 1; }
+exec "$V" "$(dirname "$(readlink -f "$0")")/transcribir.py" "$@"

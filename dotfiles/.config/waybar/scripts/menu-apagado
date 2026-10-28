@@ -5,9 +5,13 @@ menu() { rofi -dmenu -i -p "$1" -l "$2" -theme-str 'window { width: 22em; }'; }
 
 op="$(printf '%s\n' "󰊗  Modo juego" "󰌾  Bloquear" "󰤄  Suspender" "󰍃  Cerrar sesión" "󰜉  Reiniciar" "󰐥  Apagar" | menu "󰐥  " 6)" || exit 0
 
+# Solo el modo juego pide confirmar (cierra el escritorio y sus programas); «No» va primero: un Enter por descuido cancela
+confirmar() {
+    [ "$(printf '%s\n' "No" "Sí, $1" | menu "¿$1? " 2)" = "Sí, $1" ]
+}
 
 case "$op" in
-    *"Modo juego")    ~/.config/theme/modo-bin juego ;;
+    *"Modo juego")    confirmar "pasar a modo juego" && ~/.config/theme/modo-bin juego ;;
     *Bloquear)       ~/.config/theme/bloquear-bin ;;
     *Suspender)      systemctl suspend ;;
     *"Cerrar sesión") hyprctl dispatch 'hl.dsp.exit()' ;;

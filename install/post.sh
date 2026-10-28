@@ -7,7 +7,11 @@
 # sudo pide tu contraseña una sola vez, al principio.
 #
 # Opcionales: se preguntan, o se dan por variables (si/no):
-#   JUEGO=si NAS=no TAILSCALE=no bash ~/my-arch/install/post.sh
+#   JUEGO=si NAS=no TAILSCALE=no ESTUDIO=si bash ~/my-arch/install/post.sh
+#
+# Solo lo de estudio (Obsidian, Syncthing, Claude Code por voz, grabar y transcribir clases) en un
+# equipo ya instalado, con una sola contraseña:
+#   bash ~/my-arch/install/post.sh estudio
 set -euo pipefail
 
 D="$(cd "$(dirname "$0")" && pwd)"   # install/
@@ -26,6 +30,48 @@ preguntar() {   # preguntar VARIABLE "Texto" si|no
 trap 'printf "\e[1;31mFalló la línea %s de %s: %s\e[0m\n" "$LINENO" "$(basename "$0")" "$BASH_COMMAND" >&2' ERR
 lista() { grep -v '^\s*#' "$P/$1" | grep . ; }   # paquetes de packages/<archivo>
 
+# Estudio: lo que no lleva sudo (CLI de Claude, dictado en español, voz a texto y Syncthing del vault)
+estudio_usuario() {
+    paso "Estudio: CLI de Claude, dictado en español, voz a texto y Syncthing"
+    mkdir -p "$HOME/Documentos/obsidian-vault"
+
+    # CLI de Claude Code: instalador oficial, todo bajo tu carpeta personal (~/.local/bin/claude)
+    if [ ! -x "$HOME/.local/bin/claude" ]; then
+        curl -fsSL https://claude.ai/install.sh | bash \
+            || echo "No pude instalar el CLI de Claude (¿internet?). Repite: bash $0 estudio"
+    fi
+    # Respuestas y dictado /voice en español (tocar Espacio para empezar y otra vez para enviar), sin
+    # pisar lo que ya hubiera en ~/.claude/settings.json
+    python3 - <<'PY'
+import json, os
+p = os.path.expanduser("~/.claude/settings.json")
+os.makedirs(os.path.dirname(p), exist_ok=True)
+try:
+    d = json.load(open(p))
+except Exception:
+    d = {}
+d.setdefault("language", "spanish")
+v = d.setdefault("voice", {})
+v.setdefault("enabled", True)
+v.setdefault("mode", "tap")
+json.dump(d, open(p, "w"), indent=2, ensure_ascii=False)
+PY
+
+    # Voz a texto local para las clases: entorno propio con faster-whisper (av<19: la 19 rompe su lector
+    # de audio) y el modelo «base» ya descargado. Comandos: grabar-clase y transcribir
+    V="$HOME/.local/share/estudio/venv"
+    [ -x "$V/bin/python" ] || python3 -m venv "$V"
+    "$V/bin/pip" install --quiet --no-cache-dir faster-whisper "av<19" \
+        || echo "No pude instalar faster-whisper (¿internet?). Repite: bash $0 estudio"
+    "$V/bin/python" -c "from faster_whisper import WhisperModel; WhisperModel('base', device='cpu', compute_type='int8')" \
+        2>/dev/null || true
+
+    # Syncthing: arranca con tu sesión y deja listo el vault. Con el ID del Syncthing del NAS también
+    # lo empareja: NAS_SYNCTHING_ID=<id> bash post.sh estudio
+    bash "$D/estudio-syncthing.sh" ${NAS_SYNCTHING_ID:+"$NAS_SYNCTHING_ID"} \
+        || echo "Syncthing no quedó listo. Repite: bash $D/estudio-syncthing.sh"
+}
+
 # ---------------------------------------------------------------------------
 paso "Comprobaciones"
 [ "$(id -u)" -ne 0 ] || error "ejecútalo como tu usuario, sin sudo: bash $0"
@@ -37,6 +83,22 @@ sudo -v
 trap 'kill $! 2>/dev/null' EXIT
 # Instalaciones hechas con un base.sh anterior: la regla de wheel pisaba las de sin contraseña
 if sudo test -f /etc/sudoers.d/wheel; then sudo mv /etc/sudoers.d/wheel /etc/sudoers.d/00-wheel; fi
+
+# Solo lo de estudio, en un equipo ya instalado: bash ~/my-arch/install/post.sh estudio
+if [ "${1:-}" = estudio ]; then
+    paso "Estudio: Obsidian, Syncthing, Claude Code, grabar y transcribir clases"
+    sudo pacman -S --needed --noconfirm $(lista estudio.txt)
+    # Si el NAS ya está montado, apunta los montajes a Tailscale (sirve en casa y fuera)
+    if grep -q '/mnt/truenas' /etc/fstab; then sudo bash "$D/nas.sh"; fi
+    bash "$R/link.sh" >/dev/null     # lanzador «Claude», comandos y PATH
+    estudio_usuario
+    paso "LISTO. Lo que falta lo haces tú"
+    echo "1. Claude: abre «Claude» en el lanzador (Super + Espacio) y sigue el asistente (tema e inicio de sesión)."
+    echo "2. En el TrueNAS: instala la app Syncthing y pega allí el ID de esta laptop (sale arriba)."
+    echo "3. Con el ID del Syncthing del NAS:  bash $D/estudio-syncthing.sh <ID-del-NAS>"
+    echo "4. Obsidian: abre la carpeta ~/Documentos/obsidian-vault/rocksymiguel como vault y activa Excalidraw."
+    exit 0
+fi
 sudo pacman -S --needed --noconfirm pciutils >/dev/null   # lspci, para detectar la gráfica
 
 # shellcheck source=detectar.sh
@@ -46,6 +108,7 @@ echo
 preguntar JUEGO "¿Modo juego (Steam con Gamescope, elegible en el arranque)?" si
 preguntar NAS "¿Carpetas del NAS de casa (TrueNAS por SMB)?" no
 preguntar TAILSCALE "¿Tailscale?" no
+preguntar ESTUDIO "¿Herramientas de estudio (Obsidian, Syncthing, Claude Code con dictado, grabar y transcribir clases)?" si
 
 # ---------------------------------------------------------------------------
 paso "pacman: multilib y descargas en paralelo"
@@ -63,6 +126,7 @@ done
 [ "$JUEGO" = si ] && PAQ+=($(lista juego.txt))
 [ "$NAS" = si ] && PAQ+=($(lista nas.txt))
 [ "$TAILSCALE" = si ] && PAQ+=($(lista tailscale.txt))
+[ "$ESTUDIO" = si ] && PAQ+=($(lista estudio.txt))
 case "$VIRT" in
     vmware) PAQ+=(open-vm-tools) ;;
     oracle) PAQ+=(virtualbox-guest-utils) ;;
@@ -136,6 +200,7 @@ mkdir -p "$HOME/.cache/theme"
 "$HOME/.config/theme/tema" oscuro
 "$HOME/.config/theme/inactividad-bin"
 "$HOME/.config/theme/fondos-bin" preparar 2>/dev/null || true   # logos de fastfetch
+[ "$ESTUDIO" = si ] && estudio_usuario
 
 # ---------------------------------------------------------------------------
 paso "Sistema: zram, menú de ajustes, energía y arranque"

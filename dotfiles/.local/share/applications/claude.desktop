@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Claude
+Comment=Claude Code en una terminal, dentro de tus apuntes
+Exec=sh -c "$HOME/.config/estudio/claude-kitty"
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;Development;

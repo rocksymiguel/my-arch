@@ -1,0 +1,8 @@
+#!/bin/bash
+# Abre kitty con Claude Code, dentro de la carpeta de tu vault de Obsidian (si existe) para que
+# vea tus apuntes; si no existe, en tu carpeta personal.
+#   claude-kitty              -> una conversación nueva
+#   claude-kitty --continue   -> retoma la última de esa carpeta (claude --resume te deja elegir otra)
+d="${VAULT_ESTUDIO:-$HOME/Documentos/obsidian-vault/rocksymiguel}"
+[ -d "$d" ] || d="$HOME"
+exec kitty --title Claude --directory "$d" -e "$HOME/.local/bin/claude" "$@"
