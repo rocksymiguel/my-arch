@@ -18,6 +18,7 @@
         "custom/clima"
     ],
     "modules-right": [
+        "custom/clase",
         "custom/grabando",
         "group/sistema",
         "group/conexion",
@@ -195,6 +196,14 @@
         "tooltip": false,
         "on-click": "rfkill unblock all",
         "return-type": "json"
+    },
+    "custom/clase": {
+        // Botón del micrófono: grabar clases y transcribirlas (waybar/scripts/menu-clase); roja mientras graba
+        "exec": "~/.config/estudio/grabar-clase estado",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 11,
+        "on-click": "~/.config/waybar/scripts/menu-clase"
     },
     "custom/grabando": {
         "exec": "~/.config/theme/grabar-bin estado",

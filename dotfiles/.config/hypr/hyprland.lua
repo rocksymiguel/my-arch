@@ -212,6 +212,7 @@ hl.bind("switch:on:Lid Switch", function()
 end, { locked = true })
 hl.bind("switch:off:Lid Switch", function()
     hl.monitor({ output = "eDP-1", disabled = false, mode = "preferred", position = "0x0", scale = 1 })
+    hl.exec_cmd("~/.config/theme/tapa-bin abrir") -- si la inactividad había atenuado el brillo, lo devuelve
 end, { locked = true })
 
 --------------------------------
@@ -263,7 +264,7 @@ hl.layer_rule({
 -- Opacidad propia de kitty (activa / inactiva), según el modo de vidrio
 hl.window_rule({
     name    = "kitty-opacity",
-    match   = { class = "^kitty$" },
+    match   = { class = "^(kitty|claude)$" },
     opacity = theme.kitty_active .. " " .. theme.kitty_inactive,
 })
 
@@ -285,6 +286,15 @@ if theme.media_opaca then
         opaque = true,
     })
 end
+
+-- Claude Code (lanzador «Claude»): ventana flotante de tamaño fijo, centrada
+hl.window_rule({
+    name   = "claude-cli",
+    match  = { class = "^claude$" },
+    float  = true,
+    size   = e(900) .. " " .. e(620),
+    center = true,
+})
 
 -- Ventanas de "Abrir", "Guardar" y "Seleccionar": flotando y centradas
 hl.window_rule({

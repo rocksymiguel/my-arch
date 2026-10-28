@@ -1,0 +1,30 @@
+# Datos personales de cada persona: NAS, Syncthing, servicios y web apps.
+# El asistente (install/personalizar.sh) crea ~/.config/my-arch/personal.env a partir de esto: ese archivo es
+# tuyo y NO se sube al repositorio. Aquí no va ninguna contraseña: la del NAS se pide al montar, y la de
+# Syncthing o Claude se escribe en sus propias pantallas.
+# Cada línea es opcional: lo que dejes vacío se salta.
+
+# ---- NAS (TrueNAS u otro) --------------------------------------------------------------------------
+# Equipos de tu red con nombre corto: «nombre:dirección_Tailscale:dirección_de_casa», separados por espacios.
+# Las apps usan el nombre corto (p. ej. http://nas:30013); un servicio de la laptop lo mantiene apuntando a la
+# dirección de Tailscale si responde y, si no, a la de casa. Deja vacía la de Tailscale si el equipo no la tiene.
+EQUIPOS="nas:100.64.0.10:192.168.1.50"
+NAS_NOMBRE=nas                 # cuál de los equipos de arriba es el NAS (vacío = sin NAS)
+NAS_USUARIO_SMB=tuusuario      # usuario de las carpetas compartidas
+NAS_RECURSOS="Documentos Fotos"   # carpetas compartidas (SMB) que se montan en /mnt/truenas/<nombre en minúsculas>
+
+# ---- Obsidian y Syncthing --------------------------------------------------------------------------
+VAULT_NOMBRE=mivault           # nombre de tu vault de Obsidian (carpeta dentro de la carpeta sincronizada)
+SYNCTHING_NAS_ID=              # ID del Syncthing del NAS (en su pantalla web: Acciones → Mostrar ID)
+SYNCTHING_NAS_PUERTO=22000
+
+# ---- Zen ---------------------------------------------------------------------------------------------
+# Carpeta del NAS (ya montada) donde zen-sync guarda la sesión de Zen (pestañas, espacios…) para tener lo mismo
+# en cada equipo. Vacío = no usar zen-sync. Ejemplo: /mnt/truenas/documentos/zen-sync
+ZEN_SYNC_DIR=""
+
+# ---- Servicios -------------------------------------------------------------------------------------
+GELLY_URL=                     # servidor de música (Navidrome/Subsonic) de Gelly, p. ej. http://nas:4533
+# Web apps del lanzador (se abren en su propia ventana con Epiphany): «Nombre|dirección|icono», separadas por «;».
+# El icono es un nombre de https://github.com/homarr-labs/dashboard-icons (jellyfin, immich, truenas…).
+WEBAPPS="Jellyfin|http://nas:8096|jellyfin;TrueNAS|https://nas|truenas"

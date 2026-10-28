@@ -1,0 +1,3 @@
+# Web apps: cada una se abre en su propia ventana, sin la barra de un navegador (install/webapps.sh).
+# Epiphany (GNOME Web) usa WebKitGTK: es mucho más ligero que Zen o Chromium para esto.
+epiphany

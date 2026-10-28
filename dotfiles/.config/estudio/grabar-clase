@@ -1,24 +1,49 @@
 #!/bin/bash
-# Graba el micrófono durante una clase y guarda el audio en la carpeta Grabaciones del vault de
-# Obsidian (Syncthing la sincroniza con el NAS). Para terminar: Ctrl+C. Al terminar lo comprime a
+# Graba el micrófono durante una clase y guarda el audio en la carpeta Grabaciones de tu vault de Obsidian
+# (Syncthing la sincroniza con el NAS); ~/Grabaciones es un atajo a esa carpeta. Al terminar lo comprime a
 # Opus: unos 11 MB por hora, frente a los ~115 MB del WAV.
-#   grabar-clase [nombre]        p. ej.: grabar-clase primeros-auxilios
-# Después: transcribir <audio>
-set -euo pipefail
+#   grabar-clase [nombre]          en la terminal: graba hasta Ctrl+C       p. ej.: grabar-clase primeros-auxilios
+#   grabar-clase inicio [nombre]   graba en segundo plano (lo usa el botón del micrófono de la barra)
+#   grabar-clase fin               para y guarda
+#   grabar-clase alternar [nombre] empieza o para, según esté
+#   grabar-clase estado            JSON para la isla de waybar
+# Después: transcribir <audio>  (o el menú del botón del micrófono)
+set -uo pipefail
 
-VAULT="${VAULT_ESTUDIO:-$HOME/Documentos/obsidian-vault/rocksymiguel}"
-DEST="$VAULT/Grabaciones"
-mkdir -p "$DEST"
-base="$(date +%F_%H%M)${1:+_$1}"
-wav="$DEST/$base.wav"
-opus="$DEST/$base.opus"
-aviso() { notify-send -a grabar-clase "$@" 2>/dev/null || true; }
+source "$(dirname "$(readlink -f "$0")")/vault-env"
+DEST="$VAULT_ESTUDIO/Grabaciones"
+ESTADO="${XDG_RUNTIME_DIR:-/tmp}/grabar-clase"
+mkdir -p "$ESTADO"
 
-terminar() {
-    trap - INT TERM
-    echo; echo "Guardando…"
-    kill -INT "$PID" 2>/dev/null || true       # pw-record cierra bien el WAV al recibir SIGINT
-    wait "$PID" 2>/dev/null || true
+aviso() { notify-send -a clase "$@" 2>/dev/null || true; }
+refrescar() { pkill -RTMIN+11 -x waybar 2>/dev/null || true; }
+grabando() { [ -s "$ESTADO/pid" ] && kill -0 "$(cat "$ESTADO/pid")" 2>/dev/null; }
+
+iniciar() {
+    grabando && { echo "Ya hay una grabación en marcha."; return 0; }
+    local nombre="${1:-}"
+    nombre="${nombre// /-}"
+    mkdir -p "$DEST"
+    [ -e "$HOME/Grabaciones" ] || ln -s "$DEST" "$HOME/Grabaciones" 2>/dev/null || true
+    local wav="$DEST/$(date +%F_%H%M)${nombre:+_$nombre}.wav"
+    # El grabador va en su propia sesión: sigue aunque se cierre la terminal desde la que se lanzó
+    setsid bash -c 'echo $$ > "$1"; exec pw-record --rate 16000 --channels 1 --format s16 "$2"' _ "$ESTADO/pid" "$wav" >/dev/null 2>&1 &
+    echo "$wav" > "$ESTADO/archivo"; date +%s > "$ESTADO/inicio"
+    sleep 0.6
+    if grabando; then
+        refrescar; aviso "Grabando clase" "$(basename "$wav")"; echo "Grabando en $wav"
+    else
+        rm -f "$ESTADO"/{pid,archivo,inicio}; aviso -u critical "No pude empezar a grabar" "Revisa el micrófono"; return 1
+    fi
+}
+
+parar() {
+    grabando || { echo "No hay ninguna grabación en marcha."; rm -f "$ESTADO"/{pid,archivo,inicio}; refrescar; return 0; }
+    local pid wav opus
+    pid="$(cat "$ESTADO/pid")"; wav="$(cat "$ESTADO/archivo")"; opus="${wav%.wav}.opus"
+    kill -INT "$pid" 2>/dev/null
+    for _ in $(seq 1 30); do kill -0 "$pid" 2>/dev/null || break; sleep 0.2; done   # pw-record cierra bien el WAV al recibir SIGINT
+    rm -f "$ESTADO"/{pid,archivo,inicio}; refrescar
     if [ -s "$wav" ] && ffmpeg -v error -y -i "$wav" -c:a libopus -b:a 24k -application voip "$opus"; then
         rm -f "$wav"
         echo "Guardado: $opus ($(du -h "$opus" | cut -f1))"
@@ -27,13 +52,23 @@ terminar() {
         echo "No pude comprimirlo; queda el WAV: $wav"
         aviso "Grabación guardada (WAV)" "$(basename "$wav")"
     fi
-    exit 0
 }
 
-pw-record --rate 16000 --channels 1 --format s16 "$wav" &
-PID=$!
-trap terminar INT TERM
-echo "Grabando en $wav  ·  Ctrl+C para terminar"
-aviso "Grabando clase" "$base"
-wait "$PID" || true
-terminar
+case "${1:-}" in
+    estado)
+        if grabando; then
+            t=$(( $(date +%s) - $(cat "$ESTADO/inicio" 2>/dev/null || date +%s) ))
+            printf '{"text": "󰍬 REC %02d:%02d", "class": "rec", "tooltip": "Grabando la clase · clic para el menú"}\n' $((t / 60)) $((t % 60))
+        else
+            echo '{"text": "󰍬", "class": "idle", "tooltip": "Clases: grabar y transcribir"}'
+        fi ;;
+    inicio) iniciar "${2:-}" ;;
+    fin) parar ;;
+    alternar) if grabando; then parar; else iniciar "${2:-}"; fi ;;
+    *)
+        # En la terminal: graba hasta Ctrl+C
+        iniciar "${1:-}" || exit 1
+        trap 'echo; echo "Guardando…"; parar; exit 0' INT TERM
+        while grabando; do sleep 1; done
+        parar ;;
+esac

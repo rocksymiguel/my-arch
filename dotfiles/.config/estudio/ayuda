@@ -1,0 +1,10 @@
+#!/bin/bash
+# Chuleta de atajos y comandos (ayuda.txt). En la terminal la muestra con colores y paginada; q para salir.
+f="$(dirname "$(readlink -f "$0")")/ayuda.txt"
+if [ -t 1 ] && command -v bat >/dev/null 2>&1; then
+    exec bat --style=plain --paging=always --language=markdown "$f"
+elif [ -t 1 ]; then
+    exec less -R "$f"
+else
+    cat "$f"
+fi

@@ -9,9 +9,12 @@
 # Opcionales: se preguntan, o se dan por variables (si/no):
 #   JUEGO=si NAS=no TAILSCALE=no ESTUDIO=si bash ~/my-arch/install/post.sh
 #
-# Solo lo de estudio (Obsidian, Syncthing, Claude Code por voz, grabar y transcribir clases) en un
-# equipo ya instalado, con una sola contraseña:
-#   bash ~/my-arch/install/post.sh estudio
+# Solo lo personal (tu NAS, Obsidian y Syncthing, Claude Code por voz, grabar y transcribir clases, web apps,
+# zen-sync, Gelly, apps ocultas del lanzador) en un equipo ya instalado, con una sola contraseña:
+#   bash ~/my-arch/install/post.sh personal        (también vale «estudio»)
+# Tus datos (direcciones del NAS, usuario, vault, web apps…) viven en ~/.config/my-arch/personal.env, que NO se sube al
+# repositorio. Si no existe, un asistente (install/personalizar.sh) te pregunta y lo crea: así cada persona usa el
+# mismo instalador con lo suyo.
 set -euo pipefail
 
 D="$(cd "$(dirname "$0")" && pwd)"   # install/
@@ -30,6 +33,20 @@ preguntar() {   # preguntar VARIABLE "Texto" si|no
 trap 'printf "\e[1;31mFalló la línea %s de %s: %s\e[0m\n" "$LINENO" "$(basename "$0")" "$BASH_COMMAND" >&2' ERR
 lista() { grep -v '^\s*#' "$P/$1" | grep . ; }   # paquetes de packages/<archivo>
 
+# Tus datos personales (NAS, vault, web apps…): ~/.config/my-arch/personal.env. Si no existe, un asistente lo crea
+PERSONAL="$HOME/.config/my-arch/personal.env"
+cargar_personal() {
+    EQUIPOS="" NAS_NOMBRE="" NAS_USUARIO_SMB="" NAS_RECURSOS="" VAULT_NOMBRE="" SYNCTHING_NAS_ID=""
+    SYNCTHING_NAS_PUERTO="22000" ZEN_SYNC_DIR="" GELLY_URL="" WEBAPPS=""
+    # shellcheck disable=SC1090
+    [ -f "$PERSONAL" ] && source "$PERSONAL"
+    return 0
+}
+asegurar_personal() {
+    [ -f "$PERSONAL" ] || bash "$D/personalizar.sh"
+    cargar_personal
+}
+
 # Estudio: lo que no lleva sudo (CLI de Claude, dictado en español, voz a texto y Syncthing del vault)
 estudio_usuario() {
     paso "Estudio: CLI de Claude, dictado en español, voz a texto y Syncthing"
@@ -38,7 +55,7 @@ estudio_usuario() {
     # CLI de Claude Code: instalador oficial, todo bajo tu carpeta personal (~/.local/bin/claude)
     if [ ! -x "$HOME/.local/bin/claude" ]; then
         curl -fsSL https://claude.ai/install.sh | bash \
-            || echo "No pude instalar el CLI de Claude (¿internet?). Repite: bash $0 estudio"
+            || echo "No pude instalar el CLI de Claude (¿internet?). Repite: bash $0 personal"
     fi
     # Respuestas y dictado /voice en español (tocar Espacio para empezar y otra vez para enviar), sin
     # pisar lo que ya hubiera en ~/.claude/settings.json
@@ -62,14 +79,46 @@ PY
     V="$HOME/.local/share/estudio/venv"
     [ -x "$V/bin/python" ] || python3 -m venv "$V"
     "$V/bin/pip" install --quiet --no-cache-dir faster-whisper "av<19" \
-        || echo "No pude instalar faster-whisper (¿internet?). Repite: bash $0 estudio"
+        || echo "No pude instalar faster-whisper (¿internet?). Repite: bash $0 personal"
     "$V/bin/python" -c "from faster_whisper import WhisperModel; WhisperModel('base', device='cpu', compute_type='int8')" \
         2>/dev/null || true
 
-    # Syncthing: arranca con tu sesión y deja listo el vault. Con el ID del Syncthing del NAS también
-    # lo empareja: NAS_SYNCTHING_ID=<id> bash post.sh estudio
-    bash "$D/estudio-syncthing.sh" ${NAS_SYNCTHING_ID:+"$NAS_SYNCTHING_ID"} \
+    # Syncthing: arranca con tu sesión y deja listo el vault. Si el archivo personal trae el ID del Syncthing
+    # del NAS, también lo empareja (con el nombre corto del NAS, que sirve en casa y fuera)
+    bash "$D/estudio-syncthing.sh" \
         || echo "Syncthing no quedó listo. Repite: bash $D/estudio-syncthing.sh"
+}
+
+# Personal: lo demás que no lleva sudo (logos, web apps, apps ocultas, zen-sync, Gelly, atajo a las grabaciones)
+personal_usuario() {
+    paso "Personal: logos, web apps, lanzador limpio, zen-sync y Gelly"
+    bash "$D/iconos.sh" || true
+    if [ -n "$WEBAPPS" ]; then
+        if command -v epiphany >/dev/null 2>&1; then bash "$D/webapps.sh" || true
+        else echo "Epiphany no está instalado: las web apps se crearán al instalarlo (bash $0 personal)"; fi
+    fi
+    bash "$D/ocultar-apps.sh" || true
+
+    # Atajo ~/Grabaciones a la carpeta de grabaciones del vault
+    if [ -n "$VAULT_NOMBRE" ]; then
+        mkdir -p "$HOME/Documentos/obsidian-vault/$VAULT_NOMBRE/Grabaciones"
+        [ -e "$HOME/Grabaciones" ] || ln -s "$HOME/Documentos/obsidian-vault/$VAULT_NOMBRE/Grabaciones" "$HOME/Grabaciones"
+    fi
+
+    # zen-sync: la sesión de Zen (pestañas, espacios, atajos) igual en cada equipo a través del NAS
+    if [ -n "$ZEN_SYNC_DIR" ] && { command -v zen-browser >/dev/null 2>&1 || [ -d /opt/zen-browser-bin ]; }; then
+        mkdir -p "$HOME/.local/bin" "$HOME/.config/systemd/user/zen-sync.service.d"
+        ln -sf "$R/scripts/zen-sync/zen-sync" "$HOME/.local/bin/zen-sync"
+        ln -sf "$R/scripts/zen-sync/zen-sync.service" "$HOME/.config/systemd/user/zen-sync.service"
+        printf '[Service]\nEnvironment=ZEN_SYNC_DIR=%s\n' "$ZEN_SYNC_DIR" > "$HOME/.config/systemd/user/zen-sync.service.d/ruta.conf"
+        systemctl --user daemon-reload 2>/dev/null || true
+        systemctl --user enable --now zen-sync.service 2>/dev/null || echo "zen-sync: actívalo luego con: systemctl --user enable --now zen-sync"
+    fi
+
+    # Gelly (música): la dirección de tu servidor Subsonic/Navidrome. Si te pide iniciar sesión otra vez, es normal
+    if [ -n "$GELLY_URL" ] && command -v gelly >/dev/null 2>&1 && gsettings list-schemas 2>/dev/null | grep -qx io.m51.Gelly; then
+        gsettings set io.m51.Gelly hostname "$GELLY_URL" 2>/dev/null || true
+    fi
 }
 
 # ---------------------------------------------------------------------------
@@ -84,19 +133,25 @@ trap 'kill $! 2>/dev/null' EXIT
 # Instalaciones hechas con un base.sh anterior: la regla de wheel pisaba las de sin contraseña
 if sudo test -f /etc/sudoers.d/wheel; then sudo mv /etc/sudoers.d/wheel /etc/sudoers.d/00-wheel; fi
 
-# Solo lo de estudio, en un equipo ya instalado: bash ~/my-arch/install/post.sh estudio
-if [ "${1:-}" = estudio ]; then
-    paso "Estudio: Obsidian, Syncthing, Claude Code, grabar y transcribir clases"
-    sudo pacman -S --needed --noconfirm $(lista estudio.txt)
-    # Si el NAS ya está montado, apunta los montajes a Tailscale (sirve en casa y fuera)
-    if grep -q '/mnt/truenas' /etc/fstab; then sudo bash "$D/nas.sh"; fi
-    bash "$R/link.sh" >/dev/null     # lanzador «Claude», comandos y PATH
+# Solo lo personal, en un equipo ya instalado: bash ~/my-arch/install/post.sh personal   (o «estudio»)
+if [ "${1:-}" = personal ] || [ "${1:-}" = estudio ]; then
+    paso "Personal: NAS, Obsidian, Syncthing, Claude Code, clases, web apps y lanzador"
+    asegurar_personal
+    PAQ_P=($(lista estudio.txt))
+    [ -n "$WEBAPPS" ] && PAQ_P+=($(lista webapps.txt))
+    sudo pacman -S --needed --noconfirm "${PAQ_P[@]}"
+    # El NAS: nombre corto que sigue a Tailscale o a casa, y los montajes con ese nombre
+    if [ -n "$NAS_NOMBRE" ]; then sudo bash "$D/nas.sh"; fi
+    bash "$R/link.sh" >/dev/null     # lanzadores, comandos y PATH
     estudio_usuario
+    personal_usuario
     paso "LISTO. Lo que falta lo haces tú"
-    echo "1. Claude: abre «Claude» en el lanzador (Super + Espacio) y sigue el asistente (tema e inicio de sesión)."
-    echo "2. En el TrueNAS: instala la app Syncthing y pega allí el ID de esta laptop (sale arriba)."
-    echo "3. Con el ID del Syncthing del NAS:  bash $D/estudio-syncthing.sh <ID-del-NAS>"
-    echo "4. Obsidian: abre la carpeta ~/Documentos/obsidian-vault/rocksymiguel como vault y activa Excalidraw."
+    echo "· Claude: abre «Claude» en el lanzador (Super + Espacio). Si es la primera vez en la carpeta, di que confías en ella."
+    [ -n "$NAS_NOMBRE" ] && echo "· NAS: «$NAS_NOMBRE» apunta a $(getent hosts "$NAS_NOMBRE" | awk '{print $1}'). Comprueba: getent hosts $NAS_NOMBRE"
+    [ -n "$WEBAPPS" ] && echo "· Web apps: están en el lanzador. TrueNAS o Proxmox piden aceptar su certificado la primera vez."
+    [ -n "$GELLY_URL" ] && echo "· Gelly: apunta a $GELLY_URL; si pide iniciar sesión otra vez, es normal."
+    echo "· Obsidian: abre ~/Documentos/obsidian-vault/${VAULT_NOMBRE:-<tu vault>} como vault (Abrir otra bóveda)."
+    echo "· Chuleta de atajos y comandos: escribe  ayuda"
     exit 0
 fi
 sudo pacman -S --needed --noconfirm pciutils >/dev/null   # lspci, para detectar la gráfica
@@ -109,6 +164,7 @@ preguntar JUEGO "¿Modo juego (Steam con Gamescope, elegible en el arranque)?" s
 preguntar NAS "¿Carpetas del NAS de casa (TrueNAS por SMB)?" no
 preguntar TAILSCALE "¿Tailscale?" no
 preguntar ESTUDIO "¿Herramientas de estudio (Obsidian, Syncthing, Claude Code con dictado, grabar y transcribir clases)?" si
+if [ "$NAS" = si ] || [ "$ESTUDIO" = si ]; then asegurar_personal; else cargar_personal; fi
 
 # ---------------------------------------------------------------------------
 paso "pacman: multilib y descargas en paralelo"
@@ -127,6 +183,7 @@ done
 [ "$NAS" = si ] && PAQ+=($(lista nas.txt))
 [ "$TAILSCALE" = si ] && PAQ+=($(lista tailscale.txt))
 [ "$ESTUDIO" = si ] && PAQ+=($(lista estudio.txt))
+[ "$ESTUDIO" = si ] && [ -n "$WEBAPPS" ] && PAQ+=($(lista webapps.txt))
 case "$VIRT" in
     vmware) PAQ+=(open-vm-tools) ;;
     oracle) PAQ+=(virtualbox-guest-utils) ;;
@@ -201,6 +258,7 @@ mkdir -p "$HOME/.cache/theme"
 "$HOME/.config/theme/inactividad-bin"
 "$HOME/.config/theme/fondos-bin" preparar 2>/dev/null || true   # logos de fastfetch
 [ "$ESTUDIO" = si ] && estudio_usuario
+[ "$ESTUDIO" = si ] && personal_usuario
 
 # ---------------------------------------------------------------------------
 paso "Sistema: zram, menú de ajustes, energía y arranque"

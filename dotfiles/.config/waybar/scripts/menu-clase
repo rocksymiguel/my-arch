@@ -1,0 +1,60 @@
+#!/bin/bash
+# Menú del botón del micrófono (isla de la barra): grabar clases y transcribirlas.
+# Las grabaciones quedan en la carpeta Grabaciones del vault (~/Grabaciones) y las transcripciones, en
+# Transcripciones; Syncthing las sincroniza con el NAS.
+pkill -x rofi 2>/dev/null && sleep 0.2
+E="$HOME/.config/estudio"
+source "$E/vault-env"
+GRAB="$VAULT_ESTUDIO/Grabaciones"
+TRANS="$VAULT_ESTUDIO/Transcripciones"
+mkdir -p "$GRAB" "$TRANS"
+menu() { rofi -dmenu -i -p "$1" -l "$2" -theme-str 'window { width: 32em; }'; }
+
+# Transcribe en segundo plano (con tope de memoria, para no ahogar el escritorio) y avisa al terminar
+transcribir_fondo() {   # transcribir_fondo audio modelo
+    local audio="$1" modelo="$2"
+    notify-send -a clase "Transcribiendo «$(basename "$audio")»" "Modelo $modelo. Te aviso al terminar."
+    setsid -f bash -c '
+        salida="$(systemd-run --user --scope --quiet -p MemoryMax=1500M -p MemorySwapMax=0 nice -n 10 "$0" "$1" "$2" 2>&1)"; rc=$?
+        if [ $rc -eq 0 ]; then
+            notify-send -a clase "Transcripción lista" "$(basename "$(sed -n "s/^Listo: //p" <<< "$salida" | tail -1)")"
+        else
+            notify-send -u critical -a clase "No pude transcribir" "$(tail -2 <<< "$salida" | tr "\n" " ")"
+        fi' "$E/transcribir" "$audio" "$modelo" >/dev/null 2>&1
+}
+
+ultima() { ls -t "$GRAB"/*.opus "$GRAB"/*.wav "$GRAB"/*.mp3 "$GRAB"/*.m4a "$GRAB"/*.ogg 2>/dev/null | head -n 1; }
+
+if "$E/grabar-clase" estado | grep -q '"rec"'; then
+    primera="󰍭  Parar y guardar la grabación"
+else
+    primera="󰍬  Grabar una clase"
+fi
+op="$(printf '%s\n' "$primera" \
+    "󰈙  Transcribir la última grabación (rápido)" \
+    "󰈙  Transcribir la última grabación (mejor, tarda más)" \
+    "󰈙  Transcribir otra grabación…" \
+    "󰉋  Abrir la carpeta de grabaciones" \
+    "󰉋  Abrir las transcripciones" | menu "󰍬  " 6)" || exit 0
+
+case "$op" in
+    *"Parar y guardar"*)
+        "$E/grabar-clase" fin ;;
+    *"Grabar una clase"*)
+        nombre="$(rofi -dmenu -p "Nombre de la clase (Enter = sin nombre)  " -l 0 -theme-str 'window { width: 32em; }' < /dev/null)" || exit 0
+        "$E/grabar-clase" inicio "$nombre" ;;
+    *"última grabación (rápido)"*)
+        a="$(ultima)"; [ -n "$a" ] || { notify-send -a clase "No hay grabaciones" "Graba una clase primero"; exit 0; }
+        transcribir_fondo "$a" base ;;
+    *"última grabación (mejor"*)
+        a="$(ultima)"; [ -n "$a" ] || { notify-send -a clase "No hay grabaciones" "Graba una clase primero"; exit 0; }
+        transcribir_fondo "$a" small ;;
+    *"otra grabación"*)
+        a="$(ls -t "$GRAB"/*.opus "$GRAB"/*.wav "$GRAB"/*.mp3 "$GRAB"/*.m4a "$GRAB"/*.ogg 2>/dev/null | xargs -r -n1 basename | menu "Grabación  " 8)" || exit 0
+        [ -n "$a" ] || exit 0
+        m="$(printf '%s\n' "Rápido (base)" "Mejor (small, tarda más)" | menu "Calidad  " 2)" || exit 0
+        case "$m" in Mejor*) modelo=small ;; *) modelo=base ;; esac
+        transcribir_fondo "$GRAB/$a" "$modelo" ;;
+    *"carpeta de grabaciones"*) setsid -f thunar "$GRAB" >/dev/null 2>&1 ;;
+    *"transcripciones"*)        setsid -f thunar "$TRANS" >/dev/null 2>&1 ;;
+esac

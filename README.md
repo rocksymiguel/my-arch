@@ -48,31 +48,34 @@ Pregunta el modo juego (Steam + Gamescope y la entrada «Juego» en Limine), el 
 pone fish, enlaza los dotfiles, aplica `tema oscuro` y ejecuta zram, sistema, energía, Limine,
 Plymouth y el arranque limpio. Los fondos se copian de `~/my-arch/fondos/` si existe.
 
-## Estudio (Obsidian, Syncthing, Claude Code por voz, clases)
+## Lo personal (NAS, estudio, web apps)
 
-`post.sh` lo pregunta (`ESTUDIO=si`), o en un equipo ya instalado, con una sola contraseña:
+Un resumen de todo está en [`RESUMEN.md`](RESUMEN.md). En un equipo ya instalado:
 
 ```bash
-bash ~/my-arch/install/post.sh estudio
+bash ~/my-arch/install/post.sh personal
 ```
 
-Instala Obsidian y Syncthing (`packages/estudio.txt`), apunta los montajes del NAS a Tailscale (`nas.sh`: el
-NAS se llama `truenas-scale` y sirve en casa y fuera; las líneas que ya existían solo cambian de dirección),
-el CLI de Claude Code (instalador oficial, `~/.local/bin/claude`) con el español y el dictado `/voice` ya
-puestos en `~/.claude/settings.json`, y un entorno de voz a texto local (`~/.local/share/estudio/venv`, con
-faster-whisper).
+Tus datos (direcciones del NAS, usuario, vault, web apps…) viven en `~/.config/my-arch/personal.env`, que **no** se sube al
+repositorio y no lleva contraseñas. Si no existe, un asistente (`install/personalizar.sh`) te pregunta y lo crea;
+`install/personal.ejemplo` explica cada línea. Así otra persona usa el mismo instalador con lo suyo (o sin NAS).
 
-- **Claude:** en el lanzador (Super + Espacio) salen «Claude» y «Claude · continuar»: abren kitty con Claude en
-  la carpeta del vault. Dentro: `/voice` (tocar Espacio para empezar y otra vez para enviar; solo funciona en una
-  terminal de la propia laptop, no por SSH), `claude --resume` para elegir una conversación anterior, `/rename`
-  para ponerle nombre y `/export` para guardarla como texto. Se borran a los 30 días.
-- **Vault:** `~/Documentos/obsidian-vault` se sincroniza con el NAS (`Emulacion/obsidian-vault`) con Syncthing,
-  solo por Tailscale o la red de casa (`install/estudio-syncthing.sh`; sin el ID del Syncthing del NAS solo deja
-  listo este lado y enseña el ID de esta laptop). La nota se abre en Obsidian desde `rocksymiguel/`.
-- **Clases:** `grabar-clase [nombre]` (Ctrl+C para terminar; guarda un Opus en `Grabaciones/` del vault) y
-  `transcribir <audio> [tiny|base|small|medium]` (apunte en Markdown en `Transcripciones/`). Medido en la
-  Lenovo con 2 min 30 s de español: «base» 6,8× el tiempo real y 0,5 GB de RAM; «small» 2,3× y 1,1 GB.
-- **Menú de apagado:** Super + Escape lo abre; solo «Modo juego» pide confirmar.
+- **Nombres cortos** (`nas`, `proxmox`…): el servicio `nas-dir` los mantiene en `/etc/hosts` apuntando a la dirección de
+  Tailscale si responde y, si no, a la de casa. Los montajes (`nas.sh`), Gelly, Syncthing y las web apps usan siempre el
+  nombre, nunca una IP.
+- **Obsidian y Syncthing** (`packages/estudio.txt`, `install/estudio-syncthing.sh`): `~/Documentos/obsidian-vault` se
+  sincroniza con el NAS solo por Tailscale o la red de casa, con historial de versiones de 30 días en los dos lados.
+- **Claude:** CLI oficial con el español y el dictado `/voice` puestos. En el lanzador, «Claude» (conversación nueva) y
+  «Claude · elegir conversación» (`--resume`), en una ventana flotante de tamaño fijo dentro del vault.
+- **Clases:** el botón del micrófono de la barra graba (roja con el contador mientras graba), transcribe en local
+  (`faster-whisper`: «base» 6,8× el tiempo real y 0,5 GB; «small» 2,3× y 1,1 GB, medido en la Lenovo) y abre las carpetas.
+  En la terminal: `grabar-clase [nombre]` y `transcribir <audio> [tiny|base|small|medium]`. `~/Grabaciones` es un atajo.
+- **Web apps** (`install/webapps.sh`, `packages/webapps.txt`): las de `WEBAPPS` salen en el lanzador, cada una en su ventana,
+  con Epiphany. Los logos se descargan al instalar (`install/iconos.sh`), no se guardan en el repo.
+- **Lanzador limpio:** `packages/ocultar.txt` + `install/ocultar-apps.sh` esconden lo que no hace falta ver sin quitarle sus
+  tipos de archivo.
+- **Tapa:** cerrarla apaga la pantalla interna; al abrirla, `tapa-bin` devuelve el brillo si la inactividad lo había atenuado.
+- **Atajos:** Super + Escape abre el menú de apagado (solo «Modo juego» pide confirmar). `ayuda` muestra la chuleta.
 
 ## Añadir paquetes
 

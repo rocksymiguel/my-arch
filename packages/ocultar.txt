@@ -1,0 +1,11 @@
+# Entradas del sistema que NO se muestran en el lanzador (siguen funcionando: abren archivos, tienen atajo
+# o ya están en la barra). Una por línea, con el nombre de su archivo .desktop. install/ocultar-apps.sh
+# deja una copia en ~/.local/share/applications con NoDisplay=true; para volver a verla, borra esa copia.
+mpv.desktop                          # mpv Media Player (los vídeos se abren solos con él)
+yazi.desktop                         # Yazi: se abre con el comando «y» en la terminal
+thunar.desktop                       # Thunar: Super + T
+org.pulseaudio.pavucontrol.desktop   # Control de volumen: ya está en la isla de volumen
+blueman-manager.desktop              # Gestor de Bluetooth: ya está en la isla
+kitty.desktop                        # kitty: Super + Enter
+winetricks.desktop                   # Winetricks
+zen.desktop                          # Zen Browser: Super + Z

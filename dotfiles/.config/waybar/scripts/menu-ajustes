@@ -139,7 +139,8 @@ while true; do
         "󰅶  Inactividad: $inact" \
         "󰸉  Fondo de pantalla" \
         "󰒋  Sistema" \
-        | menu "󰒓  " 6)" || exit 0
+        "󰋖  Ayuda (atajos y comandos)" \
+        | menu "󰒓  " 7)" || exit 0
     case "$op" in
         *Tema:*)        menu_tema ;;
         *Vidrio:*)      menu_vidrio ;;
@@ -147,5 +148,6 @@ while true; do
         *Inactividad:*) menu_inactividad ;;
         *Fondo*)        menu_fondo ;;
         *Sistema)       menu_sistema ;;
+        *Ayuda*)        setsid -f kitty --class ajustes-terminal --title Ayuda -e "$HOME/.config/estudio/ayuda" >/dev/null 2>&1; exit 0 ;;
     esac
 done

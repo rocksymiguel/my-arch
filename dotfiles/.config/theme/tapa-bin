@@ -1,0 +1,18 @@
+#!/bin/bash
+# Tapa de la laptop. Al cerrarla, Hyprland apaga la pantalla interna y al abrirla la enciende (hyprland.lua);
+# no se suspende (logind ignora la tapa). Esto cuida el brillo: la inactividad (hypridle) lo atenúa a los
+# 10 min y abrir la tapa no cuenta como actividad para restaurarlo, así que se quedaba atenuado.
+#   tapa-bin abrir    -> si el brillo está atenuado, vuelve el que tenía antes de atenuarse (no el máximo)
+set -u
+
+case "${1:-}" in
+    abrir)
+        # campos de «brightnessctl -m»: dispositivo,clase,valor,porcentaje,máximo
+        actual="$(brightnessctl -m 2>/dev/null | cut -d, -f3)"
+        # atenuado = el valor mínimo que pone hypridle (unos pocos puntos de 65535): solo entonces se restaura,
+        # para no pisar un brillo que hayas puesto tú
+        if [ -n "$actual" ] && [ "$actual" -le 200 ]; then
+            brightnessctl -r >/dev/null 2>&1 || true
+        fi ;;
+    *) echo "Uso: tapa-bin abrir" >&2; exit 1 ;;
+esac

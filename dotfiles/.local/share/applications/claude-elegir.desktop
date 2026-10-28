@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Claude · elegir conversación
+Comment=Claude Code: elige entre tus conversaciones anteriores
+Exec=sh -c "$HOME/.config/estudio/claude-kitty --resume"
+Icon=claude-ai
+Terminal=false
+Categories=Utility;Development;

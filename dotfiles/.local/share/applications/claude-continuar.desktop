@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Claude · continuar
-Comment=Retoma la última conversación de Claude Code en tus apuntes
-Exec=sh -c "$HOME/.config/estudio/claude-kitty --continue"
-Icon=utilities-terminal
-Terminal=false
-Categories=Utility;Development;

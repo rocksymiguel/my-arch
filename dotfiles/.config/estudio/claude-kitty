@@ -2,7 +2,9 @@
 # Abre kitty con Claude Code, dentro de la carpeta de tu vault de Obsidian (si existe) para que
 # vea tus apuntes; si no existe, en tu carpeta personal.
 #   claude-kitty              -> una conversación nueva
-#   claude-kitty --continue   -> retoma la última de esa carpeta (claude --resume te deja elegir otra)
-d="${VAULT_ESTUDIO:-$HOME/Documentos/obsidian-vault/rocksymiguel}"
+#   claude-kitty --resume     -> te deja elegir entre las conversaciones anteriores de esa carpeta
+# La ventana se llama «claude» (Hyprland la abre flotante, de tamaño fijo y centrada).
+source "$(dirname "$(readlink -f "$0")")/vault-env"
+d="$VAULT_ESTUDIO"
 [ -d "$d" ] || d="$HOME"
-exec kitty --title Claude --directory "$d" -e "$HOME/.local/bin/claude" "$@"
+exec kitty --class claude --title Claude --directory "$d" -e "$HOME/.local/bin/claude" "$@"

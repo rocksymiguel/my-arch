@@ -18,3 +18,7 @@ dotfiles/.config/waybar/config.jsonc
 dotfiles/.config/rofi/config.rasi
 dotfiles/.config/swaync/config.json
 dotfiles/.config/hypr/hyprlock.conf
+
+# Datos personales de cada persona (los crea install/personalizar.sh en ~/.config/my-arch)
+install/personal.env
+*.env

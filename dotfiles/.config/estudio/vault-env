@@ -1,0 +1,5 @@
+# Para «source»: define VAULT_ESTUDIO, la carpeta de tu vault de Obsidian en esta laptop (la que sincroniza
+# Syncthing): ~/Documentos/obsidian-vault/<VAULT_NOMBRE>. El nombre sale de ~/.config/my-arch/personal.env.
+[ -f "$HOME/.config/my-arch/personal.env" ] && source "$HOME/.config/my-arch/personal.env"
+VAULT_ESTUDIO="${VAULT_ESTUDIO:-$HOME/Documentos/obsidian-vault/${VAULT_NOMBRE:-vault}}"
+export VAULT_ESTUDIO

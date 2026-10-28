@@ -1,0 +1,73 @@
+# Ayuda: atajos y comandos
+
+(q para salir · Super es la tecla de Windows)
+
+## Atajos de teclado
+
+  Super + Enter           terminal (kitty)
+  Super + Espacio         lanzador de apps  (dentro: Ctrl + Tab = calculadora)
+  Super + Z               Zen (navegador)
+  Super + T               Thunar (archivos)
+  Super + G               mostrar / esconder el reproductor de música (Gelly)
+  Super + W               elegir el fondo de pantalla
+  Super + L               bloquear la pantalla
+  Super + Escape          menú de apagado (bloquear, suspender, cerrar sesión, reiniciar, apagar, modo juego)
+  Super + Q               cerrar la ventana         (Super + Shift + Q: forzar el cierre)
+  Super + B               pantalla completa         (Super + Shift + B: maximizar)
+  Super + V               ventana flotante o normal
+  Super + J               cambiar la división de las ventanas
+  Super + M               cerrar la sesión de Hyprland
+  Super + flechas         pasar el foco a otra ventana
+  Super + 1 … 0           ir al escritorio 1 … 10   (Super + Shift + 1 … 0: mover la ventana allí)
+  Super + S               escritorio escondido «magic»   (Super + Shift + S: mandar la ventana allí)
+  Super + Shift + V       historial del portapapeles
+  Super + Shift + R       grabar la pantalla (isla roja en la barra; vuelve a pulsar para parar)
+  Impr                    captura de una zona, para editarla     (Shift + Impr: pantalla completa)
+
+## La barra
+
+  micrófono               clic: grabar una clase, transcribir, abrir carpetas. Roja mientras graba
+  ⚙ (ajustes)             Tema, Vidrio, Tamaño, Inactividad, Fondo, Sistema (limpiar, actualizar) y esta Ayuda
+  ⏻ (apagado)             el mismo menú de Super + Escape
+  Wi-Fi / Bluetooth       clic para conectar         (volumen y brillo: rueda del ratón sobre la isla)
+
+## Comandos (en la terminal)
+
+  tema oscuro | claro     cambia el modo de todo el escritorio
+  vidrio total | oscurecer        transparencia de las ventanas
+  vidrio medios si | no           vídeo e imágenes siempre opacos (por defecto, sí)
+  tamano 100              tamaño de la interfaz, de 50 a 200
+  inactividad ver         cuándo se atenúa o se bloquea
+  fondos elegir | siguiente | rotar 10
+  modo juego              pasar al modo juego (Steam)
+  musica                  mostrar / esconder Gelly
+  y                       Yazi, gestor de archivos en la terminal
+  claude                  Claude Code en la terminal      (o «Claude» en el lanzador)
+  grabar-clase [nombre]   graba el micrófono hasta Ctrl + C
+  transcribir <audio> [tiny|base|small|medium]   audio → apunte en Markdown, en tu laptop
+  zen-sync estado         sesión de Zen sincronizada por el NAS
+  ayuda                   esta chuleta
+
+## Claude Code
+
+  Claude                         nueva conversación, dentro de tu vault (así ve tus apuntes)
+  Claude · elegir conversación   lista de tus conversaciones anteriores de esa carpeta
+  /voice                         dictado por voz: tocar Espacio para empezar y otra vez para enviar
+  /rename nombre                 ponerle nombre a la conversación
+  /export                        guardar la conversación como texto
+  Las conversaciones se guardan por carpeta y se borran a los 30 días: lo importante, a Obsidian.
+
+## Estudio y NAS
+
+  Vault de Obsidian       ~/Documentos/obsidian-vault/<tu vault>   (Syncthing lo mantiene igual que el NAS)
+  Grabaciones y apuntes   ~/Grabaciones      y la carpeta Transcripciones del vault
+  Carpetas del NAS        /mnt/truenas/…     (se montan al abrirlas)
+  nas, proxmox            nombres cortos: apuntan a Tailscale si responde y, si no, a la red de casa
+  Web apps                en el lanzador: Jellyfin, Navidrome, Immich, TrueNAS… cada una en su ventana
+
+## Si algo falla
+
+  Syncthing de esta laptop        http://localhost:8384
+  ¿A qué dirección apunta nas?    getent hosts nas
+  Recargar la configuración       hyprctl reload
+  Todo lo instalado               ~/my-arch/RESUMEN.md

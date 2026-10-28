@@ -1,0 +1,55 @@
+#!/bin/bash
+# nas-dir: mantiene los nombres cortos de tus equipos (nas, proxmox…) en /etc/hosts apuntando a la dirección
+# de Tailscale si responde y, si no, a la de casa. Así todas las apps (montajes, Gelly, Syncthing, web apps)
+# usan siempre el mismo nombre. Lo ejecuta solo nas-dir.timer (cada minuto) y al cambiar la red.
+# Configuración: /etc/nas-dir.conf, una línea por equipo:  nombre dirección_tailscale dirección_de_casa
+# (la de Tailscale va como «-» si el equipo no la tiene). Para pruebas: NAS_DIR_CONF y NAS_DIR_HOSTS.
+set -u
+
+CONF="${NAS_DIR_CONF:-/etc/nas-dir.conf}"
+HOSTS="${NAS_DIR_HOSTS:-/etc/hosts}"
+INI="# >>> nas-dir (lo mantiene nas-dir; no lo edites) >>>"
+FIN="# <<< nas-dir <<<"
+
+responde() { [ -n "$1" ] && [ "$1" != "-" ] && ping -c 1 -W 2 "$1" >/dev/null 2>&1; }
+bloque_actual() { awk -v ini="$INI" -v fin="$FIN" '$0 == ini {f=1} f {print} $0 == fin {f=0}' "$HOSTS" 2>/dev/null; }
+
+[ -r "$CONF" ] || exit 0
+previo="$(bloque_actual)"
+nuevo=""
+nombres=()
+while read -r nombre ts lan _; do
+    [ -z "${nombre:-}" ] && continue
+    [[ "$nombre" == \#* ]] && continue
+    nombres+=("$nombre")
+    if responde "${ts:--}"; then
+        ip="$ts"                                    # primero Tailscale
+    elif responde "${lan:--}"; then
+        ip="$lan"                                   # si no, la red de casa
+    else
+        # ninguna responde: se deja lo que había; si no había nada, Tailscale o, si no tiene, casa
+        ip="$(awk -v n="$nombre" '$2 == n {print $1; exit}' <<< "$previo")"
+        if [ -z "$ip" ]; then [ "${ts:--}" != "-" ] && ip="$ts" || ip="${lan:--}"; fi
+    fi
+    nuevo+="$ip $nombre"$'\n'
+done < "$CONF"
+
+bloque="$INI"$'\n'"$nuevo$FIN"
+[ "$previo" = "$bloque" ] && exit 0                 # nada cambió
+
+tmp="$(mktemp "$HOSTS.XXXXXX")"
+awk -v ini="$INI" -v fin="$FIN" '$0 == ini {f=1; next} $0 == fin {f=0; next} !f' "$HOSTS" > "$tmp"
+printf '%s\n' "$bloque" >> "$tmp"
+chmod 644 "$tmp"
+mv -f "$tmp" "$HOSTS"
+logger -t nas-dir "actualizado: $(tr '\n' ' ' <<< "$nuevo")" 2>/dev/null || true
+
+# Con una dirección nueva, los montajes que estaban con la vieja se sueltan (se vuelven a montar solos al usarlos)
+if [ -z "${NAS_DIR_HOSTS:-}" ] && [ -n "$previo" ]; then
+    for n in "${nombres[@]}"; do
+        findmnt -t cifs -rno TARGET,SOURCE 2>/dev/null | awk -v p="//$n/" 'index($2, p) == 1 {print $1}' | while read -r t; do
+            systemctl stop "$(systemd-escape -p --suffix=mount "$t")" 2>/dev/null || umount -l "$t" 2>/dev/null || true
+        done
+    done
+fi
+exit 0

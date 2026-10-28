@@ -17,6 +17,7 @@ window#waybar {
 #custom-musica,
 #clock,
 #custom-clima,
+#custom-clase,
 #sistema,
 #controles,
 #battery,
@@ -126,6 +127,11 @@ window#waybar {
     min-width: 0;
 }
 
+#custom-clase.rec {
+    background: @err;
+    color: @bg;
+    font-weight: bold;
+}
 #custom-grabando.rec {
     background: @err;
     color: @bg;

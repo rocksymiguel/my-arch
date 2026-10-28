@@ -1,0 +1,6 @@
+#!/bin/sh
+# NetworkManager: al cambiar de red, revisar enseguida a qué dirección apunta el NAS (nas-dir)
+case "$2" in
+    up|down|connectivity-change|dhcp4-change) systemctl start --no-block nas-dir.service ;;
+esac
+exit 0

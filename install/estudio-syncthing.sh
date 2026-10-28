@@ -10,13 +10,17 @@
 # de datos, su puerto y la carpeta del vault.
 set -euo pipefail
 
+# Tus datos (NAS, ID del Syncthing del NAS…) salen de ~/.config/my-arch/personal.env
+NAS_NOMBRE="" SYNCTHING_NAS_ID="" SYNCTHING_NAS_PUERTO=""
+[ -f "$HOME/.config/my-arch/personal.env" ] && source "$HOME/.config/my-arch/personal.env"
+
 ST="${SYNCTHING_BIN:-syncthing}"
 ARGS=(); [ -n "${SYNCTHING_HOME:-}" ] && ARGS+=(--home="$SYNCTHING_HOME")
 VAULT="${VAULT_LOCAL:-$HOME/Documentos/obsidian-vault}"
 ID_CARPETA=obsidian-vault
 NAS_TS="${NAS_TAILSCALE:-truenas-scale}"
-NAS_ID="${1:-}"
-PUERTO_NAS="${NAS_SYNCTHING_PUERTO:-22000}"   # puerto de sincronización de la app del TrueNAS
+NAS_ID="${1:-${SYNCTHING_NAS_ID:-}}"
+PUERTO_NAS="${NAS_SYNCTHING_PUERTO:-${SYNCTHING_NAS_PUERTO:-22000}}"   # puerto de sincronización de la app del NAS
 
 cli() { "$ST" cli "${ARGS[@]}" "$@"; }
 
@@ -55,11 +59,17 @@ fi
 ID_LOCAL="$(cli show system | python3 -I -c 'import json,sys; print(json.load(sys.stdin)["myID"])')"
 
 if [ -n "$NAS_ID" ]; then
-    DIR_NAS="$(tailscale ip -4 "$NAS_TS" 2>/dev/null | head -n 1 || true)"
-    [ -n "$DIR_NAS" ] && DIRS="tcp://$DIR_NAS:$PUERTO_NAS" || DIRS="dynamic"
+    # Con el nombre corto del NAS (nas-dir lo mantiene apuntando a Tailscale o a casa) sirve en los dos sitios
+    if [ -n "$NAS_NOMBRE" ]; then
+        DIRS="tcp://$NAS_NOMBRE:$PUERTO_NAS"
+    else
+        DIR_NAS="$(tailscale ip -4 "$NAS_TS" 2>/dev/null | head -n 1 || true)"
+        [ -n "$DIR_NAS" ] && DIRS="tcp://$DIR_NAS:$PUERTO_NAS" || DIRS="dynamic"
+    fi
     echo "==> Emparejando con el NAS ($NAS_ID) en $DIRS"
     if cli config devices list | grep -qx "$NAS_ID"; then
         echo "    el NAS ya estaba emparejado"
+        cli config devices "$NAS_ID" addresses 0 set "$DIRS" 2>/dev/null || true   # y con la dirección de ahora
     else
         cli config devices add --device-id "$NAS_ID" --name "truenas-scale" --addresses "$DIRS"
     fi

@@ -21,6 +21,7 @@ alias hypr       "start-hyprland"
 alias modo       "~/.config/theme/modo-bin"
 alias grabar-clase "~/.config/estudio/grabar-clase"
 alias transcribir "~/.config/estudio/transcribir"
+alias ayuda "~/.config/estudio/ayuda"
 
 # Herramientas modernas
 alias ls  "eza --icons --group-directories-first"
