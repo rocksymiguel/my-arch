@@ -303,6 +303,15 @@ hl.window_rule({
     move   = "monitor_w-" .. e(490) .. " monitor_h-" .. e(320),
 })
 
+-- Lector de QR (zbarcam, vía Xwayland): flotante y pequeña, centrada
+hl.window_rule({
+    name   = "camara-qr",
+    match  = { title = "^zbar barcode reader$" },
+    float  = true,
+    size   = e(480) .. " " .. e(360),
+    center = true,
+})
+
 -- Claude Code (lanzador «Claude»): ventana flotante de tamaño fijo, centrada
 hl.window_rule({
     name   = "claude-cli",

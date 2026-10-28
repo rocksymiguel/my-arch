@@ -82,6 +82,7 @@ qr() {
     vista_abierta && cerrar_vista
     grabando && { notify-send -a camara "Estás grabando" "Para la grabación y vuelve a intentarlo"; return 0; }
     notify-send -a camara -t 4000 "Lector de QR" "Apunta el código a la cámara (se cierra a los 60 s)"
+    export DISPLAY="${DISPLAY:-:0}"   # zbarcam usa X (Xwayland)
     local texto; texto="$(timeout 60 zbarcam --raw -1 --prescale=640x480 "$DEV" 2>/dev/null | head -n 1)"
     [ -n "$texto" ] || return 0
     printf '%s' "$texto" | wl-copy 2>/dev/null
