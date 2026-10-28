@@ -17,6 +17,15 @@ mkdir -p "$ESTADO"
 
 aviso() { notify-send -a clase "$@" 2>/dev/null || true; }
 refrescar() { pkill -RTMIN+11 -x waybar 2>/dev/null || true; }
+# Aviso con botones: «Escuchar» abre el audio en mpv y «Carpeta» abre Grabaciones en Thunar. Espera el clic en segundo plano.
+aviso_clic() {   # aviso_clic "Título" archivo
+    local titulo="$1" f="$2"
+    (   r="$(notify-send -a clase -t 20000 -A escuchar="Escuchar" -A carpeta="Abrir carpeta" "$titulo" "$(basename "$f")" 2>/dev/null)"
+        case "$r" in
+            escuchar) exec mpv --force-window=yes --keep-open=yes --title="$(basename "$f")" "$f" ;;
+            carpeta)  exec thunar "$(dirname "$f")" ;;
+        esac ) >/dev/null 2>&1 &
+}
 grabando() { [ -s "$ESTADO/pid" ] && kill -0 "$(cat "$ESTADO/pid")" 2>/dev/null; }
 
 iniciar() {
@@ -47,10 +56,10 @@ parar() {
     if [ -s "$wav" ] && ffmpeg -v error -y -i "$wav" -c:a libopus -b:a 24k -application voip "$opus"; then
         rm -f "$wav"
         echo "Guardado: $opus ($(du -h "$opus" | cut -f1))"
-        aviso "Grabación guardada" "$(basename "$opus")"
+        aviso_clic "Grabación guardada" "$opus"
     else
         echo "No pude comprimirlo; queda el WAV: $wav"
-        aviso "Grabación guardada (WAV)" "$(basename "$wav")"
+        aviso_clic "Grabación guardada (WAV)" "$wav"
     fi
 }
 

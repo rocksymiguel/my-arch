@@ -84,20 +84,20 @@
     },
     "cpu": {
         "format": "󰻠 {usage}%",
-        "interval": 5,
+        "interval": 2,
         "on-click": "kitty -e btop",
         "tooltip-format": "Procesador: {usage}%"
     },
     "memory": {
         "format": "󰍛 {percentage}%",
-        "interval": 5,
+        "interval": 2,
         "tooltip-format": "{used:0.1f} de {total:0.1f} GiB",
         "on-click": "kitty -e btop"
     },
     "custom/temperatura": {
         "exec": "~/.config/waybar/scripts/temperatura",
         "return-type": "json",
-        "interval": 5,
+        "interval": 2,
         "on-click": "kitty -e btop"
     },
     "tray": {
@@ -207,7 +207,7 @@
         // Botón del micrófono: grabar clases y transcribirlas (waybar/scripts/menu-clase); roja mientras graba
         "exec": "~/.config/estudio/grabar-clase estado",
         "return-type": "json",
-        "interval": 5,
+        "interval": 1,
         "signal": 11,
         "on-click": "~/.config/waybar/scripts/menu-clase"
     },
