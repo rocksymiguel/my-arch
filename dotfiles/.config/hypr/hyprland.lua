@@ -168,8 +168,8 @@ hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("~/.config/theme/grabar-bin")
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p Portapapeles | cliphist decode | wl-copy"))
 
 -- Capturas: Impr = elegir zona y editarla con satty; SHIFT + Impr = pantalla completa a ~/Imágenes/Capturas
-hl.bind("Print",         hl.dsp.exec_cmd("mkdir -p ~/Imágenes/Capturas && grim -g \"$(slurp)\" - | satty --filename - --output-filename ~/Imágenes/Capturas/captura-%Y-%m-%d_%H-%M-%S.png --copy-command wl-copy --early-exit"))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd("mkdir -p ~/Imágenes/Capturas && grim ~/Imágenes/Capturas/$(date +%Y-%m-%d_%H-%M-%S).png"))
+hl.bind("Print",         hl.dsp.exec_cmd("~/.config/theme/captura-bin zona"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("~/.config/theme/captura-bin completa"))
 
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))

@@ -17,10 +17,11 @@ transcribir_fondo() {   # transcribir_fondo audio modelo
     setsid -f bash -c '
         salida="$(systemd-run --user --scope --quiet -p MemoryMax=1500M -p MemorySwapMax=0 nice -n 10 "$0" "$1" "$2" 2>&1)"; rc=$?
         if [ $rc -eq 0 ]; then
-            notify-send -a clase "Transcripción lista" "$(basename "$(sed -n "s/^Listo: //p" <<< "$salida" | tail -1)")"
+            nota="$(sed -n "s/^Listo: //p" <<< "$salida" | tail -1)"
+            "$3" "Transcripción lista" "$(basename "$nota")" "$nota" clase
         else
             notify-send -u critical -a clase "No pude transcribir" "$(tail -2 <<< "$salida" | tr "\n" " ")"
-        fi' "$E/transcribir" "$audio" "$modelo" >/dev/null 2>&1
+        fi' "$E/transcribir" "$audio" "$modelo" "$HOME/.config/theme/aviso-bin" >/dev/null 2>&1
 }
 
 ultima() { ls -t "$GRAB"/*.opus "$GRAB"/*.wav "$GRAB"/*.mp3 "$GRAB"/*.m4a "$GRAB"/*.ogg 2>/dev/null | head -n 1; }

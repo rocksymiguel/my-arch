@@ -17,7 +17,9 @@ case "${1:-}" in
             pkill -INT -f "^gpu-screen-recorder"
             sleep 1
             refrescar
-            notify-send -a osd -u normal -t 2500 "󰑊  Grabación guardada en Vídeos/Grabaciones"
+            ultimo="$(ls -t "$DIR"/*.mp4 2>/dev/null | head -n 1)"
+            if [ -n "$ultimo" ]; then "$(dirname "$(readlink -f "$0")")/aviso-bin" "󰑊  Grabación guardada" "$(basename "$ultimo")" "$ultimo" osd
+            else notify-send -a osd -u normal -t 2500 "󰑊  Grabación guardada en Vídeos/Grabaciones"; fi
         else
             mkdir -p "$DIR"
             setsid -f gpu-screen-recorder -w screen -f 60 -a default_output \

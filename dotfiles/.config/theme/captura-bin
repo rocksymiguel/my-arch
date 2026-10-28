@@ -1,0 +1,17 @@
+#!/bin/bash
+# Capturas de pantalla (Impr y Shift + Impr). Al terminar, el aviso lleva a la imagen.
+#   captura zona      elegir una zona y editarla con satty (se guarda al copiar o guardar en satty)
+#   captura completa  toda la pantalla
+DIR="$HOME/Imágenes/Capturas"
+mkdir -p "$DIR"
+f="$DIR/$(date +%Y-%m-%d_%H-%M-%S).png"
+aviso="$(dirname "$(readlink -f "$0")")/aviso-bin"
+
+case "${1:-completa}" in
+    zona)
+        area="$(slurp)" || exit 0
+        grim -g "$area" - | satty --filename - --output-filename "$f" --copy-command wl-copy --early-exit
+        [ -s "$f" ] && "$aviso" "󰹑  Captura guardada" "$(basename "$f")" "$f" captura ;;
+    completa)
+        grim "$f" && "$aviso" "󰹑  Captura guardada" "$(basename "$f")" "$f" captura ;;
+esac

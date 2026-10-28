@@ -1,0 +1,30 @@
+#!/bin/bash
+# Aviso con botones que lleva al archivo: «Abrir» (con el visor que toque) y «Abrir carpeta».
+#   aviso-bin "Título" "Texto" /ruta/al/archivo [aplicación]
+# Espera el clic en segundo plano y se acaba solo a los 20 s. Sirve para capturas, grabaciones, notas…
+# Los avisos que no llevan a ningún sitio (tema, modo avión, color copiado) se quedan como están.
+titulo="${1:?falta el título}"; texto="${2:-}"; f="${3:?falta el archivo}"; app="${4:-aviso}"
+
+case "${f,,}" in
+    *.opus|*.wav|*.mp3|*.m4a|*.ogg|*.flac) etiqueta="Escuchar" ;;
+    *.mp4|*.mkv|*.webm)                    etiqueta="Ver vídeo" ;;
+    *.png|*.jpg|*.jpeg|*.webp)             etiqueta="Ver imagen" ;;
+    *.md)                                  etiqueta="Abrir nota" ;;
+    *)                                     etiqueta="Abrir" ;;
+esac
+
+abrir() {
+    case "${f,,}" in
+        *.opus|*.wav|*.mp3|*.m4a|*.ogg|*.flac|*.mp4|*.mkv|*.webm)
+            exec mpv --force-window=yes --keep-open=yes --title="$(basename "$f")" "$f" ;;
+        *.png|*.jpg|*.jpeg|*.webp) exec imv "$f" ;;
+        *.md) exec obsidian "obsidian://open?path=$(python3 -I -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$f")" ;;
+        *) exec xdg-open "$f" ;;
+    esac
+}
+
+(   r="$(notify-send -a "$app" -t 20000 -A abrir="$etiqueta" -A carpeta="Abrir carpeta" "$titulo" "$texto" 2>/dev/null)"
+    case "$r" in
+        abrir)   abrir ;;
+        carpeta) exec thunar "$(dirname "$f")" ;;
+    esac ) >/dev/null 2>&1 &
