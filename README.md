@@ -71,7 +71,7 @@ repositorio y no lleva contraseñas. Si no existe, un asistente (`install/person
   (`faster-whisper`: «base» 6,8× el tiempo real y 0,5 GB; «small» 2,3× y 1,1 GB, medido en la Lenovo) y abre las carpetas.
   En la terminal: `grabar-clase [nombre]` y `transcribir <audio> [tiny|base|small|medium]`. `~/Grabaciones` es un atajo.
 - **Web apps** (`install/webapps.sh`, `packages/webapps.txt`): las de `WEBAPPS` salen en el lanzador, cada una en su ventana,
-  con Epiphany. Los logos se descargan al instalar (`install/iconos.sh`), no se guardan en el repo.
+  con Chromium en modo aplicación. Los logos se descargan al instalar (`install/iconos.sh`), no se guardan en el repo.
 - **Lanzador limpio:** `packages/ocultar.txt` + `install/ocultar-apps.sh` esconden lo que no hace falta ver sin quitarle sus
   tipos de archivo.
 - **Tapa:** cerrarla apaga la pantalla interna; al abrirla, `tapa-bin` devuelve el brillo si la inactividad lo había atenuado.

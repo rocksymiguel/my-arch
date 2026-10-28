@@ -9,3 +9,4 @@ blueman-manager.desktop              # Gestor de Bluetooth: ya está en la isla
 kitty.desktop                        # kitty: Super + Enter
 winetricks.desktop                   # Winetricks
 zen.desktop                          # Zen Browser: Super + Z
+chromium.desktop                     # Chromium: solo para las web apps, que ya tienen su entrada

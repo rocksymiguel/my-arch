@@ -285,6 +285,12 @@ if theme.media_opaca then
         match  = { class = "^zen$", title = "^.*(" .. sitios .. ").*$" },
         opaque = true,
     })
+    -- Web apps (Chromium) con vídeo o fotos (Jellyfin, Immich): opacas, por el título de la ventana
+    hl.window_rule({
+        name   = "webapps-media-opaca",
+        match  = { class = "^chrome-.*__-", title = "^.*(Jellyfin|Immich).*$" },
+        opaque = true,
+    })
 end
 
 -- Claude Code (lanzador «Claude»): ventana flotante de tamaño fijo, centrada

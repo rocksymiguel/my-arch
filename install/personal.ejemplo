@@ -25,6 +25,6 @@ ZEN_SYNC_DIR=""
 
 # ---- Servicios -------------------------------------------------------------------------------------
 GELLY_URL=                     # servidor de música (Navidrome/Subsonic) de Gelly, p. ej. http://nas:4533
-# Web apps del lanzador (se abren en su propia ventana con Epiphany): «Nombre|dirección|icono», separadas por «;».
+# Web apps del lanzador (se abren en su propia ventana con Chromium): «Nombre|dirección|icono», separadas por «;».
 # El icono es un nombre de https://github.com/homarr-labs/dashboard-icons (jellyfin, immich, truenas…).
 WEBAPPS="Jellyfin|http://nas:8096|jellyfin;TrueNAS|https://nas|truenas"

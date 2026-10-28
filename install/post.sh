@@ -94,8 +94,8 @@ personal_usuario() {
     paso "Personal: logos, web apps, lanzador limpio, zen-sync y Gelly"
     bash "$D/iconos.sh" || true
     if [ -n "$WEBAPPS" ]; then
-        if command -v epiphany >/dev/null 2>&1; then bash "$D/webapps.sh" || true
-        else echo "Epiphany no está instalado: las web apps se crearán al instalarlo (bash $0 personal)"; fi
+        if command -v chromium >/dev/null 2>&1; then bash "$D/webapps.sh" || true
+        else echo "Chromium no está instalado: las web apps se crearán al instalarlo (bash $0 personal)"; fi
     fi
     bash "$D/ocultar-apps.sh" || true
 

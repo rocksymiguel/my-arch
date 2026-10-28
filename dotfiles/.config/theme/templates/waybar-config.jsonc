@@ -37,7 +37,13 @@
             "class<thunar>": "󰉋",
             "class<io.m51.Gelly>": "󰝚",
             "class<org.pulseaudio.pavucontrol>": "󰕾",
-            "class<blueman-manager>": "󰂯"
+            "class<blueman-manager>": "󰂯",
+            "class<chrome-.*__-jellyfin>": "󰎁",
+            "class<chrome-.*__-navidrome>": "󰝚",
+            "class<chrome-.*__-immich>": "󰋩",
+            "class<chrome-.*__-syncthingdelnas>": "󰓦",
+            "class<chrome-.*__-truenas>": "󰒋",
+            "class<chrome-.*__-proxmox>": "󰒋"
         },
         "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
         "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",

@@ -32,7 +32,7 @@ web apps del lanzador.
 | **Estudio** | Obsidian con el vault local sincronizado con el NAS (Syncthing, con historial de versiones de 30 días) |
 | **Claude** | CLI de Claude Code, lanzadores «Claude» y «Claude · elegir conversación», dictado `/voice` en español |
 | **Clases** | Botón del micrófono en la barra: grabar, transcribir en local (faster-whisper) y abrir las carpetas |
-| **Web apps** | Jellyfin, Navidrome, Immich, TrueNAS… cada una en su ventana, con Epiphany (ligero), en el lanzador |
+| **Web apps** | Jellyfin, Navidrome, Immich, TrueNAS… cada una en su ventana, con Chromium en modo aplicación, en el lanzador |
 | **Lanzador limpio** | `packages/ocultar.txt`: lo que no hace falta ver (siguen funcionando: abren archivos o tienen atajo) |
 | **Ayuda** | Escribe `ayuda`, o ⚙ → Ayuda: atajos y comandos |
 

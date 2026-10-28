@@ -1,3 +1,4 @@
 # Web apps: cada una se abre en su propia ventana, sin la barra de un navegador (install/webapps.sh).
-# Epiphany (GNOME Web) usa WebKitGTK: es mucho más ligero que Zen o Chromium para esto.
-epiphany
+# Chromium en modo aplicación (--app): sin pestañas ni barra de dirección, decodifica HEVC con la gráfica y
+# todas las web apps comparten un solo perfil, así que gasta menos memoria que un perfil por app.
+chromium
