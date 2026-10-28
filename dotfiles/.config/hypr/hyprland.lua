@@ -167,8 +167,9 @@ hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("~/.config/theme/fondos-bin e
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("~/.config/theme/grabar-bin")) -- grabar pantalla
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p Portapapeles | cliphist decode | wl-copy"))
 
--- Capturas: Impr = elegir zona y editarla con satty; SHIFT + Impr = pantalla completa a ~/Imágenes/Capturas
+-- Capturas: Impr o Super + Shift + S = elegir zona y editarla con satty; SHIFT + Impr = pantalla completa a ~/Imágenes/Capturas
 hl.bind("Print",         hl.dsp.exec_cmd("~/.config/theme/captura-bin zona"))
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("~/.config/theme/captura-bin zona"))   -- como en Windows
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("~/.config/theme/captura-bin completa"))
 
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -183,7 +184,7 @@ for i = 1, 10 do
 end
 
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind(mainMod .. " + ALT + S",   hl.dsp.window.move({ workspace = "special:magic" }))
 
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))

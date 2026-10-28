@@ -10,3 +10,4 @@ kitty.desktop                        # kitty: Super + Enter
 winetricks.desktop                   # Winetricks
 zen.desktop                          # Zen Browser: Super + Z
 chromium.desktop                     # Chromium: solo para las web apps, que ya tienen su entrada
+org.gnome.FileRoller.desktop          # File Roller (comprimidos): sigue abriendo .zip/.rar desde Thunar

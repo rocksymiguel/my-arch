@@ -184,7 +184,7 @@ Ctrl+R / Ctrl+T        # fzf: historial / archivos
 
 ## Capturas y grabación
 
-- Impr: elegir zona y editarla con satty · Shift+Impr: pantalla completa a ~/Imágenes/Capturas
+- Super+Shift+S o Impr: elegir zona y editarla con satty · Shift+Impr: pantalla completa a ~/Imágenes/Capturas
 - Super+Shift+R: grabar pantalla (isla roja ⏺ REC; clic o el atajo para parar) → ~/Vídeos/Grabaciones
 - "Selector de color" en el lanzador (hyprpicker): copia el color de un punto de la pantalla
 

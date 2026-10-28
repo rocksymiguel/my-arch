@@ -19,10 +19,11 @@
   Super + M               cerrar la sesión de Hyprland
   Super + flechas         pasar el foco a otra ventana
   Super + 1 … 0           ir al escritorio 1 … 10   (Super + Shift + 1 … 0: mover la ventana allí)
-  Super + S               escritorio escondido «magic»   (Super + Shift + S: mandar la ventana allí)
+  Super + S               escritorio escondido «magic»   (Super + Alt + S: mandar la ventana allí)
   Super + Shift + V       historial del portapapeles
   Super + Shift + R       grabar la pantalla (isla roja en la barra; vuelve a pulsar para parar)
-  Impr                    captura de una zona, para editarla     (Shift + Impr: pantalla completa)
+  Super + Shift + S       captura de una zona, para editarla (como en Windows; también Impr)
+  Shift + Impr            captura de toda la pantalla
 
 ## La barra
 
