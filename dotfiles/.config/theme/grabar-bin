@@ -11,7 +11,7 @@ refrescar() { pkill -RTMIN+10 -x waybar 2>/dev/null; }
 case "${1:-}" in
     estado)
         if grabando; then echo '{"text": "󰑊 REC", "class": "rec", "tooltip": "Grabando · clic para parar"}'
-        else echo '{"text": "", "class": "off"}'; fi ;;
+        else "$HOME/.config/estudio/camara" estado; fi ;;   # vacío si tampoco se graba con la cámara
     "")
         if grabando; then
             pkill -INT -f "^gpu-screen-recorder"

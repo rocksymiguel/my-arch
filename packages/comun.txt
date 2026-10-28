@@ -91,3 +91,4 @@ yazi
 zip
 zoxide
 zram-generator
+zbar                 # lector de códigos QR de «Cámara» (zbarcam)

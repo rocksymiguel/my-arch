@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Cámara
+Comment=Ver la cámara, sacar fotos, grabar vídeo con audio y leer códigos QR
+Exec=sh -c "$HOME/.config/estudio/camara menu"
+Icon=camera-web
+Terminal=false
+Categories=AudioVideo;Video;

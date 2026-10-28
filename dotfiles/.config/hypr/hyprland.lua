@@ -294,6 +294,15 @@ if theme.media_opaca then
     })
 end
 
+-- Vista previa de la cámara (mpv con título «Cámara»): flotante y pequeña, abajo a la derecha
+hl.window_rule({
+    name   = "camara-vista",
+    match  = { class = "^mpv$", title = "^Cámara$" },
+    float  = true,
+    size   = e(480) .. " " .. e(270),
+    move   = "monitor_w-" .. e(490) .. " monitor_h-" .. e(320),
+})
+
 -- Claude Code (lanzador «Claude»): ventana flotante de tamaño fijo, centrada
 hl.window_rule({
     name   = "claude-cli",

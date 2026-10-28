@@ -24,6 +24,7 @@
   Super + Shift + R       grabar la pantalla (isla roja en la barra; vuelve a pulsar para parar)
   Super + Shift + S       captura de una zona, para editarla (como en Windows; también Impr)
   Shift + Impr            captura de toda la pantalla
+  Cámara (lanzador)       ver la cámara, foto, vídeo con audio y lector de QR (comando: camara)
 
 ## La barra
 

@@ -6,6 +6,7 @@
 titulo="${1:?falta el título}"; texto="${2:-}"; f="${3:?falta el archivo}"; app="${4:-aviso}"
 
 case "${f,,}" in
+    http://*|https://*)                    etiqueta="Abrir enlace" ;;
     *.opus|*.wav|*.mp3|*.m4a|*.ogg|*.flac) etiqueta="Escuchar" ;;
     *.mp4|*.mkv|*.webm)                    etiqueta="Ver vídeo" ;;
     *.png|*.jpg|*.jpeg|*.webp)             etiqueta="Ver imagen" ;;
@@ -15,6 +16,7 @@ esac
 
 abrir() {
     case "${f,,}" in
+        http://*|https://*) exec xdg-open "$f" ;;
         *.opus|*.wav|*.mp3|*.m4a|*.ogg|*.flac|*.mp4|*.mkv|*.webm)
             exec mpv --force-window=yes --keep-open=yes --title="$(basename "$f")" "$f" ;;
         *.png|*.jpg|*.jpeg|*.webp) exec imv "$f" ;;
@@ -23,8 +25,8 @@ abrir() {
     esac
 }
 
-(   r="$(notify-send -a "$app" -t 20000 -A abrir="$etiqueta" -A carpeta="Abrir carpeta" "$titulo" "$texto" 2>/dev/null)"
+(   r="$(notify-send -a "$app" -t 20000 -A abrir="$etiqueta" $([[ "$f" == http* ]] || echo -A carpeta="Abrir carpeta") "$titulo" "$texto" 2>/dev/null)"
     case "$r" in
         abrir)   abrir ;;
-        carpeta) exec thunar "$(dirname "$f")" ;;
+        carpeta) case "$f" in http*) ;; *) exec thunar "$(dirname "$f")" ;; esac ;;
     esac ) >/dev/null 2>&1 &

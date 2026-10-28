@@ -1,0 +1,124 @@
+#!/bin/bash
+# Cámara de la laptop: ver, foto, vídeo con audio y lector de QR. Todo en ligero (mpv, ffmpeg, zbar).
+#   camara menu         el menú (lo abre el lanzador «Cámara»)
+#   camara ver          vista previa en espejo, en una ventana pequeña (otra vez: la cierra)
+#   camara foto         saca una foto  → ~/Imágenes/Cámara
+#   camara video        empieza a grabar vídeo con el micrófono, o para si ya graba  → ~/Vídeos/Cámara
+#   camara qr           lee un código QR con la cámara; copia el texto y avisa (si es un enlace, con botón para abrirlo)
+#   camara estado       JSON para la isla roja de waybar (solo se ve grabando)
+# La cámara solo la puede usar una cosa a la vez: al grabar o leer un QR se cierra la vista previa y,
+# mientras se graba, la vista previa sale del propio vídeo que se graba.
+set -uo pipefail
+
+DEV="${CAMARA_DEV:-/dev/video0}"
+FOTOS="$HOME/Imágenes/Cámara"
+VIDEOS="$HOME/Vídeos/Cámara"
+RUN="${XDG_RUNTIME_DIR:-/tmp}/camara"
+SOCK="$RUN/mpv.sock"
+AVISO="$HOME/.config/theme/aviso-bin"
+mkdir -p "$RUN"
+
+# La cámara va en MJPEG a 720p y 30 fps: sale ya comprimida y casi no carga la CPU
+ENTRADA=(-f v4l2 -input_format mjpeg -video_size 1280x720 -framerate 30 -i "$DEV")
+MPV_VISTA=(--profile=low-latency --untimed --no-audio --no-osc --vf=hflip --title=Cámara --force-window=yes)
+
+refrescar() { pkill -RTMIN+10 -x waybar 2>/dev/null || true; }
+vista_abierta() { [ -S "$SOCK" ] && pgrep -f "input-ipc-server=$SOCK" >/dev/null; }
+grabando() { [ -s "$RUN/video" ] && pgrep -f "ffmpeg.*$(cat "$RUN/video")" >/dev/null; }
+cerrar_vista() { pkill -f "input-ipc-server=$SOCK" 2>/dev/null; sleep 0.4; rm -f "$SOCK"; }
+
+ver() {
+    if vista_abierta; then cerrar_vista; return 0; fi
+    grabando && { notify-send -a camara "Ya estás grabando" "La vista previa es la ventana de la grabación"; return 0; }
+    setsid -f mpv "av://v4l2:$DEV" --demuxer-lavf-o=input_format=mjpeg,video_size=1280x720 \
+        "${MPV_VISTA[@]}" --input-ipc-server="$SOCK" \
+        --screenshot-directory="$FOTOS" --screenshot-template="%F_%H-%M-%S" >/dev/null 2>&1
+}
+
+foto() {
+    mkdir -p "$FOTOS"
+    local f="$FOTOS/$(date +%F_%H-%M-%S).png"
+    if vista_abierta; then
+        # la cámara está en uso por la vista previa: se le pide la foto a mpv
+        python3 -I -c 'import json, socket, sys
+s = socket.socket(socket.AF_UNIX); s.connect(sys.argv[1])
+s.sendall((json.dumps({"command": ["screenshot-to-file", sys.argv[2], "video"]}) + "\n").encode()); s.recv(4096)' "$SOCK" "$f" 2>/dev/null
+        sleep 0.5
+    elif grabando; then
+        notify-send -a camara "Grabando" "Para la grabación y saca la foto, o haz una captura de pantalla"; return 0
+    else
+        ffmpeg -v error -y "${ENTRADA[@]}" -vf hflip -ss 0.8 -frames:v 1 "$f" 2>/dev/null
+    fi
+    if [ -s "$f" ]; then "$AVISO" "󰄀  Foto guardada" "$(basename "$f")" "$f" camara
+    else notify-send -u critical -a camara "No pude sacar la foto" "¿Está la cámara en uso por otra aplicación?"; fi
+}
+
+video() {
+    if grabando; then
+        pkill -INT -f "ffmpeg.*$(cat "$RUN/video")"
+        for _ in $(seq 1 30); do grabando || break; sleep 0.2; done
+        local f; f="$(cat "$RUN/archivo")"
+        rm -f "$RUN/video" "$RUN/archivo"; refrescar
+        [ -s "$f" ] && "$AVISO" "󰄀  Vídeo guardado" "$(basename "$f")" "$f" camara
+        return 0
+    fi
+    vista_abierta && cerrar_vista
+    mkdir -p "$VIDEOS"
+    local f="$VIDEOS/$(date +%F_%H-%M-%S).mp4"
+    echo "$f" > "$RUN/archivo"; basename "$f" > "$RUN/video"
+    # Un solo ffmpeg: graba (H.264 + audio AAC) y, a la vez, manda el mismo vídeo a mpv para verte
+    setsid -f bash -c '
+        ffmpeg -v error -y "${@:3}" -f pulse -i default \
+            -map 0:v -map 1:a -c:v libx264 -preset veryfast -crf 26 -pix_fmt yuv420p -c:a aac -b:a 96k -vf hflip "$1" \
+            -map 0:v -c:v copy -f nut pipe:1 | mpv - --profile=low-latency --untimed --no-audio --no-osc --vf=hflip --title=Cámara
+        ' _ "$f" _ "${ENTRADA[@]}" >/dev/null 2>&1
+    sleep 1.2
+    if grabando; then refrescar; notify-send -a camara "Grabando vídeo" "Lo mismo para parar: Cámara → Parar la grabación"
+    else rm -f "$RUN/video" "$RUN/archivo"; notify-send -u critical -a camara "No pude empezar a grabar" "¿Está la cámara en uso?"; fi
+}
+
+qr() {
+    command -v zbarcam >/dev/null || { notify-send -u critical -a camara "Falta zbar" "sudo pacman -S zbar"; return 1; }
+    vista_abierta && cerrar_vista
+    grabando && { notify-send -a camara "Estás grabando" "Para la grabación y vuelve a intentarlo"; return 0; }
+    notify-send -a camara -t 4000 "Lector de QR" "Apunta el código a la cámara (se cierra a los 60 s)"
+    local texto; texto="$(timeout 60 zbarcam --raw -1 --prescale=640x480 "$DEV" 2>/dev/null | head -n 1)"
+    [ -n "$texto" ] || return 0
+    printf '%s' "$texto" | wl-copy 2>/dev/null
+    case "$texto" in
+        http://*|https://*) "$AVISO" "󰐲  QR leído: enlace" "$texto" "$texto" camara ;;
+        *) notify-send -a camara "󰐲  QR leído (copiado)" "$texto" ;;
+    esac
+}
+
+menu() { rofi -dmenu -i -p "$1" -l "$2" -theme-str 'window { width: 30em; }'; }
+
+menu_camara() {
+    pkill -x rofi 2>/dev/null && sleep 0.2
+    local vista="󰄀  Ver la cámara" grab="󰕧  Grabar vídeo con audio"
+    vista_abierta && vista="󰄀  Cerrar la vista previa"
+    grabando && grab="󰕨  Parar la grabación"
+    local op
+    op="$(printf '%s\n' "$vista" "󰹑  Sacar una foto" "$grab" "󰐲  Leer un código QR" \
+        "󰉋  Abrir las fotos" "󰉋  Abrir los vídeos" | menu "󰄀  " 6)" || return 0
+    case "$op" in
+        *"Ver la cámara"*|*"vista previa"*) ver ;;
+        *"foto"*)                           foto ;;
+        *"Grabar vídeo"*|*"Parar la grab"*) video ;;
+        *"QR"*)                             qr ;;
+        *"las fotos"*)  mkdir -p "$FOTOS";  setsid -f thunar "$FOTOS"  >/dev/null 2>&1 ;;
+        *"los vídeos"*) mkdir -p "$VIDEOS"; setsid -f thunar "$VIDEOS" >/dev/null 2>&1 ;;
+    esac
+}
+
+case "${1:-menu}" in
+    menu)   menu_camara ;;
+    ver)    ver ;;
+    foto)   foto ;;
+    video)  video ;;
+    qr)     qr ;;
+    estado)
+        if grabando; then echo '{"text": "󰄀 REC", "class": "rec", "tooltip": "Grabando con la cámara · Cámara → Parar la grabación"}'
+        else echo '{"text": "", "class": "off"}'; fi ;;
+    *) echo "Uso: camara [menu|ver|foto|video|qr|estado]" >&2; exit 1 ;;
+esac
